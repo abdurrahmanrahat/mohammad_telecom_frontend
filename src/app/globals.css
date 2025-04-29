@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  /* make it 100 - 900 variants for primary color */
+  --color-primary: #EA1B25;
+  /* --font-display: "Satoshi", "sans-serif";
+  --breakpoint-3xl: 120rem; */
+
+  --shadow-cardLightShadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px;
+  --shadow-topUpShadow: 0 5px 20px rgba(0, 0, 0, .2)
+}
