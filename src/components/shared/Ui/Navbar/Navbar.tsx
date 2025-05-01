@@ -134,7 +134,9 @@ const Navbar = () => {
                 <ShoppingCart className="h-6 w-6" />
                 <span className="sr-only">Cart</span>
               </Button>
-              <Button>Login</Button>
+              <Link href={`/login`}>
+                <Button className="cursor-pointer">Login</Button>
+              </Link>
             </div>
           </div>
         </div>

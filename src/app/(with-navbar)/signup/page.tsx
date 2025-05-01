@@ -23,7 +23,7 @@ const SignUpPage = () => {
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
       <Container className="max-w-md">
-        <div className="flex flex-col justify-center space-y-6 shadow-cardLightShadow rounded-md p-8">
+        <div className="flex flex-col justify-center space-y-6 shadow-cardLightShadow rounded-md p-6 md:p-8">
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">Moh. Telecom</span>

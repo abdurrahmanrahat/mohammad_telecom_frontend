@@ -31,6 +31,7 @@ export function MobileMenu({ categories }: { categories: any }) {
             type="search"
             placeholder="Search products..."
             className="w-full pl-8 border-0 bg-gray-100"
+            tabIndex={-1}
           />
         </div>
       </div>
