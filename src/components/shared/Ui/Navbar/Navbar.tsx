@@ -65,7 +65,7 @@ const Navbar = () => {
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <button className="md:hidden">
+                <button className="lg:hidden">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle menu</span>
                 </button>
@@ -83,7 +83,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4 lg:space-x-6 mx-6">
+          <nav className="hidden lg:flex items-center space-x-4 lg:space-x-6 mx-6">
             {categories.map((category) => (
               <div key={category.name} className="relative group">
                 <Link
@@ -117,13 +117,13 @@ const Navbar = () => {
 
           <div className="flex gap-4 ">
             {/* Search */}
-            <div className="hidden md:block md:w-48 lg:w-72">
+            <div className="hidden lg:block lg:w-72">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search products..."
-                  className="w-full pl-8 md:w-[200px] lg:w-[300px] border-0 bg-gray-100"
+                  className="w-full pl-8 lg:w-[300px] border-0 bg-gray-100"
                 />
               </div>
             </div>
