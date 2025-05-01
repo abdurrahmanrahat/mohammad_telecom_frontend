@@ -58,7 +58,7 @@ const Navbar = () => {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-background">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white">
       <Container>
         <div className="flex justify-between items-center h-16">
           <div className="flex gap-2">

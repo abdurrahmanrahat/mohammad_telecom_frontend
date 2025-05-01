@@ -9,13 +9,14 @@ import Link from "next/link";
 import { FieldValues } from "react-hook-form";
 import { z } from "zod";
 
-const userLoginSchema = z.object({
+const userSignUpSchema = z.object({
+  name: z.string().min(1, "Enter name"),
   email: z.string().email("Enter email"),
   password: z.string().min(1, "Enter password"),
 });
 
-export default function LoginPage() {
-  const handleLogin = async (values: FieldValues) => {
+const SignUpPage = () => {
+  const handleSignUp = async (values: FieldValues) => {
     console.log(values);
   };
 
@@ -30,23 +31,32 @@ export default function LoginPage() {
 
           <div className="space-y-2">
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-              Welcome back
+              Create an account
             </h1>
             <p className="text-muted-foreground">
-              Enter your credentials to access your account
+              Enter your details to sign up for an account
             </p>
           </div>
 
           <MTForm
-            onSubmit={handleLogin}
-            schema={userLoginSchema}
+            onSubmit={handleSignUp}
+            schema={userSignUpSchema}
             defaultValues={{
+              name: "",
               email: "",
               password: "",
             }}
           >
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
+                <div className="grid gap-1">
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
+                  </label>
+
+                  <MTInput name="name" />
+                </div>
+
                 <div className="grid gap-1">
                   <label htmlFor="email" className="text-sm font-medium">
                     Email
@@ -69,19 +79,21 @@ export default function LoginPage() {
 
               <div className="mt-2 w-full">
                 <Button className="h-11 cursor-pointer w-full" type="submit">
-                  Sign In
+                  Sign Up
                 </Button>
               </div>
             </div>
           </MTForm>
           <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-primary hover:text-primary/90">
-              Sign up
+            Already have an account?{" "}
+            <Link href="/login" className="text-primary hover:text-primary/90">
+              Sign in
             </Link>
           </p>
         </div>
       </Container>
     </div>
   );
-}
+};
+
+export default SignUpPage;
