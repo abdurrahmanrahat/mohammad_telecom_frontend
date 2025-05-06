@@ -3,10 +3,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { authKey } from "@/constants/authKey";
 import { cn } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout, useCurrentUser } from "@/redux/reducers/authSlice";
+import { removeUser } from "@/services/auth.services";
+import axios from "axios";
 import { ChevronDown, Menu, Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import ActiveLink from "../ActiveLink";
 import Container from "../Container";
 import { MobileMenu } from "./MobileMenu";
 
@@ -57,6 +64,28 @@ const categories = [
 const Navbar = () => {
   const pathname = usePathname();
 
+  const user = useAppSelector(useCurrentUser);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const isAdmin = user?.role === "admin";
+  const isStudent = user?.role === "user";
+
+  // logout user
+  const handleLogout = async () => {
+    // 🎯 remove HttpOnly cookie from client via API
+    await axios.post("/api/auth/remove-cookies", {
+      accessToken: authKey,
+      // refreshToken: "testToken", // send more name for removing
+    });
+    dispatch(logout());
+    removeUser();
+
+    toast.success("Logout successfully!");
+
+    router.push("/");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white">
       <Container>
@@ -66,7 +95,7 @@ const Navbar = () => {
             <Sheet>
               <SheetTrigger asChild>
                 <button className="lg:hidden">
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </button>
               </SheetTrigger>
@@ -113,6 +142,27 @@ const Navbar = () => {
                 </div>
               </div>
             ))}
+            <>
+              {user && (
+                <>
+                  {isAdmin && (
+                    <ActiveLink href={`/dashboard/admin`}>
+                      <span className="font-medium transition-colors duration-300 hover:text-primary">
+                        Dashboard
+                      </span>
+                    </ActiveLink>
+                  )}
+
+                  {isStudent && (
+                    <ActiveLink href={`/dashboard/user`}>
+                      <span className="font-medium transition-colors duration-300 hover:text-primary">
+                        Dashboard
+                      </span>
+                    </ActiveLink>
+                  )}
+                </>
+              )}
+            </>
           </nav>
 
           <div className="flex gap-4 ">
@@ -134,9 +184,19 @@ const Navbar = () => {
                 <ShoppingCart className="h-6 w-6" />
                 <span className="sr-only">Cart</span>
               </Button>
-              <Link href={`/login`}>
-                <Button className="cursor-pointer">Login</Button>
-              </Link>
+
+              {/* login/logout button */}
+              <div className="flex items-center gap-4">
+                {user ? (
+                  <Button className="cursor-pointer" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                ) : (
+                  <Link href={`/login`}>
+                    <Button className="cursor-pointer">Login</Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>

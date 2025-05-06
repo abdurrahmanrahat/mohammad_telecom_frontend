@@ -3,10 +3,21 @@
 import MTForm from "@/components/shared/Forms/MTForm";
 import MTInput from "@/components/shared/Forms/MTInput";
 import Container from "@/components/shared/Ui/Container";
+import { LoaderSpinner } from "@/components/shared/Ui/LoaderSpinner";
 import { Button } from "@/components/ui/button";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/reducers/authSlice";
+import { loginUser } from "@/services/actions/loginUser";
+import { registerUser } from "@/services/actions/registerUser";
+import { storeUserInfo } from "@/services/auth.services";
+import { decodedToken } from "@/utils/jwt";
+import axios from "axios";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const userSignUpSchema = z.object({
@@ -16,8 +27,52 @@ const userSignUpSchema = z.object({
 });
 
 const SignUpPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const router = useRouter();
+
   const handleSignUp = async (values: FieldValues) => {
-    console.log(values);
+    setIsLoading(true);
+    try {
+      const res = await registerUser(values);
+
+      if (res.success) {
+        // auto login after user register
+        const userRes = await loginUser({
+          email: values.email,
+          password: values.password,
+        });
+
+        if (userRes.success) {
+          const user = decodedToken(userRes.data.accessToken);
+
+          dispatch(setUser({ user, token: userRes.data.accessToken }));
+          storeUserInfo({ accessToken: userRes.data.accessToken });
+          // 🎯 Set HttpOnly cookie from client via API
+          await axios.post("/api/auth/set-cookies", {
+            accessToken: userRes.data.accessToken,
+          });
+
+          toast.success(res.message);
+
+          setIsLoading(false);
+          router.push("/");
+        }
+      } else {
+        toast.error(res.message || "Something went wrong!");
+
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error?.data?.errorSources[0].message || "Something went wrong!"
+      );
+
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -73,13 +128,19 @@ const SignUpPage = () => {
                   <label htmlFor="password" className="text-sm font-medium">
                     Password
                   </label>
-                  <MTInput name="password" />
+                  <MTInput name="password" type="password" />
                 </div>
               </div>
 
               <div className="mt-2 w-full">
                 <Button className="h-11 cursor-pointer w-full" type="submit">
-                  Sign Up
+                  {isLoading ? (
+                    <span className="flex gap-2">
+                      <LoaderSpinner /> <span>Signing...</span>
+                    </span>
+                  ) : (
+                    "Sign Up"
+                  )}
                 </Button>
               </div>
             </div>

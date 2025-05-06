@@ -1,5 +1,7 @@
+import Providers from "@/lib/providers/Providers";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import { ToastContainer } from "react-toastify";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -24,7 +26,10 @@ export default function RootLayout({
         className={`${roboto.className} antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        <Providers>
+          {children}
+          <ToastContainer />
+        </Providers>
       </body>
     </html>
   );

@@ -3,10 +3,20 @@
 import MTForm from "@/components/shared/Forms/MTForm";
 import MTInput from "@/components/shared/Forms/MTInput";
 import Container from "@/components/shared/Ui/Container";
+import { LoaderSpinner } from "@/components/shared/Ui/LoaderSpinner";
 import { Button } from "@/components/ui/button";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/reducers/authSlice";
+import { loginUser } from "@/services/actions/loginUser";
+import { storeUserInfo } from "@/services/auth.services";
+import { decodedToken } from "@/utils/jwt";
+import axios from "axios";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const userLoginSchema = z.object({
@@ -15,8 +25,46 @@ const userLoginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const router = useRouter();
+
   const handleLogin = async (values: FieldValues) => {
     console.log(values);
+    setIsLoading(true);
+    try {
+      const res = await loginUser(values);
+
+      if (res.success) {
+        const user = decodedToken(res.data.accessToken);
+
+        dispatch(setUser({ user, token: res.data.accessToken }));
+
+        storeUserInfo({ accessToken: res.data.accessToken });
+        // 🎯 Set HttpOnly cookie from client via API
+        await axios.post("/api/auth/set-cookies", {
+          accessToken: res.data.accessToken,
+        });
+
+        toast.success(res.message);
+
+        setIsLoading(false);
+        router.push("/");
+      } else {
+        toast.error(res.message || "Something went wrong!");
+
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      toast.error(
+        error?.data?.errorSources[0].message || "Something went wrong!"
+      );
+
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,13 +111,19 @@ export default function LoginPage() {
                   <label htmlFor="password" className="text-sm font-medium">
                     Password
                   </label>
-                  <MTInput name="password" />
+                  <MTInput name="password" type="password" />
                 </div>
               </div>
 
               <div className="mt-2 w-full">
                 <Button className="h-11 cursor-pointer w-full" type="submit">
-                  Sign In
+                  {isLoading ? (
+                    <span className="flex gap-2">
+                      <LoaderSpinner /> <span>Signing...</span>
+                    </span>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </div>
             </div>
