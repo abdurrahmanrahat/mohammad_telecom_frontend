@@ -1,5 +1,6 @@
 "use client";
 
+import GoogleAuthWrapper from "@/components/common/Login/GoogleAuthWrapper";
 import MTForm from "@/components/shared/Forms/MTForm";
 import MTInput from "@/components/shared/Forms/MTInput";
 import Container from "@/components/shared/Ui/Container";
@@ -128,6 +129,9 @@ export default function LoginPage() {
               </div>
             </div>
           </MTForm>
+
+          <GoogleAuthWrapper />
+
           <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="text-primary hover:text-primary/90">
