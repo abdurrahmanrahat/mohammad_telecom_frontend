@@ -10,9 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAddCategoryMutation } from "@/redux/api/categoryApi";
+import { TCategory } from "@/types/category.type";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const addCategorySchema = z.object({
@@ -20,13 +23,47 @@ const addCategorySchema = z.object({
   subCategoryOf: z.string().min(1, "Please select a parent category"),
 });
 
-const AddCategoryModal = () => {
+const AddCategoryModal = ({ categories }: { categories: TCategory[] }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  // rtk api
+  const [addCategory] = useAddCategoryMutation();
+
+  const parentCategories = categories.map((category: TCategory) => {
+    return {
+      label: category.title,
+      value: category._id,
+    };
+  });
+
+  const parentCategoriesList = [
+    { label: "N/A", value: "n/a" },
+    ...parentCategories,
+  ];
 
   const handleAddCategory = async (values: FieldValues) => {
     console.log(values);
-    setIsOpenModal(false);
+
+    const newCategory = {
+      title: values.title,
+      subCategoryOf:
+        values.subCategoryOf === "n/a" ? null : values.subCategoryOf,
+    };
     // Handle form submission logic here
+    try {
+      const res = await addCategory(newCategory).unwrap();
+      console.log(res);
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+
+      setIsOpenModal(false);
+    } catch (error: any) {
+      toast.error(
+        error?.data?.errorSources[0].message || "Something went wrong!"
+      );
+    }
   };
 
   return (
@@ -70,24 +107,7 @@ const AddCategoryModal = () => {
 
                   <MTSelect
                     name="subCategoryOf"
-                    options={[
-                      {
-                        label: "N/A",
-                        value: "n/a",
-                      },
-                      {
-                        label: "One",
-                        value: "1",
-                      },
-                      {
-                        label: "Two",
-                        value: "2",
-                      },
-                      {
-                        label: "Three",
-                        value: "3",
-                      },
-                    ]}
+                    options={parentCategoriesList}
                     placeholder=""
                     className=""
                   />

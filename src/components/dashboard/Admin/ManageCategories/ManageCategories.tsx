@@ -1,8 +1,10 @@
 "use client";
 
+import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { ChevronDown, ChevronRight, Edit, Eye, Trash2 } from "lucide-react";
 import { useState } from "react";
 import AddCategoryModal from "./AddCategoryModal";
@@ -44,6 +46,14 @@ const initialCategories = [
 export default function ManageCategories() {
   const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
 
+  // rtk api
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useGetCategoriesQuery({});
+
+  if (isCategoriesLoading) {
+    return <MyLoader />;
+  }
+
   const toggleExpand = (categoryId: number) => {
     setExpandedCategories((prev) =>
       prev.includes(categoryId)
@@ -57,7 +67,7 @@ export default function ManageCategories() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Manage Categories</h1>
 
-        <AddCategoryModal />
+        <AddCategoryModal categories={categories.data} />
       </div>
 
       <div className="grid gap-4">

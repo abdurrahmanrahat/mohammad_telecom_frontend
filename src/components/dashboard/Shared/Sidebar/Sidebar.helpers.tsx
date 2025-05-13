@@ -20,7 +20,7 @@ export const SidebarItem = ({ item }: { item: TItemProps }) => {
       className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent ",
         "group relative overflow-hidden ",
-        isActive && "bg-secondary font-medium "
+        isActive && "bg-primary font-medium "
       )}
     >
       <div className="flex items-center gap-3 text-white">
