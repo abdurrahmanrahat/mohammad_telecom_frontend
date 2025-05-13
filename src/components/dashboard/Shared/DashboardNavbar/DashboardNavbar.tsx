@@ -69,7 +69,7 @@ export default function DashboardNavbar({
         {/* Mobile menu */}
         <div
           id="navbar"
-          className={`fixed lg:hidden top-0 left-0 bg-white w-[70%] border-r h-screen ease-in-out duration-700 z-[999] p-[20px] ${
+          className={`fixed lg:hidden top-0 left-0 bg-primary w-[70%] border-r h-screen ease-in-out duration-700 z-[999] p-[20px] ${
             isOpenMenu ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -77,7 +77,7 @@ export default function DashboardNavbar({
           <div className="my-[12px] flex justify-center items-center">
             <Link href="/">
               {/* <Image src={IMAGES.shared.Logo} alt="Logo" /> */}
-              <h2 className="text-xl font-semibold">Brand Logo</h2>
+              <h2 className="text-xl font-semibold text-white">Brand Logo</h2>
             </Link>
           </div>
 

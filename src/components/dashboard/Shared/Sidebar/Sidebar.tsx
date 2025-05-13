@@ -7,19 +7,19 @@ import { adminSidebarItems, userSidebarItems } from "./sidebar.utils";
 
 const Sidebar = ({ role }: { role: "user" | "admin" }) => {
   return (
-    <div className="h-screen px-4 md:px-0 py-4 md:py-0 border-r">
+    <div className="h-screen px-4 md:px-0 py-4 md:py-0 border-r bg-primary">
       <Container>
-        <div className="p-10">
+        <div className="">
           {/* logo section */}
-          <div className="flex justify-start items-center">
+          <div className="flex justify-center items-center pt-6">
             <Link href="/">
               {/* <Image src={IMAGES.shared.Logo} alt="Logo" /> */}
-              <h2 className="text-xl font-semibold">Brand Logo</h2>
+              <h2 className="text-xl font-semibold text-white">Brand Logo</h2>
             </Link>
           </div>
 
           {/* Nav items section */}
-          <div className="hidden md:flex flex-col mt-8">
+          <div className="hidden md:flex flex-col mt-8 w-full">
             {role === "user" &&
               userSidebarItems.map((item, index) => (
                 <SidebarItem key={index} item={item} />
