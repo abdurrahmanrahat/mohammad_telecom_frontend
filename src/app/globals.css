@@ -3,8 +3,8 @@
 
 @theme {
   /* make it 100 - 900 variants for primary color */
-  --color-primary: #da5b1f;
-  /* --color-primary: #1a691a; */
+  /* --color-primary: #da5b1f; red */
+  --color-primary: #332F61;
   /* --font-display: "Satoshi", "sans-serif";
   --breakpoint-3xl: 120rem; */
 

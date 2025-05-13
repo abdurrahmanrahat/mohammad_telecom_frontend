@@ -12,11 +12,13 @@ import { registerUser } from "@/services/actions/registerUser";
 import { storeUserInfo } from "@/services/auth.services";
 import { decodedToken } from "@/utils/jwt";
 import axios from "axios";
-import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { FaUser } from "react-icons/fa6";
+import { IoMdLock } from "react-icons/io";
+import { MdMail } from "react-icons/md";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -78,18 +80,14 @@ const SignUpPage = () => {
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
       <Container className="max-w-md">
-        <div className="flex flex-col justify-center space-y-6 shadow-cardLightShadow rounded-md p-6 md:p-8">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">Moh. Telecom</span>
-          </div>
+        <div className="flex flex-col justify-center space-y-6 shadow-cardLightShadow rounded-md p-6 py-8 md:p-8 lg:p-10">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-center">
+              <span className="text-xl md:text-2xl font-bold">Sign Up</span>
+            </div>
 
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-              Create an account
-            </h1>
-            <p className="text-muted-foreground">
-              Enter your details to sign up for an account
+            <p className="text-center text-sm text-muted-foreground">
+              Enter your name, email and password to sign up
             </p>
           </div>
 
@@ -104,36 +102,50 @@ const SignUpPage = () => {
           >
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
-                <div className="grid gap-1">
-                  <label htmlFor="name" className="text-sm font-medium">
-                    Name
-                  </label>
+                <div className="grid gap-1 relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-4">
+                    <FaUser />
+                  </span>
 
-                  <MTInput name="name" />
+                  <MTInput
+                    name="name"
+                    type="text"
+                    placeholder="Name"
+                    className="pl-11 rounded-full bg-gray-100 border-none"
+                  />
                 </div>
 
-                <div className="grid gap-1">
-                  <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </label>
+                <div className="grid gap-1 relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-4">
+                    <MdMail />
+                  </span>
 
                   <MTInput
                     name="email"
                     type="email"
-                    placeholder="example@gmail.com"
+                    placeholder="Email"
+                    className="pl-11 rounded-full bg-gray-100 border-none"
                   />
                 </div>
 
-                <div className="grid gap-1">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Password
-                  </label>
-                  <MTInput name="password" type="password" />
+                <div className="grid gap-1 relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-4">
+                    <IoMdLock />
+                  </span>
+                  <MTInput
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    className="pl-11 rounded-full bg-gray-100 border-none"
+                  />
                 </div>
               </div>
 
               <div className="mt-2 w-full">
-                <Button className="h-11 cursor-pointer w-full" type="submit">
+                <Button
+                  className="h-11 cursor-pointer w-full rounded-full"
+                  type="submit"
+                >
                   {isLoading ? (
                     <span className="flex gap-2">
                       <LoaderSpinner /> <span>Signing...</span>

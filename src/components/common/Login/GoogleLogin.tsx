@@ -66,17 +66,19 @@ const GoogleLogin = () => {
 
   return (
     <div
-      className="flex justify-center items-center space-x-2 border p-2 border-gray-200 rounded cursor-pointer"
-      onClick={handleGoogleLogin}
+      // className="flex justify-center items-center space-x-2 border p-2 border-gray-200 rounded cursor-pointer"
+      // onClick={handleGoogleLogin}
+      className="flex justify-center"
     >
-      {/* <FaGoogle size={20} /> */}
       <Image
         src={IMAGES.shared.GoogleLogo}
         alt="google"
         width={20}
         height={20}
+        className="cursor-pointer"
+        onClick={handleGoogleLogin}
       />
-      <p className="mt-[4px]">Continue with Google</p>
+      {/* <p className="mt-[4px]">Continue with Google</p> */}
     </div>
   );
 };
