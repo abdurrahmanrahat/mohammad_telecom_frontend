@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { TCategory } from "@/types/category.type";
-import { ChevronDown, ChevronRight, Edit, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import { useState } from "react";
 import AddCategoryModal from "./AddCategoryModal";
+import EditCategoryModal from "./EditCategoryModal";
 
 export default function ManageCategories() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
@@ -45,16 +46,14 @@ export default function ManageCategories() {
             key={category._id}
             className="border border-gray-200 shadow-sm overflow-hidden p-4 pb-0"
           >
-            <div
-              className=" bg-white hover:bg-gray-50 cursor-pointer transition-colors duration-300"
-              onClick={() => toggleExpand(category._id)}
-            >
+            <div className=" bg-white hover:bg-gray-50 cursor-pointer transition-colors duration-300">
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
                   <Button
                     variant="ghost"
                     size="sm"
                     className="p-0 h-8 w-8 mr-2 cursor-pointer"
+                    onClick={() => toggleExpand(category._id)}
                   >
                     {expandedCategories.includes(category._id) ? (
                       <ChevronDown className="h-5 w-5 text-purple-600" />
@@ -72,14 +71,7 @@ export default function ManageCategories() {
                 </div>
 
                 <div className="flex space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
+                  <EditCategoryModal category={category} />
                   {category.subCategories.length === 0 && (
                     <Button
                       variant="ghost"
@@ -119,13 +111,7 @@ export default function ManageCategories() {
                         )} */}
                       </div>
                       <div className="flex space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <EditCategoryModal category={subcategory} />
                         <Button
                           variant="ghost"
                           size="sm"
