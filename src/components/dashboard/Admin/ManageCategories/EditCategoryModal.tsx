@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useUpdateCategoryMutation } from "@/redux/api/categoryApi";
 import { TCategory } from "@/types/category.type";
+import { createSlug } from "@/utils/createSlug";
 import { Edit } from "lucide-react";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -30,7 +31,10 @@ const EditCategoryModal = ({ category }: { category: TCategory }) => {
   const handleUpdateCategory = async (values: FieldValues) => {
     const payload = {
       categoryId: category._id,
-      updatedData: values,
+      updatedData: {
+        title: values.title,
+        slug: createSlug(values.title),
+      },
     };
 
     // Handle form submission logic here

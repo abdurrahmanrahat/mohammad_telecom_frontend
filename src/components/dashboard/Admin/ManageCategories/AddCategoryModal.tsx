@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAddCategoryMutation } from "@/redux/api/categoryApi";
 import { TCategory } from "@/types/category.type";
+import { createSlug } from "@/utils/createSlug";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -44,6 +45,7 @@ const AddCategoryModal = ({ categories }: { categories: TCategory[] }) => {
   const handleAddCategory = async (values: FieldValues) => {
     const newCategory = {
       title: values.title,
+      slug: createSlug(values.title),
       subCategoryOf:
         values.subCategoryOf === "n/a" ? null : values.subCategoryOf,
     };
