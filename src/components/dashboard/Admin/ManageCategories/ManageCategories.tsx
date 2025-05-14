@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { TCategory } from "@/types/category.type";
-import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import AddCategoryModal from "./AddCategoryModal";
+import DeleteCategoryModal from "./DeleteCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 
 export default function ManageCategories() {
@@ -73,14 +74,7 @@ export default function ManageCategories() {
                 <div className="flex space-x-2">
                   <EditCategoryModal category={category} />
                   {category.subCategories.length === 0 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <DeleteCategoryModal categoryId={category._id} />
                   )}
                 </div>
               </div>
@@ -112,13 +106,8 @@ export default function ManageCategories() {
                       </div>
                       <div className="flex space-x-2">
                         <EditCategoryModal category={subcategory} />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+
+                        <DeleteCategoryModal categoryId={subcategory._id} />
                       </div>
                     </div>
                   ))}
