@@ -7,7 +7,7 @@ import { adminSidebarItems, userSidebarItems } from "./sidebar.utils";
 
 const Sidebar = ({ role }: { role: "user" | "admin" }) => {
   return (
-    <div className="h-screen fixed top-0 left-0 px-4 md:px-0 py-4 md:py-0 border-r bg-secondary">
+    <div className="h-screen w-2/12 fixed top-0 left-0 px-4 md:px-0 py-4 md:py-0 border-r bg-secondary">
       <Container>
         <div className="">
           {/* logo section */}

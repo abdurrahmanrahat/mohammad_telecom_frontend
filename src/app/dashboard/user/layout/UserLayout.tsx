@@ -5,10 +5,10 @@ import { ReactNode } from "react";
 const UserLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="grid grid-cols-12">
-      <div className="col-span-12 lg:col-span-2 hidden lg:block">
+      <div className="col-span-12 lg:col-span-3 hidden lg:block">
         <Sidebar role="user" />
       </div>
-      <div className="col-span-12 lg:col-span-10">
+      <div className="col-span-12 lg:col-span-9">
         <DashboardNavbar role="user">{children}</DashboardNavbar>
       </div>
     </div>
