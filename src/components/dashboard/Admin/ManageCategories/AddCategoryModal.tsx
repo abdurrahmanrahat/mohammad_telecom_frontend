@@ -62,6 +62,7 @@ const AddCategoryModal = ({ categories }: { categories: TCategory[] }) => {
       toast.error(
         error?.data?.errorSources[0].message || "Something went wrong!"
       );
+      setIsOpenModal(false);
     }
   };
 

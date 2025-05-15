@@ -7,11 +7,17 @@ import MTMultiImageUploader from "@/components/shared/Forms/MTMultiImageUploader
 import MTMultiSelectWithExtra from "@/components/shared/Forms/MTMultiSelectWithExtra";
 import MTSelect from "@/components/shared/Forms/MTSelect";
 import MTTextEditor from "@/components/shared/Forms/MTTextEditor";
+import { LoaderSpinner } from "@/components/shared/Ui/LoaderSpinner";
 import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
+import { useAddProductMutation } from "@/redux/api/productApi";
 import { TCategory } from "@/types/category.type";
+import { createSlug } from "@/utils/createSlug";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const addProductSchema = z.object({
@@ -44,29 +50,130 @@ export const addProductDefaultValues = {
   tags: [],
 };
 
+const img_hosting_token = process.env.NEXT_PUBLIC_imgBB_token;
+const img_hosting_url = `https://api.imgbb.com/1/upload?key=${img_hosting_token}`;
+
 const AddProduct = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
   // RTK Query hook
   const { data: categoriesData, isLoading: isCategoriesLoading } =
     useGetCategoriesQuery({});
+  const [addProduct] = useAddProductMutation();
 
   if (isCategoriesLoading) {
     return <MyLoader />;
   }
 
-  const parentCategories = categoriesData?.data?.map((category: TCategory) => {
-    return {
-      label: category.title,
-      value: category._id,
-    };
-  });
+  // categories list for dropdown
+  const categoriesList =
+    categoriesData?.data?.flatMap((parentCategory: TCategory) => {
+      const subCategories = parentCategory.subCategories || [];
 
+      if (subCategories.length > 0) {
+        return subCategories.map((sub) => ({
+          label: sub.title,
+          value: sub.slug,
+        }));
+      } else {
+        return [
+          {
+            label: parentCategory.title,
+            value: parentCategory.slug,
+          },
+        ];
+      }
+    }) || [];
+
+  // get slug from all categories
+  const allCategorySlugs: string[] =
+    categoriesData?.data?.flatMap((parentCategory: TCategory) => {
+      const parentSlug = parentCategory.slug;
+      const subSlugs = Array.isArray(parentCategory.subCategories)
+        ? parentCategory.subCategories.map((sub) => sub.slug)
+        : [];
+      return [parentSlug, ...subSlugs];
+    }) || [];
+
+  // handle add product
   const handleAddProduct = async (values: FieldValues) => {
-    console.log(values);
+    setIsLoading(true);
+
+    const productData: { [key: string]: any } = {};
+
+    const { image, images, discount, ...rest } = values;
+
+    if (image instanceof File) {
+      const uploadedURL = await handleImageUpload(image);
+      if (uploadedURL) productData.image = uploadedURL;
+    }
+
+    if (images[0] instanceof File) {
+      const urls = [];
+
+      for (let i = 0; i < images.length; i++) {
+        const uploadedURL = await handleImageUpload(images[i]);
+        if (uploadedURL) urls.push(uploadedURL);
+      }
+
+      productData.images = urls;
+    }
+
+    const newProduct = {
+      ...rest,
+      ...productData,
+      slug: createSlug(values.name),
+      discount: discount === "n/a" ? null : discount,
+    };
+
+    // send to db
+    try {
+      const res = await addProduct(newProduct).unwrap();
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+
+      router.push("/dashboard/admin/manage-products");
+      setIsLoading(false);
+    } catch (error: any) {
+      toast.error(
+        error?.data?.errorSources[0].message || "Something went wrong!"
+      );
+      setIsLoading(false);
+    }
   };
+
+  const handleImageUpload = async (file: File): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await fetch(img_hosting_url, {
+        method: "POST",
+        body: formData,
+      });
+      const imgRes = await res.json();
+
+      if (imgRes.success) {
+        return imgRes.data.display_url;
+      } else {
+        toast.error("Image upload failed");
+        return null;
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Image upload error");
+      return null;
+    }
+  };
+
   return (
     <div className="py-6">
-      <div className="flex justify-center items-center">
-        <h1 className="text-2xl font-bold">Add Product</h1>
+      <div className="flex justify-center items-center mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold">Add Product</h1>
       </div>
 
       {/* form */}
@@ -93,7 +200,7 @@ const AddProduct = () => {
 
               <MTSelect
                 name="category"
-                options={parentCategories}
+                options={categoriesList}
                 placeholder=""
                 className=""
               />
@@ -173,14 +280,20 @@ const AddProduct = () => {
               <MTMultiSelectWithExtra
                 name="tags"
                 className=""
-                initialTags={["hello", "hi"]}
+                initialTags={allCategorySlugs}
               />
             </div>
           </div>
 
           <div className="mt-2 w-full flex justify-end">
             <Button className="h-11 cursor-pointer w-full" type="submit">
-              Add Product
+              {isLoading ? (
+                <span className="flex gap-2">
+                  <LoaderSpinner /> <span>Uploading...</span>
+                </span>
+              ) : (
+                "Add Product"
+              )}
             </Button>
           </div>
         </div>
