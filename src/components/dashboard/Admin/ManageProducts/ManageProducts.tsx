@@ -45,21 +45,21 @@ const ManageProducts = () => {
       </div>
 
       {/* table */}
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[80px]">Image</TableHead>
-              <TableHead className="max-w-[250px]">Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+      <div className="shadow-cardLightShadow rounded-xl">
+        <Table className="w-full ">
+          <TableHeader className="">
+            <TableRow className="bg-primary text-white text-base py-3">
+              <TableHead className="w-[80px] py-3">Image</TableHead>
+              <TableHead className="max-w-[250px] py-3">Product Name</TableHead>
+              <TableHead className="py-3">Category</TableHead>
+              <TableHead className="py-3">Price</TableHead>
+              <TableHead className="py-3">Stock</TableHead>
+              <TableHead className="text-right py-3">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {productsData.data.data.map((product: TProduct) => (
-              <TableRow key={product._id}>
+              <TableRow key={product._id} className="">
                 <TableCell>
                   <div className="h-12 w-12 relative overflow-hidden rounded-md">
                     <Image
