@@ -6,6 +6,7 @@ import MTInput from "@/components/shared/Forms/MTInput";
 import MTMultiImageUploader from "@/components/shared/Forms/MTMultiImageUploader";
 import MTMultiSelectWithExtra from "@/components/shared/Forms/MTMultiSelectWithExtra";
 import MTSelect from "@/components/shared/Forms/MTSelect";
+import MTTextEditor from "@/components/shared/Forms/MTTextEditor";
 import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
@@ -25,12 +26,8 @@ const addProductSchema = z.object({
     })
   ),
   category: z.string().min(1, "Please select a category"),
-  price: z
-    .number({ invalid_type_error: "Price must be a number" })
-    .min(0, "Price cannot be negative"),
-  stock: z
-    .number({ invalid_type_error: "Stock must be a number" })
-    .min(0, "Stock cannot be negative"),
+  price: z.coerce.number().min(0, "Price cannot be negative"),
+  stock: z.coerce.number().min(0, "Stock cannot be negative"),
   discount: z.string(), // Expecting ObjectId as string (validated at backend)
   tags: z.array(z.string()).min(1, "At least one tag is required"),
 });
@@ -108,7 +105,7 @@ const AddProduct = () => {
                 <span className="text-red-500 font-medium">*</span>
               </label>
 
-              <MTInput name="price" type="text" placeholder="" />
+              <MTInput name="price" type="number" placeholder="" />
             </div>
 
             <div className="grid gap-1">
@@ -135,7 +132,7 @@ const AddProduct = () => {
                 <span className="text-red-500 font-medium">*</span>
               </label>
 
-              <MTInput name="stock" type="text" placeholder="" />
+              <MTInput name="stock" type="number" placeholder="" />
             </div>
 
             <div className="grid gap-1">
@@ -158,7 +155,16 @@ const AddProduct = () => {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-4">
+            <div className="grid gap-1">
+              <label htmlFor="tags" className="text-sm font-medium">
+                Product Description{" "}
+                <span className="text-red-500 font-medium">*</span>
+              </label>
+
+              <MTTextEditor name="description" className="" />
+            </div>
+
             <div className="grid gap-1">
               <label htmlFor="tags" className="text-sm font-medium">
                 Product Tags <span className="text-red-500 font-medium">*</span>

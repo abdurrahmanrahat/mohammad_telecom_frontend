@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ const MTMultiImageUploader = ({
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, ...field } }) => (
+        render={({ field: { onChange, value, ...field } }) => (
           <div className={`relative ${className}`}>
             <Input
               {...field}

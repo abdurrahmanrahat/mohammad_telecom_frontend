@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Input } from "@/components/ui/input";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -17,7 +18,7 @@ const MTImageUploader = ({ name, className }: TImageUploaderProps) => {
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, ...fieldProps } }) => (
+        render={({ field: { onChange, value, ...fieldProps } }) => (
           <div className={`relative ${className}`}>
             <Input
               {...fieldProps}
