@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/redux/hooks";
+import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types/category.type";
 import { ChevronDown, Search, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
@@ -19,6 +21,11 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
       setExpandedCategory(categoryId);
     }
   };
+
+  const user = useAppSelector(useCurrentUser);
+
+  const isAdmin = user?.role === "admin";
+  const isStudent = user?.role === "user";
 
   return (
     <div className="flex flex-col h-full overflow-auto p-4 bg-white">
@@ -134,6 +141,28 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
             </ActiveLink>
           </div>
         </div>
+
+        <>
+          {user && (
+            <>
+              {isAdmin && (
+                <ActiveLink href={`/dashboard/admin`}>
+                  <span className="font-medium transition-colors duration-300 hover:text-primary">
+                    Dashboard
+                  </span>
+                </ActiveLink>
+              )}
+
+              {isStudent && (
+                <ActiveLink href={`/dashboard/user`}>
+                  <span className="font-medium transition-colors duration-300 hover:text-primary">
+                    Dashboard
+                  </span>
+                </ActiveLink>
+              )}
+            </>
+          )}
+        </>
       </nav>
       <div className="border-t pt-4">
         <Link

@@ -26,7 +26,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import ActiveLink from "../ActiveLink";
@@ -224,11 +224,10 @@ const Navbar = () => {
     };
   }, []);
 
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
   // RTK Query hook
-  const { data: categoriesData, isLoading: isCategoriesLoading } =
-    useGetCategoriesQuery({});
+  const { data: categoriesData } = useGetCategoriesQuery({});
 
   const user = useAppSelector(useCurrentUser);
   const dispatch = useAppDispatch();
