@@ -146,25 +146,33 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
           {user && (
             <>
               {isAdmin && (
-                <ActiveLink href={`/dashboard/admin`}>
-                  <span className="font-medium transition-colors duration-300 hover:text-primary">
-                    Dashboard
-                  </span>
-                </ActiveLink>
+                <div className="py-1">
+                  <div className="flex w-full items-center justify-between rounded-md py-2">
+                    <ActiveLink href={`/dashboard/admin`}>
+                      <span className="font-medium transition-colors duration-300 hover:text-primary">
+                        Dashboard
+                      </span>
+                    </ActiveLink>
+                  </div>
+                </div>
               )}
 
               {isStudent && (
-                <ActiveLink href={`/dashboard/user`}>
-                  <span className="font-medium transition-colors duration-300 hover:text-primary">
-                    Dashboard
-                  </span>
-                </ActiveLink>
+                <div className="py-1">
+                  <div className="flex w-full items-center justify-between rounded-md py-2">
+                    <ActiveLink href={`/dashboard/user`}>
+                      <span className="font-medium transition-colors duration-300 hover:text-primary">
+                        Dashboard
+                      </span>
+                    </ActiveLink>
+                  </div>
+                </div>
               )}
             </>
           )}
         </>
       </nav>
-      <div className="border-t pt-4">
+      <div className="border-t pt-4 mt-4">
         <Link
           href="/account"
           className="flex items-center rounded-md py-2 text-sm font-medium transition-colors duration-150 hover:text-primary"

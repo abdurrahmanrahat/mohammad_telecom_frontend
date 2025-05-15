@@ -13,6 +13,7 @@
 // } from "@nextui-org/react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { SidebarItem } from "../Sidebar/Sidebar.helpers";
 import { adminSidebarItems, userSidebarItems } from "../Sidebar/sidebar.utils";
@@ -25,6 +26,8 @@ export default function DashboardNavbar({
   children: ReactNode;
 }) {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const pathname = usePathname();
 
   // Toggle function to handle the navbar's display
   const handleNavToggle = () => {
@@ -48,11 +51,16 @@ export default function DashboardNavbar({
     };
   }, [isOpenMenu]);
 
+  // Close menu when route changes
+  useEffect(() => {
+    setIsOpenMenu(false);
+  }, [pathname]);
+
   return (
     <div>
       <div className="w-full">
-        <div className="lg:hidden">
-          <div className="w-[90%] mx-auto flex justify-between py-4">
+        <div className="lg:hidden shadow-cardLightShadow border-b border-gray-200 bg-white">
+          <div className="w-[90%] mx-auto flex justify-between py-4 ">
             <div className="">
               <Link href="/">
                 {/* <Image src={IMAGES.shared.Logo} alt="Logo" /> */}
@@ -69,7 +77,7 @@ export default function DashboardNavbar({
         {/* Mobile menu */}
         <div
           id="navbar"
-          className={`fixed lg:hidden top-0 left-0 bg-primary w-[70%] border-r h-screen ease-in-out duration-700 z-[999] p-[20px] ${
+          className={`fixed lg:hidden top-0 left-0 bg-secondary w-[70%] border-r h-screen ease-in-out duration-700 z-[999] p-[20px] ${
             isOpenMenu ? "translate-x-0" : "-translate-x-full"
           }`}
         >

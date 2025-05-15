@@ -26,7 +26,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import ActiveLink from "../ActiveLink";
@@ -200,10 +200,13 @@ const demoCategories = [
 ];
 
 const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsHovered, setIsProductsHovered] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const productsButtonRef = useRef<HTMLDivElement>(null);
+
+  const pathname = usePathname();
 
   // Close mega menu when clicking outside
   useEffect(() => {
@@ -257,13 +260,18 @@ const Navbar = () => {
 
   const allCategories = categoriesData?.data || demoCategories;
 
+  // Close menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white">
       <Container>
         <div className="flex justify-between items-center h-16">
           <div className="flex gap-2">
             {/* Mobile Menu */}
-            <Sheet>
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <button className="lg:hidden">
                   <Menu className="h-6 w-6" />
