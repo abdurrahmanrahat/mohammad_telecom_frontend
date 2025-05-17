@@ -34,30 +34,51 @@ const banners = [
 
 export function Banner() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [prevSlide, setPrevSlide] = useState(0);
-  const [direction, setDirection] = useState("next");
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const totalSlides = banners.length;
 
+  // Create a circular array of slides for smooth infinite scrolling
+  const slidesArray = [...banners];
+
   const nextSlide = useCallback(() => {
-    setPrevSlide(currentSlide);
-    setDirection("next");
+    if (isAnimating) return;
+
+    setIsAnimating(true);
     setCurrentSlide((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
-  }, [currentSlide, totalSlides]);
+
+    // Reset animation flag after transition completes
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+  }, [isAnimating, totalSlides]);
 
   const previousSlide = useCallback(() => {
-    setPrevSlide(currentSlide);
-    setDirection("prev");
+    if (isAnimating) return;
+
+    setIsAnimating(true);
     setCurrentSlide((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
-  }, [currentSlide, totalSlides]);
+
+    // Reset animation flag after transition completes
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+  }, [isAnimating, totalSlides]);
 
   const goToSlide = (index: number) => {
-    setPrevSlide(currentSlide);
-    setDirection(index > currentSlide ? "next" : "prev");
+    if (isAnimating || index === currentSlide) return;
+
+    setIsAnimating(true);
     setCurrentSlide(index);
+
+    // Reset animation flag after transition completes
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+
     // Reset the auto-play timer when manually changing slides
     if (isAutoPlaying) {
       setIsAutoPlaying(false);
@@ -75,17 +96,15 @@ export function Banner() {
   };
 
   const handleTouchEnd = () => {
+    if (isAnimating) return;
+
     if (touchStart - touchEnd > 50) {
       // Swipe left
-      setPrevSlide(currentSlide);
-      setDirection("next");
       nextSlide();
     }
 
     if (touchStart - touchEnd < -50) {
       // Swipe right
-      setPrevSlide(currentSlide);
-      setDirection("prev");
       previousSlide();
     }
   };
@@ -94,7 +113,7 @@ export function Banner() {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (isAutoPlaying) {
+    if (isAutoPlaying && !isAnimating) {
       interval = setInterval(() => {
         nextSlide();
       }, 4000); // 4 seconds interval
@@ -103,7 +122,7 @@ export function Banner() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isAutoPlaying, nextSlide]);
+  }, [isAutoPlaying, nextSlide, isAnimating]);
 
   // Pause auto-play when user interacts with controls
   const handleControlInteraction = (callback: () => void) => {
@@ -123,32 +142,20 @@ export function Banner() {
         onTouchEnd={handleTouchEnd}
       >
         {/* Slides */}
-        <div
-          className="flex transition-transform duration-500 ease-out"
-          style={{
-            transform:
-              // Special case for last to first slide
-              prevSlide === totalSlides - 1 &&
-              currentSlide === 0 &&
-              direction === "next"
-                ? `translateX(${-currentSlide * 100}%)`
-                : // Special case for first to last slide
-                prevSlide === 0 &&
-                  currentSlide === totalSlides - 1 &&
-                  direction === "prev"
-                ? `translateX(${-(currentSlide - totalSlides) * 100}%)`
-                : // Normal case
-                  `translateX(-${currentSlide * 100}%)`,
-          }}
-        >
-          {banners.map((banner) => (
-            <div key={banner.id} className="min-w-full">
+        <div className="flex w-full h-full">
+          {slidesArray.map((banner, index) => (
+            <div
+              key={banner.id}
+              className={`min-w-full transition-all duration-500 ease-out ${
+                index === currentSlide ? "block" : "hidden"
+              }`}
+            >
               <div className="relative aspect-[16/9] w-full sm:aspect-[16/9]">
                 <Image
                   src={banner.src || "/placeholder.svg"}
                   alt={banner.alt}
                   fill
-                  priority={banner.id === 1}
+                  priority={index === currentSlide}
                   className="object-cover"
                 />
               </div>
@@ -161,13 +168,15 @@ export function Banner() {
           onClick={() => handleControlInteraction(previousSlide)}
           className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md transition-all hover:bg-white hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:p-3 group overflow-hidden cursor-pointer"
           aria-label="Previous slide"
+          disabled={isAnimating}
         >
           {/* Preview of previous slide */}
           <div className="absolute inset-0 opacity-40 transition-opacity">
             <Image
               src={
-                banners[currentSlide === 0 ? totalSlides - 1 : currentSlide - 1]
-                  .src
+                slidesArray[
+                  currentSlide === 0 ? totalSlides - 1 : currentSlide - 1
+                ].src
               }
               alt="Previous slide preview"
               fill
@@ -181,13 +190,15 @@ export function Banner() {
           onClick={() => handleControlInteraction(nextSlide)}
           className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md transition-all hover:bg-white hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:p-3 group overflow-hidden cursor-pointer"
           aria-label="Next slide"
+          disabled={isAnimating}
         >
           {/* Preview of next slide */}
           <div className="absolute inset-0 opacity-40 transition-opacity">
             <Image
               src={
-                banners[currentSlide === totalSlides - 1 ? 0 : currentSlide + 1]
-                  .src
+                slidesArray[
+                  currentSlide === totalSlides - 1 ? 0 : currentSlide + 1
+                ].src
               }
               alt="Next slide preview"
               fill
@@ -200,7 +211,7 @@ export function Banner() {
 
       {/* Indicator Dots */}
       <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 space-x-2">
-        {banners.map((_, index) => (
+        {slidesArray.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
@@ -211,6 +222,7 @@ export function Banner() {
                 : "bg-white/70 hover:bg-white"
             )}
             aria-label={`Go to slide ${index + 1}`}
+            disabled={isAnimating}
           />
         ))}
       </div>
@@ -218,7 +230,7 @@ export function Banner() {
       {/* Thumbnail Preview */}
       <div className="absolute -bottom-1 left-1/2 z-10 flex -translate-x-1/2 transform translate-y-full transition-transform duration-300 ease-in-out hover:translate-y-0 bg-white/90 p-2 rounded-t-lg shadow-md">
         <div className="flex space-x-2">
-          {banners.map((banner, index) => (
+          {slidesArray.map((banner, index) => (
             <button
               key={banner.id}
               onClick={() => goToSlide(index)}
@@ -228,6 +240,7 @@ export function Banner() {
                   ? "border-primary opacity-100"
                   : "border-transparent opacity-70 hover:opacity-100"
               )}
+              disabled={isAnimating}
             >
               <Image
                 src={banner.src || "/placeholder.svg"}
