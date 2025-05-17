@@ -3,36 +3,29 @@
 import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import {
-  useGetProductsQuery,
-  useGetSingleProductQuery,
-} from "@/redux/api/productApi";
+import { useGetSingleProductQuery } from "@/redux/api/productApi";
 import { Heart, MinusIcon, PlusIcon, ShoppingCart } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ProductCard } from "../Products/ProductCard";
-import BestSellerCard from "./BestSellerCard";
+import BestSellers from "./BestSellers";
+import ProductGallery from "./ProductGallery";
+import RelatedProducts from "./RelatedProducts";
 
 export default function ProductDetails({ productId }: { productId: string }) {
-  const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   const { data: singleProduct, isLoading: isSingleProductLoading } =
     useGetSingleProductQuery(productId);
-  const { data: allProducts, isLoading: isAllProductLoading } =
-    useGetProductsQuery({});
 
-  if (isSingleProductLoading || isAllProductLoading) {
+  if (isSingleProductLoading) {
     return <MyLoader />;
   }
 
-  //   const decreaseQuantity = () => {
-  //     if (quantity > 1) {
-  //       setQuantity(quantity - 1);
-  //     }
-  //   };
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
 
   //   const increaseQuantity = () => {
   //     if (quantity < product.stock) {
@@ -58,36 +51,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left column - Product images */}
         <div className="lg:col-span-5">
-          <div className="relative aspect-square overflow-hidden rounded-lg mb-4 border">
-            <Image
-              src={
-                singleProduct.data.images[selectedImage] || "/placeholder.svg"
-              }
-              alt={singleProduct.data.name}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-          <div className="flex space-x-2 overflow-x-auto pb-2">
-            {singleProduct.data.images.map((image: string, index: number) => (
-              <button
-                key={index}
-                onClick={() => setSelectedImage(index)}
-                className={cn(
-                  "relative w-20 h-20 rounded-md overflow-hidden border-2",
-                  selectedImage === index ? "border-primary" : "border-gray-200"
-                )}
-              >
-                <Image
-                  src={image || "/placeholder.svg"}
-                  alt={`${singleProduct.data.name} - Image ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </button>
-            ))}
-          </div>
+          <ProductGallery singleProduct={singleProduct.data} />
         </div>
 
         {/* Middle column - Product info */}
@@ -135,7 +99,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
               <span className="mr-4 font-medium">Quantity:</span>
               <div className="flex items-center border rounded-md">
                 <button
-                  //   onClick={decreaseQuantity}
+                  onClick={decreaseQuantity}
                   className="px-3 py-2 border-r"
                   disabled={quantity <= 1}
                 >
@@ -186,16 +150,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
 
         {/* Right column - Best sellers */}
         <div className="lg:col-span-3">
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-primary text-white py-2 px-4 font-medium">
-              Best Selling Products
-            </div>
-            <div className="divide-y">
-              {allProducts.data.data.slice(0, 5).map((product) => (
-                <BestSellerCard key={product._id} product={product} />
-              ))}
-            </div>
-          </div>
+          <BestSellers />
         </div>
       </div>
 
@@ -205,13 +160,13 @@ export default function ProductDetails({ productId }: { productId: string }) {
           <TabsList className="w-full md:w-[300px] justify-start rounded-none bg-transparent h-auto">
             <TabsTrigger
               value="description"
-              className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none px-6 py-3"
+              className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none px-6 py-3 cursor-pointer"
             >
               Description
             </TabsTrigger>
             <TabsTrigger
               value="reviews"
-              className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none px-6 py-3"
+              className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none px-6 py-3 cursor-pointer"
             >
               Reviews ({singleProduct.data.totalReviews})
             </TabsTrigger>
@@ -241,14 +196,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
       </div>
 
       {/* Related products */}
-      <div className="mt-16">
-        <h2 className="text-2xl font-bold mb-6">Related Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {allProducts.data.data.slice(0, 4).map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
-      </div>
+      <RelatedProducts />
     </div>
   );
 }
