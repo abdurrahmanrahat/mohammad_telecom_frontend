@@ -197,13 +197,13 @@ const CategoryItem = ({ category }: { category: Category }) => {
     <div className="mb-1">
       <div
         className={`flex items-center justify-between py-2 px-3 cursor-pointer rounded-md ${
-          hasSubcategories ? "hover:bg-gray-100" : ""
+          hasSubcategories ? "" : ""
         }`}
         onClick={() => hasSubcategories && setExpanded(!expanded)}
       >
         <Link
-          href={`/category/${category.slug}`}
-          className="font-medium hover:text-primary flex-1"
+          href={`/products?category=${category.slug}`}
+          className="font-medium hover:text-primary flex-1 hover:underline transition-all duration-300"
         >
           {category.title}
         </Link>
@@ -213,12 +213,12 @@ const CategoryItem = ({ category }: { category: Category }) => {
               e.stopPropagation();
               setExpanded(!expanded);
             }}
-            className="p-1 rounded-full hover:bg-gray-200"
+            className="p-1 rounded-full hover:bg-primary/10"
           >
             {expanded ? (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="h-4 w-4 cursor-pointer" />
             ) : (
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4 cursor-pointer" />
             )}
           </button>
         )}
@@ -229,8 +229,8 @@ const CategoryItem = ({ category }: { category: Category }) => {
           {category.subCategories.map((subCategory) => (
             <div key={subCategory._id} className="py-1.5 px-3">
               <Link
-                href={`/category/${category.slug}/${subCategory.slug}`}
-                className="text-gray-700 hover:text-primary text-sm flex items-center"
+                href={`/products?category=${subCategory.slug}`}
+                className="text-gray-700 hover:text-primary text-sm flex items-center hover:underline transition-all duration-300"
               >
                 {subCategory.title}
               </Link>
@@ -242,24 +242,18 @@ const CategoryItem = ({ category }: { category: Category }) => {
   );
 };
 
-export default function FilterBar({
-  hideTitle = false,
-}: {
-  hideTitle?: boolean;
-}) {
+export default function FilterBar() {
   return (
     <div className="bg-white rounded-md">
-      {!hideTitle && <h2 className="font-bold text-lg mb-3">Categories</h2>}
+      <h2 className="font-bold text-xl mb-3">Categories</h2>
       <div className="space-y-1">
         {categories.map((category) => (
           <CategoryItem key={category._id} category={category} />
         ))}
       </div>
-      {!hideTitle && (
-        <div className="mt-6 pt-4 border-t">
-          <PriceFilter />
-        </div>
-      )}
+      <div className="mt-6 pt-4 border-t border-primary/20">
+        <PriceFilter />
+      </div>
     </div>
   );
 }

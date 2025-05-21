@@ -9,13 +9,18 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 import ProductHeader from "./ProductHeader";
 
 const Products = () => {
+  const [category, setCategory] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentSortOption, setCurrentSortOption] =
+    useState<string>("Featured"); // done to set
+
+  console.log("currentSortOption", currentSortOption);
+
   // RTK Query hook
   const { data: productsData, isLoading: isProductsLoading } =
     useGetProductsQuery({});
-
   const [products, setProducts] = useState(productsData?.data.data || []);
-  const [currentSortOption, setCurrentSortOption] =
-    useState<string>("Featured");
 
   // Sort products when the sort option changes
   useEffect(() => {

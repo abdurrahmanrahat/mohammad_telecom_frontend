@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface PriceFilterProps {
@@ -23,6 +24,8 @@ export default function PriceFilter({
     minPrice,
     maxPrice,
   ]);
+  console.log("priceRange", priceRange);
+  const router = useRouter();
 
   // Update the display range when the slider is being dragged
   const handleSliderChange = (value: number[]) => {
@@ -60,7 +63,13 @@ export default function PriceFilter({
           <Button
             variant="default"
             className="bg-black hover:bg-gray-800 text-white rounded-full px-6 cursor-pointer"
-            onClick={() => handleSliderCommit(displayRange)}
+            onClick={() => {
+              handleSliderCommit(displayRange);
+
+              router.push(
+                `/products?priceRange=${priceRange[0]}-${priceRange[1]}`
+              );
+            }}
           >
             Filter
           </Button>

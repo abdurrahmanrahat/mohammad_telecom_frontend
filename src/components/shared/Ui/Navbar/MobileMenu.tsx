@@ -49,7 +49,7 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
         {/* Home Link */}
         <div className="py-1">
           <div className="flex w-full items-center justify-between rounded-md py-2">
-            <ActiveLink href={`/`}>
+            <ActiveLink href={`/`} exact>
               <span className="font-medium transition-colors duration-300 hover:text-primary">
                 Home
               </span>

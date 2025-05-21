@@ -298,7 +298,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:ml-6 lg:flex md:space-x-8">
-            <ActiveLink href={`/`}>
+            <ActiveLink href={`/`} exact>
               <span className="font-medium transition-colors duration-300 hover:text-primary">
                 Home
               </span>

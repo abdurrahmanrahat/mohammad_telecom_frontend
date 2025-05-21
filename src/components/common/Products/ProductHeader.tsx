@@ -16,8 +16,13 @@ import MobileFilterDrawer from "./MobileFilterDrawer";
 
 interface ProductHeaderProps {
   categoryName?: string;
-  onSortChange?: (sortOption: string) => void;
+  onSortChange: (sortOption: string) => void;
 }
+
+type TSortOption = {
+  label: string;
+  value: string;
+};
 
 export default function ProductHeader({
   categoryName,
@@ -43,9 +48,7 @@ export default function ProductHeader({
   const handleSortChange = (option: string) => {
     setSortOption(option);
     // Call the parent's onSortChange callback with the new sort option
-    if (onSortChange) {
-      onSortChange(option);
-    }
+    onSortChange(option);
   };
 
   // Remove an active filter
@@ -58,6 +61,17 @@ export default function ProductHeader({
     setActiveFilters([]);
   };
 
+  const sortOptions = [
+    { label: "Featured", value: "featured" },
+    { label: "Price: Low to High", value: "price:low_to_high" },
+    { label: "Price: High to Low", value: "price:high_to_low" },
+    { label: "Newest", value: "newest" },
+    { label: "Best Selling", value: "best_selling" },
+    { label: "Top Rated", value: "top_rated" },
+    { label: "Name: A to Z", value: "sort:a_to_z" },
+    { label: "Name: Z to A", value: "sort:z_to_a" },
+  ];
+
   return (
     <div className="space-y-4 mb-6">
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center">
@@ -66,7 +80,7 @@ export default function ProductHeader({
           <Input
             type="search"
             placeholder={`Search ${categoryName || "products"}...`}
-            className="pl-10 pr-4 h-10 w-full"
+            className="pl-10 pr-4 h-10 w-full border-none bg-primary/10"
             value={searchQuery}
             onChange={handleSearchChange}
           />
@@ -91,40 +105,15 @@ export default function ProductHeader({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-white">
-              <DropdownMenuItem onClick={() => handleSortChange("Featured")}>
-                Featured
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSortChange("Price: Low to High")}
-              >
-                Price: Low to High
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSortChange("Price: High to Low")}
-              >
-                Price: High to Low
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange("Newest")}>
-                Newest
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSortChange("Best Selling")}
-              >
-                Best Selling
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange("Top Rated")}>
-                Top Rated
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSortChange("Name: A to Z")}
-              >
-                Name: A to Z
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleSortChange("Name: Z to A")}
-              >
-                Name: Z to A
-              </DropdownMenuItem>
+              {sortOptions.map((option: TSortOption) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() => handleSortChange(option.value)}
+                  className="cursor-pointer hover:bg-primary/10"
+                >
+                  {option.label}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
