@@ -133,7 +133,7 @@ export function Banner() {
   };
 
   return (
-    <Container className="relative w-full overflow-hidden rounded-lg shadow-xl">
+    <Container className="relative w-full overflow-hidden rounded-md">
       {/* Main slider container */}
       <div
         className="relative h-full w-full"

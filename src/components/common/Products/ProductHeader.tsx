@@ -1,0 +1,180 @@
+"use client";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { ArrowUpDown, Search } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
+import MobileFilterDrawer from "./MobileFilterDrawer";
+
+interface ProductHeaderProps {
+  categoryName?: string;
+  onSortChange?: (sortOption: string) => void;
+}
+
+export default function ProductHeader({
+  categoryName,
+  onSortChange,
+}: ProductHeaderProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("Featured");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Handle search form submission
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Implement search functionality here
+    console.log("Searching for:", searchQuery);
+  };
+
+  // Handle sort option selection
+  const handleSortChange = (option: string) => {
+    setSortOption(option);
+    // Call the parent's onSortChange callback with the new sort option
+    if (onSortChange) {
+      onSortChange(option);
+    }
+  };
+
+  // Remove an active filter
+  const removeFilter = (filter: string) => {
+    setActiveFilters(activeFilters.filter((f) => f !== filter));
+  };
+
+  // Clear all active filters
+  const clearAllFilters = () => {
+    setActiveFilters([]);
+  };
+
+  return (
+    <div className="space-y-4 mb-6">
+      <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center">
+        {/* Search bar */}
+        <form onSubmit={handleSearchSubmit} className="relative flex-1">
+          <Input
+            type="search"
+            placeholder={`Search ${categoryName || "products"}...`}
+            className="pl-10 pr-4 h-10 w-full"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        </form>
+
+        <div className="flex justify-center items-center gap-4 mt-4 lg:mt-0">
+          <div className="lg:hidden">
+            <MobileFilterDrawer />
+          </div>
+
+          {/* Sort dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className=" whitespace-nowrap cursor-pointer"
+              >
+                <ArrowUpDown className="mr-1 h-3.5 w-3.5" />
+                <span>{sortOption}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-white">
+              <DropdownMenuItem onClick={() => handleSortChange("Featured")}>
+                Featured
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSortChange("Price: Low to High")}
+              >
+                Price: Low to High
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSortChange("Price: High to Low")}
+              >
+                Price: High to Low
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange("Newest")}>
+                Newest
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSortChange("Best Selling")}
+              >
+                Best Selling
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange("Top Rated")}>
+                Top Rated
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSortChange("Name: A to Z")}
+              >
+                Name: A to Z
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSortChange("Name: Z to A")}
+              >
+                Name: Z to A
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* Active filters */}
+      {activeFilters.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-gray-500">Active filters:</span>
+          {activeFilters.map((filter) => (
+            <Badge
+              key={filter}
+              variant="secondary"
+              className="flex items-center gap-1"
+            >
+              {filter}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
+                onClick={() => removeFilter(filter)}
+              >
+                <span className="sr-only">Remove {filter} filter</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </Button>
+            </Badge>
+          ))}
+          <Button
+            variant="link"
+            size="sm"
+            className="text-xs"
+            onClick={clearAllFilters}
+          >
+            Clear all
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
