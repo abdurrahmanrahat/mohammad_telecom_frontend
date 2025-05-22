@@ -14,10 +14,13 @@ import type React from "react";
 import { useState } from "react";
 import MobileFilterDrawer from "./MobileFilterDrawer";
 
-interface ProductHeaderProps {
-  categoryName?: string;
+type TProductHeaderProps = {
+  categoryName: string;
   onSortChange: (sortOption: string) => void;
-}
+  onCategoryChange: (newCategory: string) => void;
+  onPriceRangeChange: (newPriceRange: string) => void;
+  onSearchChange: (newSearchTerm: string) => void;
+};
 
 type TSortOption = {
   label: string;
@@ -27,7 +30,10 @@ type TSortOption = {
 export default function ProductHeader({
   categoryName,
   onSortChange,
-}: ProductHeaderProps) {
+  onCategoryChange,
+  onPriceRangeChange,
+  onSearchChange,
+}: TProductHeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("Featured");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -35,13 +41,7 @@ export default function ProductHeader({
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-  };
-
-  // Handle search form submission
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Implement search functionality here
-    console.log("Searching for:", searchQuery);
+    onSearchChange(e.target.value);
   };
 
   // Handle sort option selection
@@ -62,7 +62,7 @@ export default function ProductHeader({
   };
 
   const sortOptions = [
-    { label: "Featured", value: "featured" },
+    { label: "", value: "featured" },
     { label: "Price: Low to High", value: "price:low_to_high" },
     { label: "Price: High to Low", value: "price:high_to_low" },
     { label: "Newest", value: "newest" },
@@ -76,7 +76,7 @@ export default function ProductHeader({
     <div className="space-y-4 mb-6">
       <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center">
         {/* Search bar */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1">
+        <div className="relative flex-1">
           <Input
             type="search"
             placeholder={`Search ${categoryName || "products"}...`}
@@ -85,11 +85,14 @@ export default function ProductHeader({
             onChange={handleSearchChange}
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-        </form>
+        </div>
 
         <div className="flex justify-center items-center gap-4 mt-4 lg:mt-0">
           <div className="lg:hidden">
-            <MobileFilterDrawer />
+            <MobileFilterDrawer
+              onCategoryChange={onCategoryChange}
+              onPriceRangeChange={onPriceRangeChange}
+            />
           </div>
 
           {/* Sort dropdown */}

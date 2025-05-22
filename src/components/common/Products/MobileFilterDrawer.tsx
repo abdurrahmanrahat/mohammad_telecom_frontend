@@ -1,9 +1,9 @@
 "use client";
-import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -12,32 +12,40 @@ import { Slider } from "@/components/ui/slider";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { TCategory } from "@/types";
 import { ChevronDown, ChevronRight, SlidersHorizontal } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const PRICE_MIN = 0;
 const PRICE_MAX = 2000;
 
-export default function MobileFilterDrawer() {
+export default function MobileFilterDrawer({
+  onCategoryChange,
+  onPriceRangeChange,
+}: {
+  onCategoryChange: (newCategory: string) => void;
+  onPriceRangeChange: (newPriceRange: string) => void;
+}) {
   const [isOpenSheet, setIsOpenSheet] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    PRICE_MIN,
-    PRICE_MAX,
-  ]);
+
   const [displayRange, setDisplayRange] = useState<[number, number]>([
     PRICE_MIN,
     PRICE_MAX,
   ]);
-  console.log("displayRange", displayRange);
-  console.log("priceRange", priceRange);
-  const router = useRouter();
 
   // RTK Query hook
   const { data: categoriesData, isLoading: isCategoriesLoading } =
     useGetCategoriesQuery({});
 
   if (isCategoriesLoading) {
-    return <MyLoader />;
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        className="lg:hidden flex items-center gap-2"
+      >
+        <SlidersHorizontal className="h-4 w-4" />
+        Filters
+      </Button>
+    );
   }
 
   // price filter
@@ -49,8 +57,7 @@ export default function MobileFilterDrawer() {
 
   // Only update the actual filter when the slider is released
   const handleSliderCommit = (value: number[]) => {
-    setPriceRange([value[0], value[1]]);
-    // onChange?.([value[0], value[1]]);
+    onPriceRangeChange(`${value[0]}-${value[1]}`);
   };
 
   // Format price with currency symbol
@@ -76,6 +83,7 @@ export default function MobileFilterDrawer() {
       >
         <SheetHeader>
           <SheetTitle>Filters</SheetTitle>
+          <SheetDescription></SheetDescription>
         </SheetHeader>
         <div className="py-4 space-y-6">
           <div className="mb-6">
@@ -85,6 +93,7 @@ export default function MobileFilterDrawer() {
                 key={category._id}
                 category={category}
                 setIsOpenSheet={setIsOpenSheet}
+                onCategoryChange={onCategoryChange}
               />
             ))}
           </div>
@@ -100,7 +109,7 @@ export default function MobileFilterDrawer() {
                   step={10}
                   value={displayRange}
                   onValueChange={handleSliderChange}
-                  onValueCommit={handleSliderCommit}
+                  // onValueCommit={handleSliderCommit}
                   className="my-6 bg-gray-200 rounded-full"
                 />
 
@@ -111,12 +120,6 @@ export default function MobileFilterDrawer() {
                     onClick={() => {
                       handleSliderCommit(displayRange);
                       setIsOpenSheet(false);
-
-                      setTimeout(() => {
-                        router.push(
-                          `/products?priceRange=${priceRange[0]}-${priceRange[1]}`
-                        );
-                      }, 100);
                     }}
                   >
                     Filter
@@ -138,22 +141,20 @@ export default function MobileFilterDrawer() {
 const CategoryItem = ({
   category,
   setIsOpenSheet,
+  onCategoryChange,
 }: {
   category: TCategory;
   setIsOpenSheet: (open: boolean) => void;
+  onCategoryChange: (newCategory: string) => void;
 }) => {
   const [expanded, setExpanded] = useState(false);
   const hasSubcategories =
     category.subCategories && category.subCategories.length > 0;
 
-  const router = useRouter();
-
   const handleCategoryClick = (slug: string) => {
     setIsOpenSheet(false);
 
-    setTimeout(() => {
-      router.push(`/products?category=${slug}`);
-    }, 100); // delay to allow sheet to fully close before navigation
+    onCategoryChange(slug);
   };
 
   return (

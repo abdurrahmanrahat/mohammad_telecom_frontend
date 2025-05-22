@@ -1,5 +1,6 @@
 "use client";
 
+import useDebounced from "@/hooks/useDebounced";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import { TProduct } from "@/types";
 import { useEffect, useState } from "react";
@@ -12,9 +13,13 @@ const Products = () => {
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentSortOption, setCurrentSortOption] =
-    useState<string>("Featured"); // done to set
+  const [currentSortOption, setCurrentSortOption] = useState<string>("");
 
+  const debouncedSearchTerm = useDebounced(searchTerm, 600);
+
+  console.log("category", category);
+  console.log("priceRange", priceRange);
+  console.log("searchTerm", searchTerm);
   console.log("currentSortOption", currentSortOption);
 
   // RTK Query hook
@@ -61,6 +66,21 @@ const Products = () => {
     setProducts(sorted);
   }, [currentSortOption]);
 
+  // handle category change from the filter bar
+  const handleCategoryChange = (newCategory: string) => {
+    setCategory(newCategory);
+  };
+
+  // handle price range change from the filter bar
+  const handlePriceRangeChange = (newPriceRange: string) => {
+    setPriceRange(newPriceRange);
+  };
+
+  // handle search change from the filter bar
+  const handleSearchChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
+  };
+
   // Handle sorting change from the header
   const handleSortChange = (sortOption: string) => {
     setCurrentSortOption(sortOption);
@@ -70,12 +90,21 @@ const Products = () => {
     <div className="py-16 grid grid-cols-12 gap-8">
       {/* additional filters */}
       <div className="col-span-3 hidden lg:block">
-        <FilterBar />
+        <FilterBar
+          onCategoryChange={handleCategoryChange}
+          onPriceRangeChange={handlePriceRangeChange}
+        />
       </div>
 
       <div className="col-span-12 lg:col-span-9">
         {/* title something */}
-        <ProductHeader onSortChange={handleSortChange} />
+        <ProductHeader
+          categoryName={category}
+          onSortChange={handleSortChange}
+          onCategoryChange={handleCategoryChange}
+          onPriceRangeChange={handlePriceRangeChange}
+          onSearchChange={handleSearchChange}
+        />
 
         <div>
           {isProductsLoading ? (
