@@ -35,7 +35,7 @@ export default function ProductHeader({
   onSearchChange,
 }: TProductHeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOption, setSortOption] = useState("Featured");
+  const [sortOption, setSortOption] = useState("");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   // Handle search input change
@@ -62,7 +62,7 @@ export default function ProductHeader({
   };
 
   const sortOptions = [
-    { label: "", value: "featured" },
+    { label: "Normal", value: "" },
     { label: "Price: Low to High", value: "price:low_to_high" },
     { label: "Price: High to Low", value: "price:high_to_low" },
     { label: "Newest", value: "newest" },
@@ -97,14 +97,17 @@ export default function ProductHeader({
 
           {/* Sort dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger
+              asChild
+              className="focus-visible:ring-0 border-none"
+            >
               <Button
                 variant="outline"
                 size="sm"
-                className=" whitespace-nowrap cursor-pointer"
+                className="bg-primary/20 whitespace-nowrap cursor-pointer"
               >
                 <ArrowUpDown className="mr-1 h-3.5 w-3.5" />
-                <span>{sortOption}</span>
+                <span>{sortOption ? sortOption : "Featured"}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-white">

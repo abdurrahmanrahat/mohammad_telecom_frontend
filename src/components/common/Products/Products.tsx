@@ -1,70 +1,66 @@
 "use client";
 
+import { PaginationSkeleton } from "@/components/shared/Ui/PaginationSkeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+} from "@/components/ui/pagination";
 import useDebounced from "@/hooks/useDebounced";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import { TProduct } from "@/types";
+import { getPaginationPageItems } from "@/utils/getPaginationPageItems";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import FilterBar from "./FilterBar";
 import { ProductCard } from "./ProductCard";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import ProductHeader from "./ProductHeader";
 
-const Products = () => {
-  const [category, setCategory] = useState("");
+const Products = ({ categoryParam }: { categoryParam?: string }) => {
+  const [category, setCategory] = useState(categoryParam || "");
   const [priceRange, setPriceRange] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentSortOption, setCurrentSortOption] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 12; // Number of items per page
 
   const debouncedSearchTerm = useDebounced(searchTerm, 600);
 
-  console.log("category", category);
-  console.log("priceRange", priceRange);
-  console.log("searchTerm", searchTerm);
-  console.log("currentSortOption", currentSortOption);
+  const query: Record<string, any> = {};
+
+  if (debouncedSearchTerm) {
+    query["searchTerm"] = debouncedSearchTerm;
+  }
+
+  if (category) {
+    query["category"] = category;
+  }
+
+  if (priceRange) {
+    const [minPrice, maxPrice] = priceRange.split("-");
+
+    query["minPrice"] = Number(minPrice);
+    query["maxPrice"] = Number(maxPrice);
+  }
+
+  if (currentSortOption) {
+    query["sort"] = currentSortOption;
+  }
+
+  if (currentPage) {
+    query["page"] = currentPage;
+  }
+  if (limit) {
+    query["limit"] = limit;
+  }
 
   // RTK Query hook
   const { data: productsData, isLoading: isProductsLoading } =
-    useGetProductsQuery({});
-  const [products, setProducts] = useState(productsData?.data.data || []);
-
-  // Sort products when the sort option changes
-  useEffect(() => {
-    let sorted = [...products];
-
-    switch (currentSortOption) {
-      case "Featured":
-        // Featured products might have a specific flag or ranking
-        // For now, we'll keep the original order
-        sorted = [...products];
-        break;
-      case "Price: Low to High":
-        sorted = [...products].sort((a, b) => a.price - b.price);
-        break;
-      case "Price: High to Low":
-        sorted = [...products].sort((a, b) => b.price - a.price);
-        break;
-      case "Newest":
-        sorted = [...products].sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        break;
-      case "Best Selling":
-        sorted = [...products].sort((a, b) => b.salesCount - a.salesCount);
-        break;
-      case "Top Rated":
-        sorted = [...products].sort((a, b) => b.rating - a.rating);
-        break;
-      case "Name: A to Z":
-        sorted = [...products].sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "Name: Z to A":
-        sorted = [...products].sort((a, b) => b.name.localeCompare(a.name));
-        break;
-    }
-
-    setProducts(sorted);
-  }, [currentSortOption]);
+    useGetProductsQuery(query);
 
   // handle category change from the filter bar
   const handleCategoryChange = (newCategory: string) => {
@@ -85,6 +81,23 @@ const Products = () => {
   const handleSortChange = (sortOption: string) => {
     setCurrentSortOption(sortOption);
   };
+
+  const totalData = productsData?.data?.totalCount || 0;
+  const totalPages = Math.ceil(totalData / limit);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  // Get pagination items based on current page and total pages
+  const pageNumbers = getPaginationPageItems(currentPage, totalPages);
+
+  useEffect(() => {
+    setCategory(categoryParam || "");
+    setCurrentPage(1); // Optional: reset pagination on filter change
+  }, [categoryParam]);
 
   return (
     <div className="py-16 grid grid-cols-12 gap-8">
@@ -131,6 +144,95 @@ const Products = () => {
             </div>
           )}
         </div>
+
+        {/* pagination */}
+        {productsData?.data?.data?.length > 0 && (
+          <div className="flex justify-center items-center mt-8">
+            {isProductsLoading ? (
+              <PaginationSkeleton />
+            ) : (
+              <div>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      {/* <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={
+                  currentPage === 1
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
+              /> */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="cursor-pointer mr-2"
+                      >
+                        {/* Icon only on mobile */}
+                        <span className="block md:hidden">
+                          <ChevronLeft />
+                        </span>
+
+                        {/* Icon + text on desktop */}
+                        <span className="hidden md:flex items-center gap-1">
+                          <ChevronLeft />
+                          <span>Previous</span>
+                        </span>
+                      </Button>
+                    </PaginationItem>
+
+                    {pageNumbers.map((page, idx) => (
+                      <PaginationItem key={idx}>
+                        {page === "..." ? (
+                          <PaginationEllipsis />
+                        ) : (
+                          <PaginationLink
+                            isActive={page === currentPage}
+                            onClick={() => handlePageChange(Number(page))}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        )}
+                      </PaginationItem>
+                    ))}
+
+                    <PaginationItem>
+                      {/* <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
+              /> */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="cursor-pointer ml-2"
+                      >
+                        {/* Mobile: icon only */}
+                        <span className="block md:hidden">
+                          <ChevronRight />
+                        </span>
+
+                        {/* Desktop: icon + text */}
+                        <span className="hidden md:flex items-center gap-1">
+                          <span>Next</span>
+                          <ChevronRight />
+                        </span>
+                      </Button>
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

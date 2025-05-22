@@ -28,7 +28,6 @@ const CategoryItem = ({
         onClick={() => hasSubcategories && setExpanded(!expanded)}
       >
         <span
-          // href={`/products?category=${category.slug}`}
           onClick={() => {
             // e.stopPropagation();
             onCategoryChange(category.slug);
@@ -37,6 +36,7 @@ const CategoryItem = ({
         >
           {category.title}
         </span>
+
         {hasSubcategories && (
           <button
             onClick={(e) => {
@@ -59,7 +59,6 @@ const CategoryItem = ({
           {category.subCategories.map((subCategory) => (
             <div key={subCategory._id} className="py-1.5 px-3">
               <span
-                // href={`/products?category=${subCategory.slug}`}
                 onClick={() => onCategoryChange(subCategory.slug)}
                 className="text-gray-700 hover:text-primary text-sm flex items-center hover:underline transition-all duration-300 cursor-pointer"
               >
@@ -89,16 +88,30 @@ export default function FilterBar({
   }
 
   return (
-    <div className="bg-white rounded-md">
+    <div className=" rounded-md">
       <h2 className="font-bold text-xl mb-3">Categories</h2>
+
       <div className="space-y-1">
-        {categoriesData.data.map((category: TCategory) => (
-          <CategoryItem
-            key={category._id}
-            category={category}
-            onCategoryChange={onCategoryChange}
-          />
-        ))}
+        <div className="py-2 px-3">
+          <span
+            onClick={() => {
+              onCategoryChange("");
+            }}
+            className="font-medium hover:text-primary flex-1 hover:underline transition-all duration-300 cursor-pointer"
+          >
+            All Products
+          </span>
+        </div>
+
+        <div className="space-y-1">
+          {categoriesData.data.map((category: TCategory) => (
+            <CategoryItem
+              key={category._id}
+              category={category}
+              onCategoryChange={onCategoryChange}
+            />
+          ))}
+        </div>
       </div>
       <div className="mt-6 pt-4 border-t border-primary/20">
         <PriceFilter onPriceRangeChange={onPriceRangeChange} />

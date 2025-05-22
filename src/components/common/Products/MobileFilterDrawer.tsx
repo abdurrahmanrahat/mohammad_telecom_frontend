@@ -67,11 +67,11 @@ export default function MobileFilterDrawer({
 
   return (
     <Sheet open={isOpenSheet} onOpenChange={setIsOpenSheet}>
-      <SheetTrigger asChild>
+      <SheetTrigger asChild className="focus-visible:ring-0 border-none">
         <Button
           variant="outline"
           size="sm"
-          className="lg:hidden flex items-center gap-2"
+          className="lg:hidden flex items-center gap-2 bg-primary/20 whitespace-nowrap cursor-pointer"
         >
           <SlidersHorizontal className="h-4 w-4" />
           Filters
@@ -88,6 +88,19 @@ export default function MobileFilterDrawer({
         <div className="py-4 space-y-6">
           <div className="mb-6">
             <h2 className="font-bold text-lg mb-3">Categories</h2>
+
+            <div className="py-2 px-3">
+              <span
+                onClick={() => {
+                  setIsOpenSheet(false);
+                  onCategoryChange("");
+                }}
+                className="font-medium hover:text-primary flex-1 hover:underline transition-all duration-300 cursor-pointer"
+              >
+                All Products
+              </span>
+            </div>
+
             {categoriesData.data.map((category: TCategory) => (
               <CategoryItem
                 key={category._id}

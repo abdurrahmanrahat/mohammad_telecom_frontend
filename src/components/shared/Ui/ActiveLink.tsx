@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
@@ -8,21 +9,29 @@ type TActiveLinkProps = {
   href: string;
   exact?: boolean;
   children: ReactNode;
+  className?: string;
 };
 
-const ActiveLink = ({ href, exact = false, children }: TActiveLinkProps) => {
-  const path = usePathname();
-  const active = exact ? path == href : path.startsWith(href);
+const ActiveLink = ({
+  href,
+  children,
+  exact = false,
+  className,
+}: TActiveLinkProps) => {
+  const pathname = usePathname();
+  const isActive = exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <div>
-      <Link
-        href={href}
-        className={active ? "text-[#3a0579] font-semibold text-[17px]" : ""}
-      >
-        {children}
-      </Link>
-    </div>
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center h-full px-4 font-medium transition-colors duration-300 hover:bg-[#4A4690]",
+        isActive ? "bg-[#4A4690]" : "",
+        className
+      )}
+    >
+      {children}
+    </Link>
   );
 };
 

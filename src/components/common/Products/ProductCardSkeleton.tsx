@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductCardSkeleton() {
   return (
-    <div className="w-full max-w-[300px] overflow-hidden">
+    <div className="w-full md:max-w-[300px] overflow-hidden">
       {/* Image skeleton */}
       <Skeleton className="aspect-[16/9] rounded-t-md rounded-b-none w-full" />
 

@@ -8,11 +8,20 @@ import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types/category.type";
 import { ChevronDown, Search, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ActiveLink from "../ActiveLink";
 
-export function MobileMenu({ categories }: { categories: TCategory[] }) {
+export function MobileMenu({
+  categories,
+  setIsMobileMenuOpen,
+}: {
+  categories: TCategory[];
+  setIsMobileMenuOpen: (isOpen: boolean) => void;
+}) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const toggleCategory = (categoryId: string) => {
     if (expandedCategory === categoryId) {
@@ -25,10 +34,10 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
   const user = useAppSelector(useCurrentUser);
 
   const isAdmin = user?.role === "admin";
-  const isStudent = user?.role === "user";
+  const isUser = user?.role === "user";
 
   return (
-    <div className="flex flex-col h-full overflow-auto p-4 bg-white">
+    <div className="flex flex-col h-full overflow-auto p-4 bg-primary text-white">
       <div className="mb-4 flex items-center justify-between">
         <Link href="/" className="font-bold text-xl">
           MobileShop
@@ -40,44 +49,39 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
           <Input
             type="search"
             placeholder="Search products..."
-            className="w-full pl-8 border-0 bg-gray-100"
-            tabIndex={-1}
+            className="w-full pl-8 lg:w-[300px] border-0 bg-white/10 text-white placeholder:text-white/70 focus:ring-white"
           />
         </div>
       </div>
       <nav className="flex-1 space-y-1">
         {/* Home Link */}
-        <div className="py-1">
-          <div className="flex w-full items-center justify-between rounded-md py-2">
-            <ActiveLink href={`/`} exact>
-              <span className="font-medium transition-colors duration-300 hover:text-primary">
-                Home
-              </span>
-            </ActiveLink>
-          </div>
+        <div className="">
+          <ActiveLink href="/" exact className="py-2 rounded-md">
+            Home
+          </ActiveLink>
         </div>
 
         {/* Products Link */}
-        <div className="py-1">
-          <div className="flex w-full items-center justify-between rounded-md py-2">
-            <ActiveLink href={`/products`}>
-              <span className="font-medium transition-colors duration-300 hover:text-primary">
-                Products
-              </span>
-            </ActiveLink>
-          </div>
+        <div className="">
+          <ActiveLink href="/products" className="py-2 rounded-md">
+            Products
+          </ActiveLink>
         </div>
 
         {/* Categories */}
         {categories.map((category) => (
           <div key={category._id} className="py-1">
             <div className="flex w-full items-center justify-between rounded-md py-2">
-              <Link
-                href={`/products/${category.slug}`}
-                className="flex-1 text-left text-sm font-medium hover:text-primary transition-colors duration-300"
+              <span
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+
+                  router.push(`/products?category=${category.slug}`);
+                }}
+                className="flex-1 text-left text-sm font-medium hover:text-primary transition-colors duration-300 px-4"
               >
                 {category.title}
-              </Link>
+              </span>
               {category.subCategories.length > 0 && (
                 <Button
                   variant="ghost"
@@ -107,13 +111,17 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
                 )}
               >
                 {category.subCategories.map((subcategory) => (
-                  <Link
+                  <span
                     key={subcategory._id}
-                    href={`/products/${category.slug}/${subcategory.slug}`}
-                    className="block rounded-md py-2 pl-4 text-sm text-muted-foreground hover:text-primary transition-colors duration-150"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+
+                      router.push(`/products?category=${subcategory.slug}`);
+                    }}
+                    className="block rounded-md py-2 pl-4 text-sm text-muted-foreground hover:text-primary transition-colors duration-300 px-4"
                   >
                     {subcategory.title}
-                  </Link>
+                  </span>
                 ))}
               </div>
             )}
@@ -157,7 +165,7 @@ export function MobileMenu({ categories }: { categories: TCategory[] }) {
                 </div>
               )}
 
-              {isStudent && (
+              {isUser && (
                 <div className="py-1">
                   <div className="flex w-full items-center justify-between rounded-md py-2">
                     <ActiveLink href={`/dashboard/user`}>
