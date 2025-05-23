@@ -8,7 +8,7 @@ const ProductGallery = ({ singleProduct }: { singleProduct: TProduct }) => {
 
   return (
     <>
-      <div className="relative aspect-square overflow-hidden rounded-lg mb-4 border">
+      <div className="relative aspect-square overflow-hidden rounded-lg mb-4">
         <Image
           src={singleProduct.images[selectedImage] || "/placeholder.svg"}
           alt={singleProduct.name}

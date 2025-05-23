@@ -1,3 +1,4 @@
+import ProductGallery from "@/components/common/ProductDetails/ProductGallery";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -9,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { TProduct } from "@/types";
 import { Info } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 
 const ProductDetailsModal = ({ product }: { product: TProduct }) => {
@@ -22,7 +22,7 @@ const ProductDetailsModal = ({ product }: { product: TProduct }) => {
           <Info className="h-5 w-5 cursor-pointer" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-[880px] max-h-[80%] overflow-auto bg-white">
+      <DialogContent className="w-full !max-w-[880px] max-h-[80%] overflow-auto bg-white">
         <div>
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">
@@ -34,9 +34,10 @@ const ProductDetailsModal = ({ product }: { product: TProduct }) => {
               </Badge>
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div className="space-y-4">
-              <div className="aspect-square relative rounded-lg overflow-hidden border">
+              {/* <div className="aspect-square relative rounded-lg overflow-hidden border">
                 <Image
                   src={product.image || "/placeholder.svg?height=400&width=400"}
                   alt={product.name}
@@ -58,7 +59,8 @@ const ProductDetailsModal = ({ product }: { product: TProduct }) => {
                     />
                   </div>
                 ))}
-              </div>
+              </div> */}
+              <ProductGallery singleProduct={product} />
             </div>
             <div className="space-y-4">
               <div>

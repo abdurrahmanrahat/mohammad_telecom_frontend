@@ -168,7 +168,7 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
                         size="sm"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="cursor-pointer mr-2"
+                        className="cursor-pointer mr-2 border-none bg-primary/20"
                       >
                         {/* Icon only on mobile */}
                         <span className="block md:hidden">
@@ -213,7 +213,7 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
                         size="sm"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="cursor-pointer ml-2"
+                        className="cursor-pointer ml-2 border-none bg-primary/20"
                       >
                         {/* Mobile: icon only */}
                         <span className="block md:hidden">
