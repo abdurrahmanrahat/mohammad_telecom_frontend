@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/redux/hooks";
 import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types/category.type";
-import { ChevronDown, Search, ShoppingCart, User } from "lucide-react";
-import Link from "next/link";
+import { ChevronDown, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ActiveLink from "../ActiveLink";
@@ -37,12 +36,7 @@ export function MobileMenu({
   const isUser = user?.role === "user";
 
   return (
-    <div className="flex flex-col h-full overflow-auto p-4 bg-primary text-white">
-      <div className="mb-4 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl">
-          MobileShop
-        </Link>
-      </div>
+    <div className="flex flex-col h-full overflow-auto px-4 bg-secondary text-white">
       <div className="mb-4">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -86,7 +80,7 @@ export function MobileMenu({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="p-0 h-6 w-8 border border-primary"
+                  className="p-0 h-6 w-8"
                   onClick={() => toggleCategory(category._id)}
                 >
                   <ChevronDown
@@ -180,7 +174,7 @@ export function MobileMenu({
           )}
         </>
       </nav>
-      <div className="border-t pt-4 mt-4">
+      {/* <div className="border-t pt-4 mt-4">
         <Link
           href="/account"
           className="flex items-center rounded-md py-2 text-sm font-medium transition-colors duration-150 hover:text-primary"
@@ -195,7 +189,7 @@ export function MobileMenu({
           <ShoppingCart className="mr-2 h-4 w-4" />
           Shopping Cart
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }

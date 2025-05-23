@@ -23,13 +23,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useAppSelector } from "@/redux/hooks";
 import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types";
 import ActiveLink from "../ActiveLink";
 import { MobileMenu } from "./MobileMenu";
 
-const categories = [
+const categoriesDemo = [
   {
     _id: "6824b3452216909943d58762",
     title: "Apple",
@@ -215,8 +216,7 @@ const Navbar = () => {
   const isUser = user?.role === "user";
 
   // RTK Query hook
-  // const { data: categoriesData, isLoading: isCategoriesLoading } =
-  //   useGetCategoriesQuery({});
+  const { data: categoriesData } = useGetCategoriesQuery({});
 
   // Close menu when route changes
   React.useEffect(() => {
@@ -270,8 +270,10 @@ const Navbar = () => {
   //   return;
   // }
 
+  const categoriesList = categoriesData?.data || categoriesDemo;
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#5550A0] text-white">
+    <header className="sticky top-0 z-10 w-full bg-secondary text-white">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex gap-2">
@@ -283,13 +285,22 @@ const Navbar = () => {
                   <span className="sr-only">Toggle menu</span>
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[350px]">
+              <SheetContent
+                side="left"
+                className="w-[300px] sm:w-[350px] bg-secondary"
+              >
                 <SheetHeader>
-                  <SheetTitle></SheetTitle>
-                  <SheetDescription></SheetDescription>
+                  <SheetTitle>
+                    <div className="pt-4 flex items-center justify-center text-white ">
+                      <Link href="/" className="font-bold text-xl">
+                        MobileShop
+                      </Link>
+                    </div>
+                  </SheetTitle>
+                  <SheetDescription className="hidden"></SheetDescription>
                 </SheetHeader>
                 <MobileMenu
-                  categories={categories}
+                  categories={categoriesList}
                   setIsMobileMenuOpen={setIsMobileMenuOpen}
                 />
               </SheetContent>
@@ -344,7 +355,7 @@ const Navbar = () => {
                 >
                   <div className="py-2">
                     <ul>
-                      {categories.map((category: TCategory) => (
+                      {categoriesList.map((category: TCategory) => (
                         <li
                           key={category._id}
                           className="relative"
