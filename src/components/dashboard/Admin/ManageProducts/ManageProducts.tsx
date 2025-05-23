@@ -24,10 +24,11 @@ import useDebounced from "@/hooks/useDebounced";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import { TProduct } from "@/types";
 import { getPaginationPageItems } from "@/utils/getPaginationPageItems";
-import { ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import ProductDeleteModal from "./DeleteProductModal";
 import ProductDetailsModal from "./ProductDetailsModal";
 import SearchFilter from "./SearchFilter";
 
@@ -200,14 +201,8 @@ const ManageProducts = () => {
                         <Pencil className="h-4 w-4" />
                         <span className="sr-only">Edit</span>
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete</span>
-                      </Button>
+
+                      <ProductDeleteModal productId={product._id} />
                     </div>
                   </TableCell>
                 </TableRow>

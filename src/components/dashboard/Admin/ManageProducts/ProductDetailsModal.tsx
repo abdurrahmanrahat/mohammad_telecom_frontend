@@ -18,8 +18,8 @@ const ProductDetailsModal = ({ product }: { product: TProduct }) => {
   return (
     <Dialog open={isOpenModal} onOpenChange={setIsOpenModal}>
       <DialogTrigger asChild>
-        <button>
-          <Info className="h-5 w-5 cursor-pointer" />
+        <button className="cursor-pointer">
+          <Info className="h-5 w-5" />
         </button>
       </DialogTrigger>
       <DialogContent className="w-full !max-w-[880px] max-h-[80%] overflow-auto bg-white">
