@@ -14,7 +14,7 @@ import { AlertTriangle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-const ProductDeleteModal = ({ productId }: { productId: string }) => {
+const DeleteProductModal = ({ productId }: { productId: string }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   // rtk api
@@ -82,4 +82,4 @@ const ProductDeleteModal = ({ productId }: { productId: string }) => {
   );
 };
 
-export default ProductDeleteModal;
+export default DeleteProductModal;

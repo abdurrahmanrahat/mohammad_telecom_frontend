@@ -24,11 +24,12 @@ import useDebounced from "@/hooks/useDebounced";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import { TProduct } from "@/types";
 import { getPaginationPageItems } from "@/utils/getPaginationPageItems";
-import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import ProductDeleteModal from "./DeleteProductModal";
+import DeleteProductModal from "./DeleteProductModal";
+import EditProductModal from "./EditProductModal";
 import ProductDetailsModal from "./ProductDetailsModal";
 import SearchFilter from "./SearchFilter";
 
@@ -197,12 +198,10 @@ const ManageProducts = () => {
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <ProductDetailsModal product={product} />
-                      <Button variant="outline" size="icon">
-                        <Pencil className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
-                      </Button>
 
-                      <ProductDeleteModal productId={product._id} />
+                      <EditProductModal product={product} />
+
+                      <DeleteProductModal productId={product._id} />
                     </div>
                   </TableCell>
                 </TableRow>

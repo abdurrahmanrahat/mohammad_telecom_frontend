@@ -13,7 +13,7 @@ type TFormProps<T extends FieldValues> = {
   children: ReactNode;
   onSubmit: SubmitHandler<T>;
   defaultValues: UseFormProps<T>["defaultValues"];
-  schema: ZodSchema<T>;
+  schema?: ZodSchema<T>;
 };
 
 const MTForm = <T extends FieldValues>({
@@ -24,7 +24,7 @@ const MTForm = <T extends FieldValues>({
 }: TFormProps<T>) => {
   const formConfig: UseFormProps<T> = {
     defaultValues,
-    resolver: zodResolver(schema),
+    ...(schema && { resolver: zodResolver(schema) }),
   };
 
   const methods = useForm<T>(formConfig);

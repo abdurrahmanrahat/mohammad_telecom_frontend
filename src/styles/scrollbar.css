@@ -1,0 +1,24 @@
+/* For WebKit browsers (Chrome, Safari, newer versions of Opera) */
+.custom-scrollbar-bold-line {
+    scrollbar-width: thin;
+    scrollbar-color: #332F61 #f1f1f1;
+}
+
+.custom-scrollbar-bold-line::-webkit-scrollbar {
+    width: 8px;
+    /* height: 8px; */
+}
+
+.custom-scrollbar-bold-line::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.custom-scrollbar-bold-line::-webkit-scrollbar-thumb {
+    background: #332F61;
+    border-radius: 10px;
+}
+
+.custom-scrollbar-bold-line::-webkit-scrollbar-thumb:hover {
+    background: #332F61;
+}

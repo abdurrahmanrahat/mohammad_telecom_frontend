@@ -1,15 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/redux/hooks";
 import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types/category.type";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ActiveLink from "../ActiveLink";
+import SearchInput from "./SearchInput";
 
 export function MobileMenu({
   categories,
@@ -36,16 +36,9 @@ export function MobileMenu({
   const isUser = user?.role === "user";
 
   return (
-    <div className="flex flex-col h-full overflow-auto px-4 bg-secondary text-white">
+    <div className="flex flex-col h-full overflow-auto px-4 -mt-8 bg-secondary text-white">
       <div className="mb-4">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search products..."
-            className="w-full pl-8 lg:w-[300px] border-0 bg-white/10 text-white placeholder:text-white/70 focus:ring-white"
-          />
-        </div>
+        <SearchInput />
       </div>
       <nav className="flex-1 space-y-1">
         {/* Home Link */}

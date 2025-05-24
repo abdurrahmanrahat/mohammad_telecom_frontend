@@ -5,7 +5,6 @@ import {
   ChevronRight,
   Heart,
   Menu,
-  Search,
   ShoppingCart,
 } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +12,6 @@ import { usePathname } from "next/navigation";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -29,6 +27,7 @@ import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types";
 import ActiveLink from "../ActiveLink";
 import { MobileMenu } from "./MobileMenu";
+import SearchInput from "./SearchInput";
 
 const categoriesDemo = [
   {
@@ -273,7 +272,7 @@ const Navbar = () => {
   const categoriesList = categoriesData?.data || categoriesDemo;
 
   return (
-    <header className="sticky top-0 z-10 w-full bg-secondary text-white">
+    <header className="sticky top-0 z-50 w-full bg-secondary text-white">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex gap-2">
@@ -446,14 +445,15 @@ const Navbar = () => {
           <div className="flex gap-4">
             {/* Search */}
             <div className="hidden lg:block lg:w-72">
-              <div className="relative">
+              {/* <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search products..."
                   className="w-full pl-8 lg:w-[300px] border-0 bg-white/10 text-white placeholder:text-white/70 focus:ring-white"
                 />
-              </div>
+              </div> */}
+              <SearchInput />
             </div>
 
             {/* Right side icons */}
