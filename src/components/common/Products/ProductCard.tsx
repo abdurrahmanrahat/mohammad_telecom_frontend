@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TProduct } from "@/types";
 import { Heart, ShoppingCart } from "lucide-react";
@@ -54,9 +55,9 @@ export function ProductCard({ product }: { product: TProduct }) {
 
       {/* Product Info */}
       <div className="flex flex-col p-4 flex-grow">
-        <h3 className="text-sm font-medium line-clamp-2 mb-2">
+        <h5 className="text-base font-medium line-clamp-2 mb-2">
           {product.name}
-        </h3>
+        </h5>
 
         {/* Star Rating */}
         <div className="flex mb-2">
@@ -78,19 +79,22 @@ export function ProductCard({ product }: { product: TProduct }) {
 
       {/* Price and Cart */}
       <div className="flex items-center justify-between p-4 pt-0 mt-auto">
-        <span className="text-red-500 font-medium">
-          ${product.price.toFixed(2)}
+        <span className="text-primary font-medium text-lg">
+          ৳ {product.price.toFixed(0)}{" "}
+          <del className="text-gray-300 ml-1 text-base">
+            {product.price + 50}{" "}
+          </del>
         </span>
-        <button
+        <Button
           onClick={(e) => {
             e.stopPropagation();
             handleAddToCart();
           }}
-          className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors cursor-pointer"
+          className="cursor-pointer"
           aria-label="Add to cart"
         >
-          <ShoppingCart className="h-5 w-5 text-gray-700" />
-        </button>
+          <ShoppingCart className="h-5 w-5" /> Order Now
+        </Button>
       </div>
     </div>
   );

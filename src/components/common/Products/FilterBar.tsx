@@ -89,7 +89,7 @@ export default function FilterBar({
 
   return (
     <div className=" rounded-md">
-      <h2 className="font-bold text-xl mb-3">Categories</h2>
+      <h2 className="font-bold text-xl mb-3 uppercase">Categories</h2>
 
       <div className="space-y-1">
         <div className="py-2 px-3">

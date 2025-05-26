@@ -121,7 +121,7 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
 
         <div>
           {isProductsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(12)].map((_, index) => (
                 <ProductCardSkeleton key={index} />
               ))}
@@ -129,7 +129,7 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
           ) : (
             <div>
               {productsData.data.data.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {productsData.data.data.map((product: TProduct) => (
                     <ProductCard key={product._id} product={product} />
                   ))}
