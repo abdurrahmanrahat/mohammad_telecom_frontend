@@ -3,17 +3,21 @@
 import MTForm from "@/components/shared/Forms/MTForm";
 import MTInput from "@/components/shared/Forms/MTInput";
 import MTTextArea from "@/components/shared/Forms/MTTextArea";
+import { LoaderSpinner } from "@/components/shared/Ui/LoaderSpinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAddOrderMutation } from "@/redux/api/orderApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { clearCart } from "@/redux/reducers/cartSlice";
 import { Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 const userBillingAddressSchema = z.object({
@@ -38,6 +42,7 @@ const userBillingAddress = {
 };
 
 export default function Checkout() {
+  const [isLoading, setIsLoading] = useState(false);
   const shipOption = useAppSelector((state) => state.cart.shippingOption);
 
   const [shippingOption, setShippingOption] = useState(shipOption || "outside");
@@ -48,6 +53,9 @@ export default function Checkout() {
 
   const dispatch = useAppDispatch();
 
+  // redux rtk api
+  const [addOrder] = useAddOrderMutation();
+
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
@@ -57,21 +65,39 @@ export default function Checkout() {
     product: item.product._id,
     quantity: item.quantity,
   }));
-  console.log("orderItem", orderItems);
 
   const shippingCost = shippingOption === "inside" ? 50 : 100;
   const total = subtotal + shippingCost;
 
-  const handleSubmit = (values: FieldValues) => {
+  const handleSubmit = async (values: FieldValues) => {
+    setIsLoading(true);
+
     const orderData = {
       ...values,
       insideDhaka: shippingOption === "inside" ? true : false,
       orderItems,
       totalPrice: total,
+      paymentMethod: "CASH-ON-DELIVERY",
     };
 
-    console.log("orderData", orderData);
-    // Redirect to confirmation page after order submission
+    // send to db
+    try {
+      const res = await addOrder(orderData).unwrap();
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+
+      dispatch(clearCart());
+
+      router.push(`/confirmation?orderId=${res.data._id}`);
+      setIsLoading(false);
+    } catch (error: any) {
+      toast.error(
+        error?.data?.errorSources[0].message || "Something went wrong!"
+      );
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -333,8 +359,16 @@ export default function Checkout() {
 
                   {/* Place Order Button */}
                   <Button type="submit" className="w-full text-lg py-5">
-                    <Lock className="h-5 w-5 mr-2" />
-                    Place order
+                    {isLoading ? (
+                      <span className="flex gap-2 items-center">
+                        <LoaderSpinner /> <span>Processing...</span>
+                      </span>
+                    ) : (
+                      <span className="flex gap-2 items-center">
+                        <Lock className="h-5 w-5 mr-2" />
+                        <span>Place order</span>
+                      </span>
+                    )}
                   </Button>
                 </CardContent>
               </Card>

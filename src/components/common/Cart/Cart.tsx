@@ -49,7 +49,6 @@ export default function Cart() {
 
   // handle checkout
   const handleCheckout = () => {
-    console.log("checkout");
     dispatch(updateShippingOption(shippingOption));
 
     router.push("/checkout");

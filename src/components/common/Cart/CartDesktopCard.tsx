@@ -16,8 +16,8 @@ const CartDesktopCard = ({
   onCartRemove,
 }: TCartCardProps) => {
   return (
-    <div className="flex justify-between items-center gap-3">
-      <div className="flex items-center gap-1">
+    <div className="grid grid-cols-12 items-center gap-3">
+      <div className="flex items-center gap-1 col-span-2">
         <Button
           variant="ghost"
           size="icon"
@@ -36,11 +36,11 @@ const CartDesktopCard = ({
         />
       </div>
 
-      <div className="flex justify-between gap-2">
+      <div className="flex justify-between gap-2 col-span-6">
         <h3 className=" lg:text-lg line-clamp-2">{item.product.name}</h3>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center col-span-2">
         <Button
           variant="outline"
           size="icon"
@@ -74,7 +74,7 @@ const CartDesktopCard = ({
         </Button>
       </div>
 
-      <p className="min-w-[74px]">
+      <p className=" col-span-2">
         ৳ {(item.product.price * item.quantity).toFixed(2)}
       </p>
     </div>
