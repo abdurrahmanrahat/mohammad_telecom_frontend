@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useRouter } from "next/navigation";
 
 interface OrderItem {
   id: string;
@@ -24,30 +26,32 @@ interface OrderItem {
 }
 
 export default function Checkout() {
-  const [shippingOption, setShippingOption] = useState("outside");
+  const shipOption = useAppSelector((state) => state.cart.shippingOption);
+
+  const [shippingOption, setShippingOption] = useState(shipOption || "outside");
   const [formData, setFormData] = useState({
     fullName: "",
     fullAddress: "",
     phoneNo: "",
     email: "",
+    country: "Bangladesh",
     orderNotes: "",
   });
 
-  const orderItems: OrderItem[] = [
-    {
-      id: "1",
-      name: "Premium Leather Loffer For Men",
-      price: 1590,
-      quantity: 1,
-      image: "/placeholder.svg?height=80&width=80",
-      size: "42",
-    },
-  ];
+  const cartItems = useAppSelector((state) => state.cart.items);
 
-  const subtotal = orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
+
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
     0
   );
+
+  const orderItems = cartItems.map((item) => item.product._id);
+  console.log("orderItem", orderItems);
+
   const shippingCost = shippingOption === "inside" ? 50 : 100;
   const total = subtotal + shippingCost;
 
@@ -60,39 +64,36 @@ export default function Checkout() {
     // Handle form submission
     console.log("Order submitted:", {
       ...formData,
-      shippingOption,
+      insideDhaka: shippingOption === "inside" ? true : false,
       orderItems,
+      totalPrice: total,
     });
     // Redirect to confirmation page
-    window.location.href = "/confirmation";
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          {/* Progress Steps */}
+      <div className="border-b border-primary/10">
+        <div className="w-full max-w-4xl mx-auto py-4 mt-6">
           <div className="flex items-center justify-center mb-8">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 lg:space-x-4">
               <div className="flex items-center">
-                <div className="h-8 w-8 bg-red-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
-                <span className="ml-2 text-sm font-medium text-gray-900">
-                  Shopping Cart
-                </span>
+                <span className="ml-2 text-sm font-medium">Cart</span>
               </div>
-              <div className="h-px w-16 bg-red-600"></div>
+              <div className="h-px w-6 md:w-10 lg:w-16 bg-primary"></div>
               <div className="flex items-center">
-                <div className="h-8 w-8 bg-red-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
                   2
                 </div>
-                <span className="ml-2 text-sm font-medium text-red-600">
-                  Shipping and Checkout
+                <span className="ml-2 text-sm font-medium text-primary">
+                  Checkout
                 </span>
               </div>
-              <div className="h-px w-16 bg-gray-300"></div>
+              <div className="h-px w-6 md:w-10 lg:w-16 bg-gray-300"></div>
               <div className="flex items-center">
                 <div className="h-8 w-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">
                   3
@@ -107,12 +108,12 @@ export default function Checkout() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8 lg:pb-16">
         <form onSubmit={handleSubmit}>
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Billing & Shipping Form */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg p-6">
                 <h2 className="text-2xl font-bold mb-6">Billing & Shipping</h2>
 
                 <div className="space-y-6">
@@ -124,7 +125,7 @@ export default function Checkout() {
                       id="fullName"
                       type="text"
                       required
-                      className="mt-2"
+                      className="mt-2 h-11"
                       value={formData.fullName}
                       onChange={(e) =>
                         handleInputChange("fullName", e.target.value)
@@ -144,7 +145,7 @@ export default function Checkout() {
                       type="text"
                       placeholder="House number and street name"
                       required
-                      className="mt-2"
+                      className="mt-2 h-11"
                       value={formData.fullAddress}
                       onChange={(e) =>
                         handleInputChange("fullAddress", e.target.value)
@@ -161,7 +162,7 @@ export default function Checkout() {
                       type="tel"
                       placeholder="5"
                       required
-                      className="mt-2"
+                      className="mt-2 h-11"
                       value={formData.phoneNo}
                       onChange={(e) =>
                         handleInputChange("phoneNo", e.target.value)
@@ -177,7 +178,7 @@ export default function Checkout() {
                       id="email"
                       type="email"
                       required
-                      className="mt-2"
+                      className="mt-2 h-11"
                       value={formData.email}
                       onChange={(e) =>
                         handleInputChange("email", e.target.value)
@@ -186,12 +187,20 @@ export default function Checkout() {
                   </div>
 
                   <div>
-                    <Label className="text-base font-medium">
+                    <Label htmlFor="country" className="text-base font-medium">
                       Country / Region <span className="text-red-500">*</span>
                     </Label>
-                    <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                      <span className="font-medium">Bangladesh</span>
-                    </div>
+                    <Input
+                      id="country"
+                      type="text"
+                      placeholder="Bangladesh"
+                      required
+                      className="mt-2 h-11"
+                      value={formData.country}
+                      onChange={(e) =>
+                        handleInputChange("country", e.target.value)
+                      }
+                    />
                   </div>
                 </div>
 
@@ -221,57 +230,53 @@ export default function Checkout() {
             </div>
 
             {/* Order Summary */}
-            <div>
+            <div className="mb-8 lg:mb-0">
               <Card>
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-6">Your order</h3>
 
                   {/* Order Items */}
                   <div className="space-y-4 mb-6">
-                    {orderItems.map((item) => (
-                      <div key={item.id} className="flex gap-3">
+                    {cartItems.map((item) => (
+                      <div key={item.product._id} className="flex gap-3">
                         <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
+                          src={item.product.image || "/placeholder.svg"}
+                          alt={`photo`}
                           width={60}
                           height={60}
                           className="rounded-md object-cover"
                         />
                         <div className="flex-1">
                           <h4 className="font-medium text-sm leading-tight">
-                            {item.name}
+                            {item.product.name}
                           </h4>
-                          {item.size && (
-                            <p className="text-sm text-gray-600">
-                              - {item.size}
-                            </p>
-                          )}
+
                           <p className="text-sm text-gray-600">
                             × {item.quantity}
                           </p>
                         </div>
                         <div className="text-right">
                           <p className="font-semibold">
-                            ৳ {(item.price * item.quantity).toFixed(2)}
+                            ৳ {(item.product.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <hr className="mb-4" />
+                  <hr className="mb-4 border border-primary/10" />
 
                   {/* Pricing */}
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between">
-                      <span>Subtotal</span>
+                      <span className="font-medium">Subtotal:</span>
                       <span className="font-semibold">
                         ৳ {subtotal.toFixed(2)}
                       </span>
                     </div>
 
                     <div>
-                      <p className="font-medium mb-3">Shipping</p>
+                      <p className="font-medium mb-3 text-lg">Shipping</p>
                       <RadioGroup
                         value={shippingOption}
                         onValueChange={setShippingOption}
@@ -309,10 +314,10 @@ export default function Checkout() {
                       </RadioGroup>
                     </div>
 
-                    <hr />
+                    <hr className="border border-primary/10" />
 
                     <div className="flex justify-between text-lg font-bold">
-                      <span>Total</span>
+                      <span className="text-xl">Total</span>
                       <span>৳ {total.toFixed(2)}</span>
                     </div>
                   </div>
@@ -321,7 +326,7 @@ export default function Checkout() {
                   <div className="mb-6">
                     <div className="p-4 border rounded-lg">
                       <div className="flex items-center space-x-2 mb-2">
-                        <div className="w-3 h-3 bg-red-600 rounded-full"></div>
+                        <div className="w-3 h-3 bg-primary rounded-full"></div>
                         <span className="font-medium">Cash on delivery</span>
                       </div>
                       <p className="text-sm text-gray-600">
@@ -347,10 +352,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Place Order Button */}
-                  <Button
-                    type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold"
-                  >
+                  <Button type="submit" className="w-full text-lg py-5">
                     <Lock className="h-5 w-5 mr-2" />
                     Place order
                   </Button>

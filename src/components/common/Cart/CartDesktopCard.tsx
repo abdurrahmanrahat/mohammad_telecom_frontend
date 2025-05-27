@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { TProduct } from "@/types";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 type TCartCardProps = {
   item: { product: TProduct; quantity: number };
@@ -44,9 +45,13 @@ const CartDesktopCard = ({
           variant="outline"
           size="icon"
           className="h-8 w-8"
-          onClick={() =>
-            onCartQuantityUpdate(item.product._id, item.quantity - 1)
-          }
+          onClick={() => {
+            if (item.quantity - 1 < 1) {
+              return toast.error("Quantity cannot be less than 1");
+            } else {
+              onCartQuantityUpdate(item.product._id, item.quantity - 1);
+            }
+          }}
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -57,9 +62,13 @@ const CartDesktopCard = ({
           variant="outline"
           size="icon"
           className="h-8 w-8"
-          onClick={() =>
-            onCartQuantityUpdate(item.product._id, item.quantity + 1)
-          }
+          onClick={() => {
+            if (item.product.stock < item.quantity + 1) {
+              return toast.error("Not enough stock available");
+            } else {
+              onCartQuantityUpdate(item.product._id, item.quantity + 1);
+            }
+          }}
         >
           <Plus className="h-4 w-4" />
         </Button>

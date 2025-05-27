@@ -7,14 +7,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { removeFromCart, updateQuantity } from "@/redux/reducers/cartSlice";
+import {
+  removeFromCart,
+  updateQuantity,
+  updateShippingOption,
+} from "@/redux/reducers/cartSlice";
 import { Lock } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import CartDesktopCard from "./CartDesktopCard";
 import CartMobileCard from "./CartMobileCard";
 
 export default function Cart() {
   const [shippingOption, setShippingOption] = useState("outside");
+
+  const router = useRouter();
 
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -38,6 +45,14 @@ export default function Cart() {
   const removeItem = (productId: string) => {
     // setCartItems((items) => items.filter((item) => item.id !== id));
     dispatch(removeFromCart(productId));
+  };
+
+  // handle checkout
+  const handleCheckout = () => {
+    console.log("checkout");
+    dispatch(updateShippingOption(shippingOption));
+
+    router.push("/checkout");
   };
 
   return (
@@ -79,7 +94,7 @@ export default function Cart() {
       </div>
 
       {/* Main Content */}
-      <div className="w-full py-12">
+      <div className="w-full py-12 lg:pb-20">
         <div className="grid grid-cols-12 lg:gap-12">
           <div className="col-span-12 lg:col-span-8">
             <div className="">
@@ -158,7 +173,7 @@ export default function Cart() {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 mt-8 lg:mt-0">
+          <div className="col-span-12 lg:col-span-4 my-8 lg:my-0">
             <Card className="">
               <CardContent className="p-6 space-y-4">
                 <div className="flex justify-between">
@@ -207,6 +222,7 @@ export default function Cart() {
                   className="w-full py-5"
                   asChild
                   disabled={cartItems.length === 0}
+                  onClick={handleCheckout}
                 >
                   <Link href="/checkout">
                     <Lock className="h-4 w-4 mr-2" />

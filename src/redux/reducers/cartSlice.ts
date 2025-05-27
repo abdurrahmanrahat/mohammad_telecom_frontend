@@ -8,10 +8,12 @@ type TCartItem = {
 
 type TCartState = {
   items: TCartItem[];
+  shippingOption: string;
 };
 
 const initialState: TCartState = {
   items: [],
+  shippingOption: "",
 };
 
 const cartSlice = createSlice({
@@ -40,12 +42,20 @@ const cartSlice = createSlice({
         item.quantity = action.payload.quantity;
       }
     },
+    updateShippingOption: (state, action: PayloadAction<string>) => {
+      state.shippingOption = action.payload;
+    },
     clearCart: (state) => {
       state.items = [];
     },
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  updateQuantity,
+  clearCart,
+  updateShippingOption,
+} = cartSlice.actions;
 export default cartSlice.reducer;
