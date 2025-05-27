@@ -1,7 +1,5 @@
 "use client";
 
-import { Lock } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -10,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeFromCart, updateQuantity } from "@/redux/reducers/cartSlice";
+import { Lock } from "lucide-react";
+import Link from "next/link";
 import CartDesktopCard from "./CartDesktopCard";
 import CartMobileCard from "./CartMobileCard";
 
@@ -24,11 +24,11 @@ export default function Cart() {
     0
   );
   const shippingCost = shippingOption === "inside" ? 50 : 100;
-  const freeShippingThreshold = 2000;
-  const remainingForFreeShipping = Math.max(
-    0,
-    freeShippingThreshold - subtotal
-  );
+  // const freeShippingThreshold = 2000;
+  // const remainingForFreeShipping = Math.max(
+  //   0,
+  //   freeShippingThreshold - subtotal
+  // );
   const total = subtotal + shippingCost;
 
   const handleUpdateQuantity = (productId: string, newQuantity: number) => {
@@ -79,16 +79,17 @@ export default function Cart() {
       </div>
 
       {/* Main Content */}
-      <div className="w-full max-w-7xl mx-auto py-12">
-        <div className="grid grid-cols-12 gap-12">
-          {/* Cart Items */}
+      <div className="w-full py-12">
+        <div className="grid grid-cols-12 lg:gap-12">
           <div className="col-span-12 lg:col-span-8">
             <div className="">
               {cartItems.length === 0 ? (
-                <div className="p-8 text-center">
-                  <p className="text-gray-500 mb-4">Your cart is empty</p>
+                <div className="h-full text-center py-12">
+                  <h4 className="text-lg lg:text-xl font-medium mb-4">
+                    Your cart is empty!
+                  </h4>
                   <Button asChild>
-                    <Link href="/">Continue Shopping</Link>
+                    <Link href="/products">Continue Shopping</Link>
                   </Button>
                 </div>
               ) : (
@@ -103,7 +104,8 @@ export default function Cart() {
                             onCartRemove={removeItem}
                           />
                         </div>
-                        <div className="hidden md:block">
+
+                        <div className="hidden md:block w-full">
                           <CartDesktopCard
                             item={item}
                             onCartQuantityUpdate={handleUpdateQuantity}
@@ -118,7 +120,7 @@ export default function Cart() {
                   ))}
 
                   {/* Free shipping progress */}
-                  {remainingForFreeShipping > 0 && (
+                  {/* {remainingForFreeShipping > 0 && (
                     <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm text-green-700">
@@ -144,7 +146,7 @@ export default function Cart() {
                         />
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* <div className="mt-6 flex justify-center">
                     <Button variant="outline" className="px-8">
@@ -156,9 +158,8 @@ export default function Cart() {
             </div>
           </div>
 
-          {/* Order Summary */}
-          <div className="col-span-12 lg:col-span-4">
-            <Card>
+          <div className="col-span-12 lg:col-span-4 mt-8 lg:mt-0">
+            <Card className="">
               <CardContent className="p-6 space-y-4">
                 <div className="flex justify-between">
                   <span className="font-medium text-lg">Subtotal:</span>

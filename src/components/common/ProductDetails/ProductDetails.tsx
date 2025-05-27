@@ -35,7 +35,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
     if (alreadyCart) {
       toast.error("Already you have added in cart!");
     } else {
-      dispatch(addToCart({ product: singleProduct.data, quantity: 1 }));
+      dispatch(addToCart({ product: singleProduct.data, quantity: quantity }));
 
       toast.success("Add to cart success");
     }

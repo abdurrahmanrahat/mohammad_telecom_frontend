@@ -15,7 +15,7 @@ const CartMobileCard = ({
   onCartRemove,
 }: TCartCardProps) => {
   return (
-    <div className="grid grid-cols-12 gap-1 items-center bg-amber-400 ">
+    <div className="grid grid-cols-12 gap-1 items-center">
       <div className="col-span-3">
         <Image
           src={item.product.image || "/placeholder.svg"}
