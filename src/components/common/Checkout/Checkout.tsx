@@ -204,34 +204,45 @@ export default function Checkout() {
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-6">Your order</h3>
 
-                  {/* Order Items */}
-                  <div className="space-y-4 mb-6">
-                    {cartItems.map((item) => (
-                      <div key={item.product._id} className="flex gap-3">
-                        <Image
-                          src={item.product.image || "/placeholder.svg"}
-                          alt={`photo`}
-                          width={60}
-                          height={60}
-                          className="rounded-md object-cover"
-                        />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-sm leading-tight line-clamp-2">
-                            {item.product.name}
-                          </h4>
+                  {cartItems.length === 0 ? (
+                    <div className="h-full text-center pt-6 pb-12">
+                      <h4 className="text-lg lg:text-xl font-medium mb-4">
+                        Your cart is empty!
+                      </h4>
+                      <Button asChild>
+                        <Link href="/products">Continue Shopping</Link>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 mb-6">
+                      {cartItems.map((item) => (
+                        <div key={item.product._id} className="flex gap-3">
+                          <Image
+                            src={item.product.image || "/placeholder.svg"}
+                            alt={`photo`}
+                            width={60}
+                            height={60}
+                            className="rounded-md object-cover"
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm leading-tight line-clamp-2">
+                              {item.product.name}
+                            </h4>
 
-                          <p className="text-sm text-gray-600">
-                            × {item.quantity}
-                          </p>
+                            <p className="text-sm text-gray-600">
+                              × {item.quantity}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">
+                              ৳{" "}
+                              {(item.product.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-semibold">
-                            ৳ {(item.product.price * item.quantity).toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
 
                   <hr className="mb-4 border border-primary/10" />
 
