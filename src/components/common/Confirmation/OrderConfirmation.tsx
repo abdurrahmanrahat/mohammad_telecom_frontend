@@ -12,9 +12,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
+import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useGetSingleOrderQuery } from "@/redux/api/orderApi";
 
 interface OrderItem {
   id: string;
@@ -41,6 +43,7 @@ interface OrderConfirmationProps {
   subtotal?: number;
   shipping?: number;
   total?: number;
+  orderId: string;
 }
 
 export default function OrderConfirmation({
@@ -68,7 +71,17 @@ export default function OrderConfirmation({
   subtotal = 1590,
   shipping = 100,
   total = 1690,
+  orderId,
 }: OrderConfirmationProps) {
+  // redux api
+  const { data: order, isLoading: isOrderLoading } =
+    useGetSingleOrderQuery(orderId);
+
+  if (isOrderLoading) {
+    return <MyLoader />;
+  }
+
+  console.log("order data", order);
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
