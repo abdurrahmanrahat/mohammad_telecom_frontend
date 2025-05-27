@@ -1,7 +1,6 @@
 "use client";
 
-import { Lock, Minus, Plus, Trash2 } from "lucide-react";
-import Image from "next/image";
+import { Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -9,32 +8,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  size?: string;
-}
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { removeFromCart, updateQuantity } from "@/redux/reducers/cartSlice";
+import CartDesktopCard from "./CartDesktopCard";
+import CartMobileCard from "./CartMobileCard";
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      name: "Premium Leather Loffer For Men",
-      price: 1590,
-      quantity: 1,
-      image: "/placeholder.svg?height=120&width=120",
-      size: "42",
-    },
-  ]);
-
   const [shippingOption, setShippingOption] = useState("outside");
 
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.product.price * item.quantity,
     0
   );
   const shippingCost = shippingOption === "inside" ? 50 : 100;
@@ -45,48 +31,40 @@ export default function Cart() {
   );
   const total = subtotal + shippingCost;
 
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeItem(id);
-    } else {
-      setCartItems((items) =>
-        items.map((item) =>
-          item.id === id ? { ...item, quantity: newQuantity } : item
-        )
-      );
-    }
+  const handleUpdateQuantity = (productId: string, newQuantity: number) => {
+    dispatch(updateQuantity({ productId, quantity: newQuantity }));
   };
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+  const removeItem = (productId: string) => {
+    // setCartItems((items) => items.filter((item) => item.id !== id));
+    dispatch(removeFromCart(productId));
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          {/* Progress Steps */}
+      <div className="border-b border-primary/10">
+        <div className="w-full max-w-4xl mx-auto py-4 mt-6">
           <div className="flex items-center justify-center mb-8">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 lg:space-x-4">
               <div className="flex items-center">
-                <div className="h-8 w-8 bg-red-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
                   1
                 </div>
-                <span className="ml-2 text-sm font-medium text-red-600">
-                  Shopping Cart
+                <span className="ml-2 text-sm font-medium text-primary">
+                  Cart
                 </span>
               </div>
-              <div className="h-px w-16 bg-gray-300"></div>
+              <div className="h-px w-6 md:w-10 lg:w-16 bg-gray-300"></div>
               <div className="flex items-center">
                 <div className="h-8 w-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">
                   2
                 </div>
                 <span className="ml-2 text-sm font-medium text-gray-500">
-                  Shipping and Checkout
+                  Checkout
                 </span>
               </div>
-              <div className="h-px w-16 bg-gray-300"></div>
+              <div className="h-px w-6 md:w-10 lg:w-16 bg-gray-300"></div>
               <div className="flex items-center">
                 <div className="h-8 w-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">
                   3
@@ -101,11 +79,11 @@ export default function Cart() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid gap-8 lg:grid-cols-3">
+      <div className="w-full max-w-7xl mx-auto py-12">
+        <div className="grid grid-cols-12 gap-12">
           {/* Cart Items */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm">
+          <div className="col-span-12 lg:col-span-8">
+            <div className="">
               {cartItems.length === 0 ? (
                 <div className="p-8 text-center">
                   <p className="text-gray-500 mb-4">Your cart is empty</p>
@@ -114,69 +92,28 @@ export default function Cart() {
                   </Button>
                 </div>
               ) : (
-                <div className="p-6">
+                <div className="py-6">
                   {cartItems.map((item, index) => (
-                    <div key={item.id}>
-                      <div className="flex gap-4 items-center">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-gray-400 hover:text-red-500"
-                          onClick={() => removeItem(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-
-                        <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          width={120}
-                          height={120}
-                          className="rounded-lg object-cover"
-                        />
-
-                        <div className="flex-1">
-                          <h3 className="font-medium text-lg">{item.name}</h3>
-                          {item.size && (
-                            <p className="text-gray-600 mt-1">
-                              Size: {item.size}
-                            </p>
-                          )}
+                    <div key={item.product._id}>
+                      <div className="">
+                        <div className="block md:hidden w-full">
+                          <CartMobileCard
+                            item={item}
+                            onCartQuantityUpdate={handleUpdateQuantity}
+                            onCartRemove={removeItem}
+                          />
                         </div>
-
-                        <div className="flex items-center gap-3">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
-                            }
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="w-8 text-center font-medium">
-                            {item.quantity}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
-                            }
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-
-                        <div className="text-right">
-                          <p className="font-semibold text-lg">
-                            ৳ {(item.price * item.quantity).toFixed(2)}
-                          </p>
+                        <div className="hidden md:block">
+                          <CartDesktopCard
+                            item={item}
+                            onCartQuantityUpdate={handleUpdateQuantity}
+                            onCartRemove={removeItem}
+                          />
                         </div>
                       </div>
-                      {index < cartItems.length - 1 && <hr className="my-6" />}
+                      {index < cartItems.length - 1 && (
+                        <hr className="my-4 border border-primary/10" />
+                      )}
                     </div>
                   ))}
 
@@ -209,22 +146,22 @@ export default function Cart() {
                     </div>
                   )}
 
-                  <div className="mt-6 flex justify-center">
+                  {/* <div className="mt-6 flex justify-center">
                     <Button variant="outline" className="px-8">
                       Update cart
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>
           </div>
 
           {/* Order Summary */}
-          <div>
+          <div className="col-span-12 lg:col-span-4">
             <Card>
               <CardContent className="p-6 space-y-4">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span className="font-medium text-lg">Subtotal:</span>
                   <span className="font-semibold">৳ {subtotal.toFixed(2)}</span>
                 </div>
 
@@ -241,7 +178,7 @@ export default function Cart() {
                           Outside Dhaka City (3-5 Days):
                         </Label>
                       </div>
-                      <span className="font-semibold">৳ 100.00</span>
+                      <span className="font-medium">৳ 100.00</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
@@ -250,23 +187,23 @@ export default function Cart() {
                           Inside Dhaka city (2-3 Days):
                         </Label>
                       </div>
-                      <span className="font-semibold">৳ 50.00</span>
+                      <span className="font-medium">৳ 50.00</span>
                     </div>
                   </RadioGroup>
-                  <p className="text-sm text-gray-600 mt-2">
+                  {/* <p className="text-sm text-gray-600 mt-2">
                     Shipping options will be updated during checkout.
-                  </p>
+                  </p> */}
                 </div>
 
-                <hr />
+                <hr className="border border-primary/20" />
 
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span className="text-xl">Total</span>
                   <span>৳ {total.toFixed(2)}</span>
                 </div>
 
                 <Button
-                  className="w-full bg-red-600 hover:bg-red-700 text-white py-3"
+                  className="w-full py-5"
                   asChild
                   disabled={cartItems.length === 0}
                 >

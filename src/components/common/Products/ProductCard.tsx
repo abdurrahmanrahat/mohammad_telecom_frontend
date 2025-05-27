@@ -2,19 +2,33 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addToCart } from "@/redux/reducers/cartSlice";
 import { TProduct } from "@/types";
 import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export function ProductCard({ product }: { product: TProduct }) {
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
 
   const handleAddToCart = () => {
-    console.log("cart");
-    setIsWishlisted((prev) => !prev);
+    const alreadyCart = cartItems.some(
+      (item) => item.product._id === product._id
+    );
+
+    if (alreadyCart) {
+      toast.error("Already you have added in cart!");
+    } else {
+      dispatch(addToCart({ product, quantity: 1 }));
+
+      toast.success("Add to cart success");
+    }
   };
 
   const handleCardClick = () => {

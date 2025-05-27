@@ -8,7 +8,7 @@ export default function BestSellerCard({ product }: { product: TProduct }) {
       href={`/products/${product.slug}`}
       className="flex items-center p-3 hover:bg-gray-50 transition-colors"
     >
-      <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
+      <div className="relative w-12 h-12 lg:w-16 lg:h-16 rounded overflow-hidden flex-shrink-0">
         <Image
           src={product.images[0] || "/placeholder.svg"}
           alt={product.name}
@@ -17,9 +17,9 @@ export default function BestSellerCard({ product }: { product: TProduct }) {
         />
       </div>
       <div className="ml-3 flex-1">
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
+        <div className="text-sm font-medium text-gray-900 line-clamp-2">
           {product.name}
-        </h3>
+        </div>
         <p className="text-sm font-bold text-primary mt-1">৳{product.price}</p>
       </div>
     </Link>

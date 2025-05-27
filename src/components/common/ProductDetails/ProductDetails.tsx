@@ -4,9 +4,12 @@ import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetSingleProductQuery } from "@/redux/api/productApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addToCart } from "@/redux/reducers/cartSlice";
 import { Heart, MinusIcon, PlusIcon, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import BestSellers from "./BestSellers";
 import ProductGallery from "./ProductGallery";
 import RelatedProducts from "./RelatedProducts";
@@ -17,24 +20,29 @@ export default function ProductDetails({ productId }: { productId: string }) {
   const { data: singleProduct, isLoading: isSingleProductLoading } =
     useGetSingleProductQuery(productId);
 
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+
   if (isSingleProductLoading) {
     return <MyLoader />;
   }
 
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+  const handleAddToCart = () => {
+    const alreadyCart = cartItems.some(
+      (item) => item.product._id === singleProduct.data._id
+    );
+
+    if (alreadyCart) {
+      toast.error("Already you have added in cart!");
+    } else {
+      dispatch(addToCart({ product: singleProduct.data, quantity: 1 }));
+
+      toast.success("Add to cart success");
     }
   };
 
-  //   const increaseQuantity = () => {
-  //     if (quantity < product.stock) {
-  //       setQuantity(quantity + 1);
-  //     }
-  //   };
-
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="py-12">
       {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-6">
         <Link href="/" className="hover:text-primary">
@@ -48,17 +56,17 @@ export default function ProductDetails({ productId }: { productId: string }) {
         <span className="text-gray-700">{singleProduct.data.name}</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Left column - Product images */}
-        <div className="lg:col-span-5">
+        <div className="md:col-span-5">
           <ProductGallery singleProduct={singleProduct.data} />
         </div>
 
         {/* Middle column - Product info */}
-        <div className="lg:col-span-4">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="md:col-span-4">
+          <p className="text-base lg:text-2xl font-bold text-gray-900 mb-2">
             {singleProduct.data.name}
-          </h1>
+          </p>
 
           <div className="flex items-center mb-4">
             <div className="flex items-center">
@@ -83,9 +91,15 @@ export default function ProductDetails({ productId }: { productId: string }) {
           </div>
 
           <div className="mb-6">
-            <p className="text-3xl font-bold text-primary">
+            {/* <p className="text-3xl font-bold text-primary">
               ৳{singleProduct.data.price}
-            </p>
+            </p> */}
+            <span className="text-primary font-medium text-lg">
+              ৳ {singleProduct.data.price.toFixed(0)}{" "}
+              <del className="text-gray-300 ml-1 text-base">
+                {singleProduct.data.price + 50}{" "}
+              </del>
+            </span>
             <p className="text-sm text-gray-500 mt-1">
               Stock:{" "}
               {singleProduct.data.stock > 0
@@ -97,18 +111,18 @@ export default function ProductDetails({ productId }: { productId: string }) {
           <div className="mb-6">
             <div className="flex items-center mb-4">
               <span className="mr-4 font-medium">Quantity:</span>
-              <div className="flex items-center border rounded-md">
+              <div className="flex items-center border border-primary/10 rounded-md">
                 <button
-                  onClick={decreaseQuantity}
-                  className="px-3 py-2 border-r"
+                  onClick={() => setQuantity((prev) => prev - 1)}
+                  className="px-3 py-3 cursor-pointer bg-primary/10"
                   disabled={quantity <= 1}
                 >
                   <MinusIcon className="h-4 w-4" />
                 </button>
                 <span className="px-4 py-2">{quantity}</span>
                 <button
-                  //   onClick={increaseQuantity}
-                  className="px-3 py-2 border-l"
+                  onClick={() => setQuantity((prev) => prev + 1)}
+                  className="px-3 py-3 cursor-pointer bg-primary/10"
                   disabled={quantity >= singleProduct.data.stock}
                 >
                   <PlusIcon className="h-4 w-4" />
@@ -117,7 +131,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
             </div>
 
             <div className="flex space-x-4">
-              <Button className="flex-1 gap-2">
+              <Button className="flex-1 gap-2" onClick={handleAddToCart}>
                 <ShoppingCart className="h-4 w-4" />
                 Add to Cart
               </Button>
@@ -149,7 +163,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
         </div>
 
         {/* Right column - Best sellers */}
-        <div className="lg:col-span-3">
+        <div className="md:col-span-3 hidden  md:block">
           <BestSellers />
         </div>
       </div>
@@ -173,7 +187,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
           </TabsList>
           <TabsContent value="description" className="mt-6">
             <div
-              className="prose max-w-none"
+              className="prose max-w-none html-content"
               dangerouslySetInnerHTML={{
                 __html: singleProduct.data.description,
               }}
@@ -197,6 +211,10 @@ export default function ProductDetails({ productId }: { productId: string }) {
 
       {/* Related products */}
       <RelatedProducts />
+
+      <div className="md:hidden">
+        <BestSellers />
+      </div>
     </div>
   );
 }

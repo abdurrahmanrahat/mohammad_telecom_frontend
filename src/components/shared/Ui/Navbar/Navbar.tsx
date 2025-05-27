@@ -210,9 +210,10 @@ const Navbar = () => {
 
   const pathname = usePathname();
   const user = useAppSelector(useCurrentUser);
+  const cartItems = useAppSelector((state) => state.cart.items);
 
   const isAdmin = user?.role === "admin";
-  const isUser = user?.role === "user";
+  // const isUser = user?.role === "user";
 
   // RTK Query hook
   const { data: categoriesData } = useGetCategoriesQuery({});
@@ -435,9 +436,9 @@ const Navbar = () => {
                 {isAdmin && (
                   <ActiveLink href="/dashboard/admin">Dashboard</ActiveLink>
                 )}
-                {isUser && (
+                {/* {isUser && (
                   <ActiveLink href="/dashboard/user">Dashboard</ActiveLink>
-                )}
+                )} */}
               </>
             )}
           </div>
@@ -467,14 +468,19 @@ const Navbar = () => {
                   <Heart className="h-6 w-6" />
                   <span className="sr-only">Wishlist</span>
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-[#4A4690]"
-                >
-                  <ShoppingCart className="h-6 w-6" />
-                  <span className="sr-only">Cart</span>
-                </Button>
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white hover:bg-[#4A4690]"
+                  >
+                    <ShoppingCart className="h-6 w-6" />
+                    <span className="sr-only">Cart</span>
+                  </Button>
+                  <span className="absolute top-0 right-0 text-sm font-medium">
+                    {cartItems.length}
+                  </span>
+                </div>
               </div>
 
               {/* login/logout button */}

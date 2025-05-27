@@ -1,4 +1,5 @@
 import authReducer from "@/redux/reducers/authSlice";
+import cartReducer from "@/redux/reducers/cartSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import {
   FLUSH,
@@ -17,13 +18,19 @@ const persistConfig = {
   key: "moTeAuth",
   storage,
 };
+const cartPersistConfig = {
+  key: "moTeCart",
+  storage,
+};
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     auth: persistedAuthReducer,
+    cart: persistedCartReducer,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({

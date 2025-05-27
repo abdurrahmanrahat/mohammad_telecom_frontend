@@ -13,27 +13,27 @@
   --shadow-topUpShadow: 0 5px 20px rgba(0, 0, 0, .2)
 }
 
-h1 {
-  @apply text-3xl font-bold;
+.html-content h1 {
+  @apply text-3xl font-semibold;
 }
 
-h2 {
-  @apply text-2xl font-bold;
+.html-content h2 {
+  @apply text-2xl font-semibold;
 }
 
-h3 {
-  @apply text-xl font-bold;
+.html-content h3 {
+  @apply text-xl font-semibold;
 }
 
-h4 {
-  @apply text-lg font-semibold;
+.html-content h4 {
+  @apply text-lg font-medium;
 }
 
-h5 {
+.html-content h5 {
   @apply text-base font-medium;
 }
 
-h6 {
+.html-content h6 {
   @apply text-sm font-medium;
 }
 

@@ -10,7 +10,7 @@ const BestSellers = () => {
 
   return (
     <div className="rounded-md overflow-hidden shadow-cardLightShadow">
-      <div className="bg-primary text-white py-2 px-4 font-medium">
+      <div className="bg-primary text-white py-2 px-4 font-medium text-[12px] lg:text-lg text-center">
         Best Selling Products
       </div>
       <div>
