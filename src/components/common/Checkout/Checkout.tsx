@@ -1,42 +1,46 @@
 "use client";
 
-import type React from "react";
-
+import MTForm from "@/components/shared/Forms/MTForm";
+import MTInput from "@/components/shared/Forms/MTInput";
+import MTTextArea from "@/components/shared/Forms/MTTextArea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FieldValues } from "react-hook-form";
+import { z } from "zod";
 
-interface OrderItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  size?: string;
-}
+const userBillingAddressSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  fullAddress: z.string().min(1, "Full address is required"),
+  phoneNo: z
+    .string()
+    .min(11, "Number must be at least 11 digits")
+    .max(14, "Number can't exceed 14 digits"),
+  email: z.string().email("Enter a valid email"),
+  country: z.string().default("Bangladesh"), // or `.optional()` if not required
+  orderNotes: z.string().optional(), // allow empty or undefined notes
+});
+
+const userBillingAddress = {
+  fullName: "",
+  fullAddress: "",
+  phoneNo: "",
+  email: "",
+  country: "Bangladesh",
+  orderNotes: "",
+};
 
 export default function Checkout() {
   const shipOption = useAppSelector((state) => state.cart.shippingOption);
 
   const [shippingOption, setShippingOption] = useState(shipOption || "outside");
-  const [formData, setFormData] = useState({
-    fullName: "",
-    fullAddress: "",
-    phoneNo: "",
-    email: "",
-    country: "Bangladesh",
-    orderNotes: "",
-  });
 
   const cartItems = useAppSelector((state) => state.cart.items);
 
@@ -49,26 +53,25 @@ export default function Checkout() {
     0
   );
 
-  const orderItems = cartItems.map((item) => item.product._id);
+  const orderItems = cartItems.map((item) => ({
+    product: item.product._id,
+    quantity: item.quantity,
+  }));
   console.log("orderItem", orderItems);
 
   const shippingCost = shippingOption === "inside" ? 50 : 100;
   const total = subtotal + shippingCost;
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Order submitted:", {
-      ...formData,
+  const handleSubmit = (values: FieldValues) => {
+    const orderData = {
+      ...values,
       insideDhaka: shippingOption === "inside" ? true : false,
       orderItems,
       totalPrice: total,
-    });
-    // Redirect to confirmation page
+    };
+
+    console.log("orderData", orderData);
+    // Redirect to confirmation page after order submission
   };
 
   return (
@@ -108,8 +111,12 @@ export default function Checkout() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8 lg:pb-16">
-        <form onSubmit={handleSubmit}>
+      <div className="max-w-6xl mx-auto py-8 lg:pb-16">
+        <MTForm
+          onSubmit={handleSubmit}
+          defaultValues={userBillingAddress}
+          schema={userBillingAddressSchema}
+        >
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Billing & Shipping Form */}
             <div className="lg:col-span-2">
@@ -117,90 +124,56 @@ export default function Checkout() {
                 <h2 className="text-2xl font-bold mb-6">Billing & Shipping</h2>
 
                 <div className="space-y-6">
-                  <div>
-                    <Label htmlFor="fullName" className="text-base font-medium">
-                      Full Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="fullName"
-                      type="text"
-                      required
-                      className="mt-2 h-11"
-                      value={formData.fullName}
-                      onChange={(e) =>
-                        handleInputChange("fullName", e.target.value)
-                      }
-                    />
+                  <div className="grid gap-1">
+                    <label htmlFor="fullName" className="text-sm font-medium">
+                      Full Name{" "}
+                      <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput name="fullName" type="text" placeholder="" />
                   </div>
 
-                  <div>
-                    <Label
+                  <div className="grid gap-1">
+                    <label
                       htmlFor="fullAddress"
-                      className="text-base font-medium"
+                      className="text-sm font-medium"
                     >
-                      Full Address <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="fullAddress"
+                      Full Address{" "}
+                      <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput
+                      name="fullAddress"
                       type="text"
-                      placeholder="House number and street name"
-                      required
-                      className="mt-2 h-11"
-                      value={formData.fullAddress}
-                      onChange={(e) =>
-                        handleInputChange("fullAddress", e.target.value)
-                      }
+                      placeholder="City, area, house number and street name etc"
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="phoneNo" className="text-base font-medium">
-                      Phone No <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="phoneNo"
-                      type="tel"
-                      placeholder="5"
-                      required
-                      className="mt-2 h-11"
-                      value={formData.phoneNo}
-                      onChange={(e) =>
-                        handleInputChange("phoneNo", e.target.value)
-                      }
-                    />
+                  <div className="grid gap-1">
+                    <label htmlFor="phoneNo" className="text-sm font-medium">
+                      Phone No{" "}
+                      <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput name="phoneNo" type="tel" placeholder="" />
                   </div>
 
-                  <div>
-                    <Label htmlFor="email" className="text-base font-medium">
-                      Email address <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      className="mt-2 h-11"
-                      value={formData.email}
-                      onChange={(e) =>
-                        handleInputChange("email", e.target.value)
-                      }
-                    />
+                  <div className="grid gap-1">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email Address{" "}
+                      <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput name="email" type="email" placeholder="" />
                   </div>
 
-                  <div>
-                    <Label htmlFor="country" className="text-base font-medium">
-                      Country / Region <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="country"
-                      type="text"
-                      placeholder="Bangladesh"
-                      required
-                      className="mt-2 h-11"
-                      value={formData.country}
-                      onChange={(e) =>
-                        handleInputChange("country", e.target.value)
-                      }
-                    />
+                  <div className="grid gap-1">
+                    <label htmlFor="country" className="text-sm font-medium">
+                      Country / Region{" "}
+                      <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput name="country" type="text" placeholder="" />
                   </div>
                 </div>
 
@@ -208,21 +181,17 @@ export default function Checkout() {
                   <h3 className="text-xl font-bold mb-4">
                     Additional information
                   </h3>
-                  <div>
-                    <Label
-                      htmlFor="orderNotes"
-                      className="text-base font-medium"
-                    >
+
+                  <div className="grid gap-1">
+                    <label htmlFor="orderNotes" className="text-sm font-medium">
                       Order notes (optional)
-                    </Label>
-                    <Textarea
-                      id="orderNotes"
-                      placeholder="Notes about your order, e.g. special notes for delivery."
-                      className="mt-2 min-h-[120px]"
-                      value={formData.orderNotes}
-                      onChange={(e) =>
-                        handleInputChange("orderNotes", e.target.value)
-                      }
+                    </label>
+
+                    <MTTextArea
+                      placeholder="Notes about your order, e.g. special notes for delivery"
+                      name="orderNotes"
+                      rows={10}
+                      className="min-h-[120px]"
                     />
                   </div>
                 </div>
@@ -247,7 +216,7 @@ export default function Checkout() {
                           className="rounded-md object-cover"
                         />
                         <div className="flex-1">
-                          <h4 className="font-medium text-sm leading-tight">
+                          <h4 className="font-medium text-sm leading-tight line-clamp-2">
                             {item.product.name}
                           </h4>
 
@@ -360,7 +329,7 @@ export default function Checkout() {
               </Card>
             </div>
           </div>
-        </form>
+        </MTForm>
       </div>
     </div>
   );
