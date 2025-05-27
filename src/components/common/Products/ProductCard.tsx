@@ -18,6 +18,7 @@ export function ProductCard({ product }: { product: TProduct }) {
   const cartItems = useAppSelector((state) => state.cart.items);
 
   const handleAddToCart = () => {
+    setIsWishlisted(false);
     const alreadyCart = cartItems.some(
       (item) => item.product._id === product._id
     );
