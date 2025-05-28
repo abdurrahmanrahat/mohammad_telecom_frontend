@@ -97,7 +97,7 @@ export default function Checkout() {
 
       dispatch(clearCart());
 
-      router.push(`/confirmation?orderId=${res.data._id}`);
+      router.push(`/checkout/confirmation?orderId=${res.data._id}`);
       setIsLoading(false);
     } catch (error: any) {
       toast.error(
