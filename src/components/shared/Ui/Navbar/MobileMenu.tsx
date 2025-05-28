@@ -33,7 +33,6 @@ export function MobileMenu({
   const user = useAppSelector(useCurrentUser);
 
   const isAdmin = user?.role === "admin";
-  const isUser = user?.role === "user";
 
   return (
     <div className="flex flex-col h-full overflow-auto px-4 -mt-8 bg-secondary text-white">
@@ -152,7 +151,7 @@ export function MobileMenu({
                 </div>
               )}
 
-              {isUser && (
+              {/* {isUser && (
                 <div className="py-1">
                   <div className="flex w-full items-center justify-between rounded-md py-2">
                     <ActiveLink href={`/dashboard/user`}>
@@ -162,7 +161,7 @@ export function MobileMenu({
                     </ActiveLink>
                   </div>
                 </div>
-              )}
+              )} */}
             </>
           )}
         </>

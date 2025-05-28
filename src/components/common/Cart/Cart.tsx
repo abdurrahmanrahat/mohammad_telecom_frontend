@@ -212,9 +212,9 @@ export default function Cart() {
                       <span className="font-medium">৳ 50.00</span>
                     </div>
                   </RadioGroup>
-                  {/* <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-600 mt-2">
                     Shipping options will be updated during checkout.
-                  </p> */}
+                  </p>
                 </div>
 
                 <hr className="border border-primary/20" />

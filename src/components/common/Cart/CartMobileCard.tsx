@@ -15,7 +15,7 @@ const CartMobileCard = ({
   onCartRemove,
 }: TCartCardProps) => {
   return (
-    <div className="grid grid-cols-12 gap-1 items-center">
+    <div className="grid grid-cols-12 gap-2 items-center">
       <div className="col-span-3">
         <Image
           src={item.product.image || "/placeholder.svg"}
@@ -28,7 +28,7 @@ const CartMobileCard = ({
 
       <div className="col-span-9 space-y-2">
         <div className="flex justify-between gap-2">
-          <h3 className=" lg:text-lg line-clamp-2">{item.product.name}</h3>
+          <h3 className="text-sm line-clamp-2">{item.product.name}</h3>
           <Button
             variant="ghost"
             size="icon"

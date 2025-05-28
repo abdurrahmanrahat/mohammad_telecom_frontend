@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  ChevronRight,
-  Heart,
-  Menu,
-  ShoppingCart,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Heart, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
@@ -26,6 +20,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { useCurrentUser } from "@/redux/reducers/authSlice";
 import { TCategory } from "@/types";
 import ActiveLink from "../ActiveLink";
+import CartSheet from "./CartSheet";
 import { MobileMenu } from "./MobileMenu";
 import SearchInput from "./SearchInput";
 
@@ -210,7 +205,6 @@ const Navbar = () => {
 
   const pathname = usePathname();
   const user = useAppSelector(useCurrentUser);
-  const cartItems = useAppSelector((state) => state.cart.items);
 
   const isAdmin = user?.role === "admin";
   // const isUser = user?.role === "user";
@@ -468,7 +462,7 @@ const Navbar = () => {
                   <Heart className="h-6 w-6" />
                   <span className="sr-only">Wishlist</span>
                 </Button>
-                <div className="relative">
+                {/* <div className="relative">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -480,7 +474,8 @@ const Navbar = () => {
                   <span className="absolute top-0 right-0 text-sm font-medium">
                     {cartItems.length}
                   </span>
-                </div>
+                </div> */}
+                <CartSheet />
               </div>
 
               {/* login/logout button */}
