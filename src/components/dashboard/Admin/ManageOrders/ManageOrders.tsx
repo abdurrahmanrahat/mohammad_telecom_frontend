@@ -1,6 +1,8 @@
 "use client";
 
 import { MyLoader } from "@/components/shared/Ui/MyLoader";
+import MyPagination from "@/components/shared/Ui/MyPagination";
+import { PaginationSkeleton } from "@/components/shared/Ui/PaginationSkeleton";
 import SectionTitle from "@/components/shared/Ui/SectionTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -18,11 +20,19 @@ const orderStatuses = [
 
 const ManageOrders = () => {
   const [activeTab, setActiveTab] = useState("PENDING");
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 12; // Number of items per page
 
   const query: Record<string, any> = {};
 
   if (activeTab) {
     query["status"] = activeTab;
+  }
+  if (currentPage) {
+    query["page"] = currentPage;
+  }
+  if (limit) {
+    query["limit"] = limit;
   }
 
   // redux api
@@ -32,6 +42,15 @@ const ManageOrders = () => {
   //   return <MyLoader />;
   // }
   const ordersData = orders?.data?.data || [];
+
+  const totalData = orders?.data?.totalCount || 0;
+  const totalPages = Math.ceil(totalData / limit);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   return (
     <div className="py-6">
@@ -73,6 +92,21 @@ const ManageOrders = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* pagination */}
+      {ordersData?.length > 0 && (
+        <div className="flex justify-center items-center mt-8">
+          {isOrderLoading ? (
+            <PaginationSkeleton />
+          ) : (
+            <MyPagination
+              onPageChange={handlePageChange}
+              totalPages={totalPages}
+              currentPage={currentPage}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };
