@@ -2,6 +2,7 @@ import {
   Layers2,
   LayoutDashboard,
   MessageSquarePlus,
+  Package,
   Settings,
   ShoppingCart,
   Users,
@@ -23,6 +24,11 @@ export const adminSidebarItems = [
     text: "Manage Products",
     href: "/dashboard/admin/manage-products",
     icon: Settings,
+  },
+  {
+    text: "Manage Orders",
+    href: "/dashboard/admin/manage-orders",
+    icon: Package,
   },
   { text: "Manage Users", href: "/dashboard/admin/manage-users", icon: Users },
 ];
