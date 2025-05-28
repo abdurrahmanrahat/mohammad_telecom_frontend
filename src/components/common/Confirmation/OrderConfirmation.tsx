@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowRight, Calendar, MapPin, Package, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  Info,
+  MapPin,
+  Package,
+  Truck,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -106,6 +113,8 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                         {order.data.createdAt.slice(0, 10)}
                       </p>
                     </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
                       <p className="font-semibold ">{order.data.email}</p>
@@ -129,14 +138,29 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
-                    <div>
-                      <p className="font-semibold">{order.data.fullName}</p>
-                      <p className="text-gray-600">{order.data.fullAddress}</p>
-                      <p className="text-gray-600">{order.data.country}</p>
-                      <p className="text-gray-600">{order.data.phoneNo}</p>
+                  <div className="md:flex justify-between gap-3 space-y-4 ">
+                    <div className="w-full md:w-1/2 flex items-start gap-3">
+                      <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <div>
+                        <p className="font-semibold">{order.data.fullName}</p>
+                        <p className="text-gray-600">
+                          {order.data.fullAddress}
+                        </p>
+                        <p className="text-gray-600">{order.data.country}</p>
+                        <p className="text-gray-600">{order.data.phoneNo}</p>
+                      </div>
                     </div>
+                    {order.data?.orderNotes && (
+                      <div className="w-full md:w-1/2 flex items-start gap-3">
+                        <Info className="h-5 w-5 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="font-semibold">Additional Notes:</p>
+                          <p className="text-gray-600">
+                            {order.data.orderNotes}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
                     <Calendar className="h-5 w-5 text-blue-600" />
