@@ -4,9 +4,12 @@ import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import MyPagination from "@/components/shared/Ui/MyPagination";
 import { PaginationSkeleton } from "@/components/shared/Ui/PaginationSkeleton";
 import SectionTitle from "@/components/shared/Ui/SectionTitle";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useDebounced from "@/hooks/useDebounced";
 import { cn } from "@/lib/utils";
 import { useGetOrdersQuery } from "@/redux/api/orderApi";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import OrderList from "./OrderList";
 
@@ -20,11 +23,18 @@ const orderStatuses = [
 
 const ManageOrders = () => {
   const [activeTab, setActiveTab] = useState("PENDING");
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 12; // Number of items per page
 
+  const debouncedSearchTerm = useDebounced(searchTerm, 600);
+
   const query: Record<string, any> = {};
 
+  if (debouncedSearchTerm) {
+    query["searchTerm"] = debouncedSearchTerm;
+  }
   if (activeTab) {
     query["status"] = activeTab;
   }
@@ -52,14 +62,32 @@ const ManageOrders = () => {
     }
   };
 
+  // handle search change from the filter bar
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <div className="py-6">
       {/* section title */}
-      <div className="mb-6">
-        <SectionTitle text="Manage Orders" />
-        <p className="font-medium text-base">
-          Total: <span className="">{ordersData.length}</span> orders
-        </p>
+      <div className="md:flex justify-between items-center gap-8 mb-6">
+        <div className="w-full md:w-1/2">
+          <SectionTitle text="Manage Orders" />
+          <p className="font-medium text-base">
+            Total: <span className="">{ordersData.length}</span> orders
+          </p>
+        </div>
+
+        {/* Search bar */}
+        <div className="relative w-full md:w-1/2 mt-6 md:mt-0">
+          <Input
+            type="search"
+            placeholder={`Search products...`}
+            className="pl-10 pr-4 h-10 w-full border-none bg-primary/10"
+            onChange={handleSearchChange}
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        </div>
       </div>
 
       {/* search */}
