@@ -8,7 +8,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TOrder } from "@/types";
+import EditOrderModal from "./EditeOrderModal";
 import OrderDetailsModal from "./OrderDetailsModal";
+
+const statusVariant = {
+  PENDING: "destructive",
+  PROCESSING: "outline",
+  SHIPPED: "outline",
+  DELIVERED: "default",
+  CANCELLED: "destructive",
+};
 
 const OrderList = ({ orders }: { orders: TOrder[] }) => {
   return (
@@ -45,15 +54,29 @@ const OrderList = ({ orders }: { orders: TOrder[] }) => {
                 </TableCell>
                 <TableCell className="py-3">৳{order.totalPrice}</TableCell>
                 <TableCell className="py-3">
-                  <Badge className="capitalize text-white">
+                  <Badge
+                    variant={
+                      statusVariant[order.status] as
+                        | "destructive"
+                        | "outline"
+                        | "default"
+                        | "secondary"
+                    }
+                    className="capitalize"
+                  >
                     {order.status.toLowerCase()}
                   </Badge>
                 </TableCell>
                 <TableCell className="py-3">
                   <div className="flex justify-end gap-2">
                     <OrderDetailsModal order={order} />
+                    <EditOrderModal
+                      orderId={order._id}
+                      currentStatus={order.status}
+                    />
                     {/* <ProductDetailsModal product={product} />
 
+                      
                     <EditProductModal product={product} />
 
                     <DeleteProductModal productId={product._id} /> */}

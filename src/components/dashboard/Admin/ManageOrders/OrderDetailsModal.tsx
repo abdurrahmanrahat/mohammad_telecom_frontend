@@ -70,7 +70,7 @@ const OrderDetailsModal = ({ order }: { order: TOrder }) => {
                     | "default"
                     | "secondary"
                 }
-                className="capitalize text-white"
+                className="capitalize"
               >
                 {order.status.toLowerCase()}
               </Badge>
