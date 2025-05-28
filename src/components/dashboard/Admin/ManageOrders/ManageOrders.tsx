@@ -1,9 +1,13 @@
 "use client";
 
+import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import SectionTitle from "@/components/shared/Ui/SectionTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { useGetOrdersQuery } from "@/redux/api/orderApi";
+import { TOrder } from "@/types";
 import { useState } from "react";
+import OrderList from "./OrderList";
 
 const orderStatuses = [
   { _id: 1, label: "PENDING" },
@@ -15,6 +19,13 @@ const orderStatuses = [
 
 const ManageOrders = () => {
   const [activeTab, setActiveTab] = useState("PENDING");
+
+  // redux api
+  const { data: orders, isLoading: isOrderLoading } = useGetOrdersQuery({});
+
+  if (isOrderLoading) {
+    return <MyLoader />;
+  }
 
   return (
     <div className="py-6">
@@ -50,12 +61,22 @@ const ManageOrders = () => {
               </TabsTrigger>
             ))}
           </TabsList>
-          <TabsContent value="PENDING" className="mt-6">
-            dd
-          </TabsContent>
-          <TabsContent value="PROCESSING" className="mt-6">
-            hh
-          </TabsContent>
+
+          {orderStatuses.map((status) => {
+            const filteredOrders = orders.data.data.filter(
+              (order: TOrder) => order.status === status.label
+            );
+
+            return (
+              <TabsContent
+                key={status._id}
+                value={status.label}
+                className="mt-6"
+              >
+                <OrderList orders={filteredOrders} />
+              </TabsContent>
+            );
+          })}
         </Tabs>
       </div>
     </div>
