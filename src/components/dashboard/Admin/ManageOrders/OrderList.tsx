@@ -8,7 +8,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TOrder } from "@/types";
-import EditOrderModal from "./EditeOrderModal";
+import DeleteOrderModal from "./DeleteOrderModal";
+import EditOrderModal from "./EditOrderModal";
 import OrderDetailsModal from "./OrderDetailsModal";
 
 const statusVariant = {
@@ -74,13 +75,7 @@ const OrderList = ({ orders }: { orders: TOrder[] }) => {
                       orderId={order._id}
                       currentStatus={order.status}
                     />
-                    {/* <ProductDetailsModal product={product} />
-
-                      
-                    <EditProductModal product={product} />
-
-                    <DeleteProductModal productId={product._id} /> */}
-                    ded
+                    <DeleteOrderModal orderId={order._id} />
                   </div>
                 </TableCell>
               </TableRow>

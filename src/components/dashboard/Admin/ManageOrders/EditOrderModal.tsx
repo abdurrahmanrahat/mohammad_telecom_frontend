@@ -22,30 +22,27 @@ import { Edit, Package } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-type OrderStatus =
+type TOrderStatus =
   | "PENDING"
   | "PROCESSING"
   | "SHIPPED"
   | "DELIVERED"
   | "CANCELLED";
 
-interface UpdateOrderStatusModalProps {
+type TUpdateOrderModalProps = {
   orderId: string;
-  currentStatus: OrderStatus;
-}
+  currentStatus: TOrderStatus;
+};
 
-const EditOrderModal = ({
-  orderId,
-  currentStatus,
-}: UpdateOrderStatusModalProps) => {
+const EditOrderModal = ({ orderId, currentStatus }: TUpdateOrderModalProps) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStatus, setSelectedStatus] =
-    useState<OrderStatus>(currentStatus);
+    useState<TOrderStatus>(currentStatus);
 
   // rtk api
-  const [updateOrderStatus, { isLoading }] = useUpdateOrderMutation();
+  const [updateOrder, { isLoading }] = useUpdateOrderMutation();
 
-  const statusOptions: { value: OrderStatus; label: string; color: string }[] =
+  const statusOptions: { value: TOrderStatus; label: string; color: string }[] =
     [
       { value: "PENDING", label: "PENDING", color: "text-yellow-600" },
       { value: "PROCESSING", label: "PROCESSING", color: "text-blue-600" },
@@ -68,7 +65,7 @@ const EditOrderModal = ({
           status: selectedStatus,
         },
       };
-      const res = await updateOrderStatus(payload).unwrap();
+      const res = await updateOrder(payload).unwrap();
 
       if (res.success) {
         toast.success(res.message || "Order status updated successfully!");
@@ -126,7 +123,9 @@ const EditOrderModal = ({
               </Label>
               <Select
                 value={selectedStatus}
-                onValueChange={(value: OrderStatus) => setSelectedStatus(value)}
+                onValueChange={(value: TOrderStatus) =>
+                  setSelectedStatus(value)
+                }
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select order status" />
