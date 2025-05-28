@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  insideDhakaShippingCost,
+  outsideDhakaShippingCost,
+} from "@/constants/productKey";
 import { useAddOrderMutation } from "@/redux/api/orderApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { clearCart } from "@/redux/reducers/cartSlice";
@@ -66,7 +70,10 @@ export default function Checkout() {
     quantity: item.quantity,
   }));
 
-  const shippingCost = shippingOption === "inside" ? 50 : 100;
+  const shippingCost =
+    shippingOption === "inside"
+      ? insideDhakaShippingCost
+      : outsideDhakaShippingCost;
   const total = subtotal + shippingCost;
 
   const handleSubmit = async (values: FieldValues) => {

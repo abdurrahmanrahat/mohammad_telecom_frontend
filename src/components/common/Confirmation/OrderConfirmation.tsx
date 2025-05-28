@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  Calendar,
-  Download,
-  MapPin,
-  Package,
-  Truck,
-} from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Package, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,64 +8,21 @@ import { MyLoader } from "@/components/shared/Ui/MyLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  insideDhakaShippingCost,
+  outsideDhakaShippingCost,
+} from "@/constants/productKey";
 import { useGetSingleOrderQuery } from "@/redux/api/orderApi";
+import { TProduct } from "@/types";
 import NoOrderFound from "./NoOrdersFound";
 
-interface OrderItem {
-  id: string;
-  name: string;
-  price: number;
+type TOrderItem = {
+  _id: string;
+  product: TProduct;
   quantity: number;
-  image: string;
-  size?: string;
-}
+};
 
-interface OrderConfirmationProps {
-  orderNumber?: string;
-  orderDate?: string;
-  estimatedDelivery?: string;
-  customerEmail?: string;
-  shippingAddress?: {
-    name: string;
-    address: string;
-    city: string;
-    country: string;
-    phone: string;
-  };
-  orderItems?: OrderItem[];
-  subtotal?: number;
-  shipping?: number;
-  total?: number;
-  orderId: string;
-}
-
-export default function OrderConfirmation({
-  orderNumber = "UF-2024-001234",
-  orderDate = "May 26, 2025",
-  estimatedDelivery = "May 29-31, 2025",
-  customerEmail = "customer@example.com",
-  shippingAddress = {
-    name: "John Doe",
-    address: "House 123, Road 456, Dhanmondi",
-    city: "Dhaka",
-    country: "Bangladesh",
-    phone: "+880 1234567890",
-  },
-  orderItems = [
-    {
-      id: "1",
-      name: "Premium Leather Loffer For Men",
-      price: 1590,
-      quantity: 1,
-      image: "/placeholder.svg?height=80&width=80",
-      size: "42",
-    },
-  ],
-  subtotal = 1590,
-  shipping = 100,
-  total = 1690,
-  orderId,
-}: OrderConfirmationProps) {
+export default function OrderConfirmation({ orderId }: { orderId: string }) {
   // redux api
   const { data: order, isLoading: isOrderLoading } =
     useGetSingleOrderQuery(orderId);
@@ -81,9 +31,22 @@ export default function OrderConfirmation({
     return <MyLoader />;
   }
 
+  const subtotal = order?.data?.orderItems?.reduce(
+    (acc: number, item: TOrderItem) => {
+      return acc + item.product.price * item.quantity;
+    },
+    0
+  );
+
+  const shipping = order?.data?.insideDhaka
+    ? insideDhakaShippingCost
+    : outsideDhakaShippingCost;
+
+  const total = subtotal + shipping;
+
   console.log("order data", order);
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="border-b border-primary/10">
         <div className="w-full max-w-4xl mx-auto py-4 mt-6">
@@ -104,7 +67,7 @@ export default function OrderConfirmation({
               </div>
               <div className="h-px w-6 md:w-10 lg:w-16 bg-primary"></div>
               <div className="flex items-center">
-                <div className="h-8 w-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
                   3
                 </div>
                 <span className="ml-2 text-sm font-medium text-primary">
@@ -119,7 +82,7 @@ export default function OrderConfirmation({
       {!orderId || !order || order?.data?.length === 0 ? (
         <NoOrderFound />
       ) : (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 pt-8 pb-24">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Order Details */}
             <div className="lg:col-span-2 space-y-6">
@@ -135,19 +98,23 @@ export default function OrderConfirmation({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600">Order Number</p>
-                      <p className="font-semibold">{orderNumber}</p>
+                      <p className="font-semibold">{order.data.orderNumber}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Order Date</p>
-                      <p className="font-semibold">{orderDate}</p>
+                      <p className="font-semibold">
+                        {order.data.createdAt.slice(0, 10)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-semibold">{customerEmail}</p>
+                      <p className="font-semibold ">{order.data.email}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Payment Method</p>
-                      <p className="font-semibold">Cash on Delivery</p>
+                      <p className="font-semibold">
+                        {order.data.paymentMethod || "N/A"}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -165,12 +132,10 @@ export default function OrderConfirmation({
                   <div className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="font-semibold">{shippingAddress.name}</p>
-                      <p className="text-gray-600">{shippingAddress.address}</p>
-                      <p className="text-gray-600">
-                        {shippingAddress.city}, {shippingAddress.country}
-                      </p>
-                      <p className="text-gray-600">{shippingAddress.phone}</p>
+                      <p className="font-semibold">{order.data.fullName}</p>
+                      <p className="text-gray-600">{order.data.fullAddress}</p>
+                      <p className="text-gray-600">{order.data.country}</p>
+                      <p className="text-gray-600">{order.data.phoneNo}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
@@ -179,9 +144,7 @@ export default function OrderConfirmation({
                       <p className="text-sm font-medium text-blue-900">
                         Estimated Delivery
                       </p>
-                      <p className="text-sm text-blue-700">
-                        {estimatedDelivery}
-                      </p>
+                      <p className="text-sm text-blue-700">2-3 days</p>
                     </div>
                   </div>
                 </CardContent>
@@ -194,38 +157,41 @@ export default function OrderConfirmation({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {orderItems.map((item, index) => (
-                      <div key={item.id}>
-                        <div className="flex gap-4">
-                          <Image
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.name}
-                            width={80}
-                            height={80}
-                            className="rounded-lg object-cover"
-                          />
-                          <div className="flex-1">
-                            <h3 className="font-medium">{item.name}</h3>
-                            {item.size && (
-                              <p className="text-sm text-gray-600 mt-1">
-                                Size: {item.size}
-                              </p>
-                            )}
-                            <div className="flex items-center justify-between mt-2">
-                              <span className="text-sm text-gray-600">
-                                Qty: {item.quantity}
-                              </span>
-                              <span className="font-semibold">
-                                ৳ {(item.price * item.quantity).toFixed(2)}
-                              </span>
+                    {order.data.orderItems?.map(
+                      (item: TOrderItem, index: number) => (
+                        <div key={item._id}>
+                          <div className="flex gap-4">
+                            <Image
+                              src={item.product.image || "/placeholder.svg"}
+                              alt={item.product.name.slice(0, 5)}
+                              width={80}
+                              height={80}
+                              className="rounded-lg object-cover"
+                            />
+                            <div className="flex-1">
+                              <h3 className="font-medium">
+                                {item.product.name}
+                              </h3>
+
+                              <div className="flex items-center justify-between mt-2">
+                                <span className="text-sm text-gray-600">
+                                  Qty: {item.quantity}
+                                </span>
+                                <span className="font-semibold">
+                                  ৳{" "}
+                                  {(item.product.price * item.quantity).toFixed(
+                                    2
+                                  )}
+                                </span>
+                              </div>
                             </div>
                           </div>
+                          {index < order.data.orderItems.length - 1 && (
+                            <Separator className="mt-4" />
+                          )}
                         </div>
-                        {index < orderItems.length - 1 && (
-                          <Separator className="mt-4" />
-                        )}
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -256,11 +222,11 @@ export default function OrderConfirmation({
 
               {/* Actions */}
               <div className="space-y-3">
-                <Button className="w-full" variant="outline">
+                {/* <Button className="w-full" variant="outline">
                   <Download className="h-4 w-4 mr-2" />
                   Download Invoice
-                </Button>
-                <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
+                </Button> */}
+                <Button className="w-full" asChild>
                   <Link href="/">
                     Continue Shopping
                     <ArrowRight className="h-4 w-4 ml-2" />

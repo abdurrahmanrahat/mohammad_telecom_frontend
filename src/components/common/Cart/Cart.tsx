@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  insideDhakaShippingCost,
+  outsideDhakaShippingCost,
+} from "@/constants/productKey";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   removeFromCart,
@@ -30,7 +34,10 @@ export default function Cart() {
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
-  const shippingCost = shippingOption === "inside" ? 50 : 100;
+  const shippingCost =
+    shippingOption === "inside"
+      ? insideDhakaShippingCost
+      : outsideDhakaShippingCost;
   // const freeShippingThreshold = 2000;
   // const remainingForFreeShipping = Math.max(
   //   0,
