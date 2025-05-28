@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronRight, Heart, Menu } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { authKey } from "@/constants/authKey";
 import { cn } from "@/lib/utils";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
-import { useAppSelector } from "@/redux/hooks";
-import { useCurrentUser } from "@/redux/reducers/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout, useCurrentUser } from "@/redux/reducers/authSlice";
+import { removeUser } from "@/services/auth.services";
 import { TCategory } from "@/types";
+import axios from "axios";
 import ActiveLink from "../ActiveLink";
 import CartSheet from "./CartSheet";
 import { MobileMenu } from "./MobileMenu";
@@ -203,6 +206,9 @@ const Navbar = () => {
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const subMenuTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const pathname = usePathname();
   const user = useAppSelector(useCurrentUser);
 
@@ -265,6 +271,19 @@ const Navbar = () => {
   // }
 
   const categoriesList = categoriesData?.data || categoriesDemo;
+
+  // logout user
+  const handleLogout = async () => {
+    // 🎯 remove HttpOnly cookie from client via API
+    await axios.post("/api/auth/remove-cookies", {
+      accessToken: authKey,
+      // refreshToken: "testToken", // send more name for removing
+    });
+    dispatch(logout());
+    removeUser();
+
+    router.push("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-secondary text-white">
@@ -481,7 +500,10 @@ const Navbar = () => {
               {/* login/logout button */}
               <div className="flex items-center gap-4">
                 {user ? (
-                  <Button className="cursor-pointer bg-white text-[#5550A0] hover:bg-white/90">
+                  <Button
+                    className="cursor-pointer bg-white text-[#5550A0] hover:bg-white/90"
+                    onClick={handleLogout}
+                  >
                     Logout
                   </Button>
                 ) : (

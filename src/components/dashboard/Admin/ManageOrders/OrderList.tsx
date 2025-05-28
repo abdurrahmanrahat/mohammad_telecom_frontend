@@ -23,7 +23,6 @@ const OrderList = ({ orders }: { orders: TOrder[] }) => {
               <TableHead className="py-3">No</TableHead>
               <TableHead className="py-3">Buyer Name</TableHead>
               <TableHead className="py-3">Phone</TableHead>
-
               <TableHead className="py-3">Price</TableHead>
               <TableHead className="py-3">Status</TableHead>
               <TableHead className="text-right py-3">Actions</TableHead>
@@ -43,14 +42,12 @@ const OrderList = ({ orders }: { orders: TOrder[] }) => {
                 <TableCell className="py-3">
                   <span className="">{order.phoneNo}</span>
                 </TableCell>
-
                 <TableCell className="py-3">৳{order.totalPrice}</TableCell>
                 <TableCell className="py-3">
                   <Badge className="capitalize text-white">
                     {order.status.toLowerCase()}
                   </Badge>
                 </TableCell>
-
                 <TableCell className="py-3">
                   <div className="flex justify-end gap-2">
                     {/* <ProductDetailsModal product={product} />
