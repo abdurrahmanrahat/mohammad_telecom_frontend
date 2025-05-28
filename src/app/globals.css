@@ -45,7 +45,6 @@ p:empty {
 /* For WebKit browsers (Chrome, Safari, newer versions of Opera) */
 ::-webkit-scrollbar {
   width: 4px;
-  /* height: 8px; */
 }
 
 ::-webkit-scrollbar-track {

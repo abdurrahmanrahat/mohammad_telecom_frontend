@@ -1,26 +1,22 @@
-"use client";
-
-import { MyLoader } from "@/components/shared/Ui/MyLoader";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   insideDhakaShippingCost,
   outsideDhakaShippingCost,
 } from "@/constants/productKey";
-import { useGetSingleOrderQuery } from "@/redux/api/orderApi";
-import { TProduct } from "@/types";
-import {
-  ArrowRight,
-  Calendar,
-  Info,
-  MapPin,
-  Package,
-  Truck,
-} from "lucide-react";
+import { TOrder, TProduct } from "@/types";
+import { Info, MapPin, Package, Truck } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import NoOrderFound from "./NoOrdersFound";
+import { useState } from "react";
 
 type TOrderItem = {
   _id: string;
@@ -28,67 +24,59 @@ type TOrderItem = {
   quantity: number;
 };
 
-export default function OrderConfirmation({ orderId }: { orderId: string }) {
-  // redux api
-  const { data: order, isLoading: isOrderLoading } =
-    useGetSingleOrderQuery(orderId);
+const statusVariant = {
+  PENDING: "destructive",
+  PROCESSING: "outline",
+  SHIPPED: "outline",
+  DELIVERED: "default",
+  CANCELLED: "destructive",
+};
 
-  if (isOrderLoading) {
-    return <MyLoader />;
-  }
+const OrderDetailsModal = ({ order }: { order: TOrder }) => {
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const subtotal = order?.data?.orderItems?.reduce(
+  const subtotal = order?.orderItems?.reduce(
     (acc: number, item: TOrderItem) => {
       return acc + item.product.price * item.quantity;
     },
     0
   );
 
-  const shipping = order?.data?.insideDhaka
+  const shipping = order?.insideDhaka
     ? insideDhakaShippingCost
     : outsideDhakaShippingCost;
 
   const total = subtotal + shipping;
 
-  console.log("order data", order);
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div className="border-b border-primary/10">
-        <div className="w-full max-w-4xl mx-auto py-4 mt-6">
-          <div className="flex items-center justify-center mb-8">
-            <div className="flex items-center space-x-1 lg:space-x-4">
-              <div className="flex items-center">
-                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                  1
-                </div>
-                <span className="ml-2 text-sm font-medium">Cart</span>
-              </div>
-              <div className="h-px w-6 md:w-10 lg:w-16 bg-primary"></div>
-              <div className="flex items-center">
-                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                  2
-                </div>
-                <span className="ml-2 text-sm font-medium">Checkout</span>
-              </div>
-              <div className="h-px w-6 md:w-10 lg:w-16 bg-primary"></div>
-              <div className="flex items-center">
-                <div className="h-8 w-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                  3
-                </div>
-                <span className="ml-2 text-sm font-medium text-primary">
-                  Confirmation
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <Dialog open={isOpenModal} onOpenChange={setIsOpenModal}>
+      <DialogTrigger asChild>
+        <button className="cursor-pointer">
+          <Info className="h-5 w-5" />
+        </button>
+      </DialogTrigger>
+      <DialogContent className="w-full !max-w-[880px] max-h-[80%] overflow-auto bg-white">
+        <div>
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">
+              {order.fullName}
+            </DialogTitle>
+            <DialogDescription>
+              <Badge
+                variant={
+                  statusVariant[order.status] as
+                    | "destructive"
+                    | "outline"
+                    | "default"
+                    | "secondary"
+                }
+                className="capitalize text-white"
+              >
+                {order.status.toLowerCase()}
+              </Badge>
+            </DialogDescription>
+          </DialogHeader>
 
-      {!orderId || !order || order?.data?.length === 0 ? (
-        <NoOrderFound />
-      ) : (
-        <div className="max-w-4xl mx-auto px-4 pt-8 pb-24">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Order Details */}
             <div className="lg:col-span-2 space-y-6">
@@ -104,24 +92,24 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600">Order Number</p>
-                      <p className="font-semibold">{order.data.orderNumber}</p>
+                      <p className="font-semibold">{order.orderNumber}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Order Date</p>
                       <p className="font-semibold">
-                        {order.data.createdAt.slice(0, 10)}
+                        {order.createdAt.slice(0, 10)}
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-semibold ">{order.data.email}</p>
+                      <p className="font-semibold ">{order.email}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Payment Method</p>
                       <p className="font-semibold">
-                        {order.data.paymentMethod || "N/A"}
+                        {order.paymentMethod || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -141,34 +129,20 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                     <div className="w-full md:w-1/2 flex items-start gap-3">
                       <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                       <div>
-                        <p className="font-semibold">{order.data.fullName}</p>
-                        <p className="text-gray-600">
-                          {order.data.fullAddress}
-                        </p>
-                        <p className="text-gray-600">{order.data.country}</p>
-                        <p className="text-gray-600">{order.data.phoneNo}</p>
+                        <p className="text-gray-600">{order.fullAddress}</p>
+                        <p className="text-gray-600">{order.country}</p>
+                        <p className="text-gray-600">{order.phoneNo}</p>
                       </div>
                     </div>
-                    {order.data?.orderNotes && (
+                    {order?.orderNotes && (
                       <div className="w-full md:w-1/2 flex items-start gap-3">
                         <Info className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="font-semibold">Additional Notes:</p>
-                          <p className="text-gray-600">
-                            {order.data.orderNotes}
-                          </p>
+                          <p className="text-gray-600">{order.orderNotes}</p>
                         </div>
                       </div>
                     )}
-                  </div>
-                  <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                    <Calendar className="h-5 w-5 text-blue-600" />
-                    <div>
-                      <p className="text-sm font-medium text-blue-900">
-                        Estimated Delivery
-                      </p>
-                      <p className="text-sm text-blue-700">2-3 days</p>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -180,7 +154,7 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {order.data.orderItems?.map(
+                    {order.orderItems?.map(
                       (item: TOrderItem, index: number) => (
                         <div key={item._id}>
                           <div className="flex gap-4">
@@ -209,7 +183,7 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                               </div>
                             </div>
                           </div>
-                          {index < order.data.orderItems.length - 1 && (
+                          {index < order.orderItems.length - 1 && (
                             <Separator className="mt-4" />
                           )}
                         </div>
@@ -242,40 +216,12 @@ export default function OrderConfirmation({ orderId }: { orderId: string }) {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Actions */}
-              <div className="space-y-3">
-                {/* <Button className="w-full" variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Invoice
-                </Button> */}
-                <Button className="w-full" asChild>
-                  <Link href="/">
-                    Continue Shopping
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Support */}
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center">
-                    <h3 className="font-semibold mb-2">Need Help?</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Contact our customer support team for any questions about
-                      your order.
-                    </p>
-                    <Button variant="outline" size="sm">
-                      Contact Support
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </DialogContent>
+    </Dialog>
   );
-}
+};
+
+export default OrderDetailsModal;

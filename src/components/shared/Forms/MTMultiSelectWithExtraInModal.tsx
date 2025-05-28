@@ -12,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import "@/styles/scrollbar.css";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -95,7 +94,7 @@ const MTMultiSelectWithExtraInModal = ({
 
             {/* Dropdown for selecting/adding tags */}
             <PopoverContent
-              className="z-[9999] bg-white shadow-md w-[400px] overflow-auto pointer-events-auto custom-scrollbar-bold-line"
+              className="z-[9999] bg-white shadow-md w-[400px] overflow-auto pointer-events-auto"
               side="bottom"
               align="center"
               forceMount

@@ -45,7 +45,7 @@ const ManageOrders = () => {
           defaultValue={activeTab}
           onValueChange={(value) => setActiveTab(value)}
         >
-          <TabsList className="w-full md:w-[300px] justify-start rounded-none bg-transparent h-auto">
+          <TabsList className="w-full justify-start rounded-none bg-transparent h-auto overflow-auto">
             {orderStatuses.map((status) => (
               <TabsTrigger
                 key={status._id}

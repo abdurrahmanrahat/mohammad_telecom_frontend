@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TOrder } from "@/types";
+import OrderDetailsModal from "./OrderDetailsModal";
 
 const OrderList = ({ orders }: { orders: TOrder[] }) => {
   return (
@@ -17,7 +18,7 @@ const OrderList = ({ orders }: { orders: TOrder[] }) => {
           <h2 className="text-xl md:text-2xl font-medium">No Order Found!</h2>
         </div>
       ) : (
-        <Table className="w-full ">
+        <Table className="w-full">
           <TableHeader className="">
             <TableRow className="bg-primary text-white text-base py-3">
               <TableHead className="py-3">No</TableHead>
@@ -50,6 +51,7 @@ const OrderList = ({ orders }: { orders: TOrder[] }) => {
                 </TableCell>
                 <TableCell className="py-3">
                   <div className="flex justify-end gap-2">
+                    <OrderDetailsModal order={order} />
                     {/* <ProductDetailsModal product={product} />
 
                     <EditProductModal product={product} />
