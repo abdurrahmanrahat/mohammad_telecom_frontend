@@ -5,7 +5,6 @@ import SectionTitle from "@/components/shared/Ui/SectionTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useGetOrdersQuery } from "@/redux/api/orderApi";
-import { TOrder } from "@/types";
 import { useState } from "react";
 import OrderList from "./OrderList";
 
@@ -20,12 +19,19 @@ const orderStatuses = [
 const ManageOrders = () => {
   const [activeTab, setActiveTab] = useState("PENDING");
 
-  // redux api
-  const { data: orders, isLoading: isOrderLoading } = useGetOrdersQuery({});
+  const query: Record<string, any> = {};
 
-  if (isOrderLoading) {
-    return <MyLoader />;
+  if (activeTab) {
+    query["status"] = activeTab;
   }
+
+  // redux api
+  const { data: orders, isLoading: isOrderLoading } = useGetOrdersQuery(query);
+
+  // if (isOrderLoading) {
+  //   return <MyLoader />;
+  // }
+  const ordersData = orders?.data?.data || [];
 
   return (
     <div className="py-6">
@@ -33,7 +39,7 @@ const ManageOrders = () => {
       <div className="mb-6">
         <SectionTitle text="Manage Orders" />
         <p className="font-medium text-base">
-          Total: <span className="">24</span> orders
+          Total: <span className="">{ordersData.length}</span> orders
         </p>
       </div>
 
@@ -62,21 +68,9 @@ const ManageOrders = () => {
             ))}
           </TabsList>
 
-          {orderStatuses.map((status) => {
-            const filteredOrders = orders.data.data.filter(
-              (order: TOrder) => order.status === status.label
-            );
-
-            return (
-              <TabsContent
-                key={status._id}
-                value={status.label}
-                className="mt-6"
-              >
-                <OrderList orders={filteredOrders} />
-              </TabsContent>
-            );
-          })}
+          <TabsContent value={activeTab} className="mt-6">
+            {isOrderLoading ? <MyLoader /> : <OrderList orders={ordersData} />}
+          </TabsContent>
         </Tabs>
       </div>
     </div>

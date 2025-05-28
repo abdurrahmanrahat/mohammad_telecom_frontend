@@ -45,6 +45,7 @@ p:empty {
 /* For WebKit browsers (Chrome, Safari, newer versions of Opera) */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -53,12 +54,12 @@ p:empty {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #332F61;
+  background: #c2c1d0;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #332F61;
+  background: #c2c1d0;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
