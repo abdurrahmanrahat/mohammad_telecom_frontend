@@ -4,9 +4,12 @@ import BestSellerCard from "./BestSellerCard";
 import { BestSellerCardSkeleton } from "./BestSellerCardSkeleton";
 
 const BestSellers = () => {
-  const { data: products, isLoading: isProductLoading } = useGetProductsQuery(
-    {}
-  );
+  const query = {
+    sort: "best_selling",
+  };
+
+  const { data: products, isLoading: isProductLoading } =
+    useGetProductsQuery(query);
 
   return (
     <div className="rounded-md overflow-hidden shadow-cardLightShadow">
