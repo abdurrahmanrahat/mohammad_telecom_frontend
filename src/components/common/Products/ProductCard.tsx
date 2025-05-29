@@ -33,7 +33,7 @@ export function ProductCard({ product }: { product: TProduct }) {
   };
 
   const handleCardClick = () => {
-    router.push(`/products/${product._id}`);
+    router.push(`/products/${product.slug}`);
   };
 
   return (
