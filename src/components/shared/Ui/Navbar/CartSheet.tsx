@@ -28,6 +28,7 @@ import {
 } from "@/redux/reducers/cartSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function CartSheet() {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,8 +78,18 @@ export default function CartSheet() {
   // );
   const total = subtotal + shippingCost;
 
-  const handleUpdateQuantity = (productId: string, newQuantity: number) => {
-    dispatch(updateQuantity({ productId, quantity: newQuantity }));
+  const handleUpdateQuantity = (
+    currStock: number,
+    productId: string,
+    newQuantity: number
+  ) => {
+    if (newQuantity < 1) {
+      toast.error("You have to put at least 1 quantity!");
+    } else if (newQuantity > currStock) {
+      toast.error("Out of stock!");
+    } else {
+      dispatch(updateQuantity({ productId, quantity: newQuantity }));
+    }
   };
 
   const removeItem = (productId: string) => {

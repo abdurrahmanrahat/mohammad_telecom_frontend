@@ -1,6 +1,7 @@
 "use client";
 
 import { MyLoader } from "@/components/shared/Ui/MyLoader";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetSingleProductQuery } from "@/redux/api/productApi";
@@ -12,6 +13,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import BestSellers from "./BestSellers";
 import ProductGallery from "./ProductGallery";
+import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
 
 export default function ProductDetails({
@@ -38,11 +40,19 @@ export default function ProductDetails({
 
     if (alreadyCart) {
       toast.error("Already you have added in cart!");
+    } else if (singleProduct.data.stock === 0) {
+      toast.error("Out of stock!");
     } else {
       dispatch(addToCart({ product: singleProduct.data, quantity: quantity }));
 
       toast.success("Add to cart success");
     }
+  };
+
+  // handle increase quantity
+  const handleIncreaseQuantity = () => {
+    console.log("dd");
+    setQuantity((prev) => prev + 1);
   };
 
   return (
@@ -73,24 +83,33 @@ export default function ProductDetails({
           </p>
 
           <div className="flex items-center mb-4">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <svg
-                  key={i}
-                  className={`w-4 h-4 ${
-                    i < Math.round(singleProduct.data.averageRatings)
-                      ? "text-yellow-400"
-                      : "text-gray-300"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-              <span className="ml-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <svg
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < Math.round(singleProduct.data.averageRatings)
+                        ? "text-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-sm text-gray-500">
                 ({singleProduct.data.totalReviews} reviews)
               </span>
+              <Badge
+                variant={
+                  singleProduct.data.stock > 0 ? "default" : "destructive"
+                }
+              >
+                {singleProduct.data.stock > 0 ? "In Stock" : "Out of Stock"}
+              </Badge>
             </div>
           </div>
 
@@ -118,15 +137,15 @@ export default function ProductDetails({
               <div className="flex items-center border border-primary/10 rounded-md">
                 <button
                   onClick={() => setQuantity((prev) => prev - 1)}
-                  className="px-3 py-3 cursor-pointer bg-primary/10"
+                  className="px-3 py-3 cursor-pointer bg-primary/10 disabled:cursor-not-allowed"
                   disabled={quantity <= 1}
                 >
                   <MinusIcon className="h-4 w-4" />
                 </button>
                 <span className="px-4 py-2">{quantity}</span>
                 <button
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                  className="px-3 py-3 cursor-pointer bg-primary/10"
+                  onClick={handleIncreaseQuantity}
+                  className="px-3 py-3 cursor-pointer bg-primary/10 disabled:cursor-not-allowed"
                   disabled={quantity >= singleProduct.data.stock}
                 >
                   <PlusIcon className="h-4 w-4" />
@@ -145,7 +164,7 @@ export default function ProductDetails({
             </div>
           </div>
 
-          <div className="border-t pt-4">
+          <div className="border-t border-primary/10 pt-4">
             <p className="text-sm text-gray-500 mb-2">
               <span className="font-medium">Category:</span>{" "}
               {singleProduct.data.category.replace("_", " ")}
@@ -198,17 +217,7 @@ export default function ProductDetails({
             />
           </TabsContent>
           <TabsContent value="reviews" className="mt-6">
-            {singleProduct.data.totalReviews > 0 ? (
-              <div>
-                {/* Reviews would go here */}
-                <p>Customer reviews will be displayed here.</p>
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">No reviews yet</p>
-                <Button variant="outline">Be the first to review</Button>
-              </div>
-            )}
+            <ProductReviews productId={singleProduct.data._id} />
           </TabsContent>
         </Tabs>
       </div>

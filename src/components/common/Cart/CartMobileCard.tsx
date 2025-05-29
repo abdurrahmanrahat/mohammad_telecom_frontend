@@ -5,7 +5,11 @@ import Image from "next/image";
 
 type TCartCardProps = {
   item: { product: TProduct; quantity: number };
-  onCartQuantityUpdate: (productId: string, quantity: number) => void;
+  onCartQuantityUpdate: (
+    currStock: number,
+    productId: string,
+    quantity: number
+  ) => void;
   onCartRemove: (id: string) => void;
 };
 
@@ -47,7 +51,11 @@ const CartMobileCard = ({
               size="icon"
               className="h-8 w-8"
               onClick={() =>
-                onCartQuantityUpdate(item.product._id, item.quantity - 1)
+                onCartQuantityUpdate(
+                  item.product.stock,
+                  item.product._id,
+                  item.quantity - 1
+                )
               }
             >
               <Minus className="h-4 w-4" />
@@ -60,7 +68,11 @@ const CartMobileCard = ({
               size="icon"
               className="h-8 w-8"
               onClick={() =>
-                onCartQuantityUpdate(item.product._id, item.quantity + 1)
+                onCartQuantityUpdate(
+                  item.product.stock,
+                  item.product._id,
+                  item.quantity + 1
+                )
               }
             >
               <Plus className="h-4 w-4" />

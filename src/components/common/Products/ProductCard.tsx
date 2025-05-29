@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -25,6 +26,8 @@ export function ProductCard({ product }: { product: TProduct }) {
 
     if (alreadyCart) {
       toast.error("Already you have added in cart!");
+    } else if (product.stock === 0) {
+      toast.error("Out of stock!");
     } else {
       dispatch(addToCart({ product, quantity: 1 }));
 
@@ -51,21 +54,30 @@ export function ProductCard({ product }: { product: TProduct }) {
         />
 
         {/* Wishlist Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAddToCart();
-          }}
-          className={cn(
-            "absolute top-2 right-2 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer",
-            isWishlisted ? "text-red-500" : "text-gray-500 hover:text-red-500"
-          )}
-          aria-label="Add to wishlist"
-        >
-          <Heart
-            className={cn("h-5 w-5", isWishlisted ? "fill-red-500" : "")}
-          />
-        </button>
+        {product.stock > 0 ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToCart();
+            }}
+            className={cn(
+              "absolute top-2 right-2 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer",
+              isWishlisted ? "text-red-500" : "text-gray-500 hover:text-red-500"
+            )}
+            aria-label="Add to wishlist"
+          >
+            <Heart
+              className={cn("h-5 w-5", isWishlisted ? "fill-red-500" : "")}
+            />
+          </button>
+        ) : (
+          <Badge
+            variant="destructive"
+            className="absolute top-16 right-0 rotate-45 origin-top-right"
+          >
+            Out of Stock
+          </Badge>
+        )}
       </div>
 
       {/* Product Info */}
