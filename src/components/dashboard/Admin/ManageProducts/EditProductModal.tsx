@@ -21,7 +21,7 @@ import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useUpdateProductMutation } from "@/redux/api/productApi";
 import { TCategory, TProduct } from "@/types";
 import { createSlug } from "@/utils/createSlug";
-import { Pencil } from "lucide-react";
+import { Edit, Pencil } from "lucide-react";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -185,7 +185,7 @@ const EditProductModal = ({ product }: { product: TProduct }) => {
     <Dialog open={isOpenModal} onOpenChange={setIsOpenModal}>
       <DialogTrigger asChild>
         <button className="cursor-pointer">
-          <Pencil className="h-5 w-5" />
+          <Edit className="h-5 w-5" />
         </button>
       </DialogTrigger>
       <DialogContent className="w-full !max-w-[880px] max-h-[80%] overflow-auto bg-white ">

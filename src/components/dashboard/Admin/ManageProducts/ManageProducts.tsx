@@ -23,12 +23,11 @@ import useDebounced from "@/hooks/useDebounced";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import { TProduct } from "@/types";
 import { getPaginationPageItems } from "@/utils/getPaginationPageItems";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DeleteProductModal from "./DeleteProductModal";
-import EditProductModal from "./EditProductModal";
 import ProductDetailsModal from "./ProductDetailsModal";
 import SearchFilter from "./SearchFilter";
 
@@ -195,10 +194,18 @@ const ManageProducts = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex items-center justify-end gap-2">
                       <ProductDetailsModal product={product} />
 
-                      <EditProductModal product={product} />
+                      {/* <EditProductModal product={product} /> */}
+                      <Link
+                        href={`/dashboard/admin/manage-products/${product.slug}`}
+                        className="mt-2"
+                      >
+                        <button className="cursor-pointer">
+                          <Edit className="h-5 w-5" />
+                        </button>
+                      </Link>
 
                       <DeleteProductModal productId={product._id} />
                     </div>
