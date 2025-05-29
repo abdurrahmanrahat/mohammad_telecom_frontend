@@ -154,7 +154,7 @@ export default function CartSheet() {
           </div>
 
           {/* Main Content */}
-          <div className="w-full py-12 px-4">
+          <div className="w-full pt-12 px-4">
             <div>
               <div>
                 <div className="">

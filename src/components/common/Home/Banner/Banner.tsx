@@ -2,11 +2,12 @@
 
 import type React from "react";
 
-import Container from "@/components/shared/Ui/Container";
+import { Button } from "@/components/ui/button";
 import { IMAGES } from "@/image-data";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const banners = [
@@ -15,11 +16,11 @@ const banners = [
     src: IMAGES.home.Banner1,
     alt: "Banner 1",
   },
-  {
-    id: 2,
-    src: IMAGES.home.Banner2,
-    alt: "Banner 2",
-  },
+  // {
+  //   id: 2,
+  //   src: IMAGES.home.Banner2,
+  //   alt: "Banner 2",
+  // },
   {
     id: 3,
     src: IMAGES.home.Banner3,
@@ -133,7 +134,7 @@ export function Banner() {
   };
 
   return (
-    <Container className="relative w-full overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       {/* Main slider container */}
       <div
         className="relative h-full w-full"
@@ -142,7 +143,7 @@ export function Banner() {
         onTouchEnd={handleTouchEnd}
       >
         {/* Slides */}
-        <div className="flex w-full h-full">
+        <div className="flex w-full h-full relative">
           {slidesArray.map((banner, index) => (
             <div
               key={banner.id}
@@ -158,15 +159,38 @@ export function Banner() {
                   priority={index === currentSlide}
                   className="object-cover"
                 />
+
+                {/* Dark overlay for better text readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-transparent" />
               </div>
             </div>
           ))}
+
+          {/* Content Overlay */}
+
+          <div className="absolute inset-0">
+            <div className="flex flex-col justify-center items-center gap-4 md:gap-8 lg:gap-10 w-full h-full text-white text-center">
+              <div className="flex flex-col gap-1 md:gap-4">
+                <h6 className="md:text-2xl lg:text-3xl font-medium">
+                  Today’s Exclusive Flash Deals
+                </h6>
+                <h2 className="text-xl md:text-4xl lg:text-6xl font-semibold">
+                  AT THE BEST MARKET RATES!
+                </h2>
+              </div>
+              <Link href={`/products`}>
+                <Button className="md:px-8 md:py-5 rounded-xs">
+                  Explore Now
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Navigation Arrows with Preview */}
         <button
           onClick={() => handleControlInteraction(previousSlide)}
-          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md transition-all hover:bg-white hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:p-3 group overflow-hidden cursor-pointer"
+          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md transition-all hover:bg-white hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:p-3 group overflow-hidden cursor-pointer hidden md:block"
           aria-label="Previous slide"
           disabled={isAnimating}
         >
@@ -188,7 +212,7 @@ export function Banner() {
 
         <button
           onClick={() => handleControlInteraction(nextSlide)}
-          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md transition-all hover:bg-white hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:p-3 group overflow-hidden cursor-pointer"
+          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md transition-all hover:bg-white hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:p-3 group overflow-hidden cursor-pointer hidden md:block"
           aria-label="Next slide"
           disabled={isAnimating}
         >
@@ -253,6 +277,6 @@ export function Banner() {
           ))}
         </div>
       </div>
-    </Container>
+    </div>
   );
 }
