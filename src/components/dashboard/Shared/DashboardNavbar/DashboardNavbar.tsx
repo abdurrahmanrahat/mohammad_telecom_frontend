@@ -77,7 +77,7 @@ export default function DashboardNavbar({
         {/* Mobile menu */}
         <div
           id="navbar"
-          className={`fixed lg:hidden top-0 left-0 bg-secondary w-[70%] border-r h-screen ease-in-out duration-700 z-[999] p-[20px] ${
+          className={`fixed lg:hidden top-0 left-0 bg-secondary w-[70%] md:w-[50%] border-r h-screen ease-in-out duration-700 z-[999] p-[20px] ${
             isOpenMenu ? "translate-x-0" : "-translate-x-full"
           }`}
         >
