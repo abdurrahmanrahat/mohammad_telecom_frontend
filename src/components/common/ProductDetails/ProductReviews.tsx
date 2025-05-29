@@ -1,17 +1,21 @@
 "use client";
 
-import type React from "react";
-
+import MTForm from "@/components/shared/Forms/MTForm";
+import MTInput from "@/components/shared/Forms/MTInput";
+import MTRating from "@/components/shared/Forms/MTRating";
+import MTTextArea from "@/components/shared/Forms/MTTextArea";
+import { LoaderSpinner } from "@/components/shared/Ui/LoaderSpinner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Textarea } from "@/components/ui/textarea";
+import { useAddReviewMutation } from "@/redux/api/productReviewApi";
 import { Star, Verified } from "lucide-react";
 import { useState } from "react";
+import { FieldValues } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
 
 interface Review {
   id: string;
@@ -23,9 +27,22 @@ interface Review {
   isVerified: boolean;
 }
 
-interface ProductReviewsProps {
-  productId: string;
-}
+const reviewSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Enter a valid email address"),
+  rating: z
+    .number({ required_error: "Rating is required" })
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating cannot exceed 5"),
+  review: z.string().min(1, "Review content is required"),
+});
+
+const reviewDefaultValues = {
+  username: "",
+  email: "",
+  rating: 0,
+  review: "",
+};
 
 export default function ProductReviews({ productId }: ProductReviewsProps) {
   const [reviews, setReviews] = useState<Review[]>([
@@ -78,7 +95,8 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     review: "",
   });
 
-  const [hoveredRating, setHoveredRating] = useState(0);
+  // redux api
+  const [addReview, { isLoading: isAddReviewLoading }] = useAddReviewMutation();
 
   // Calculate review statistics
   const averageRating =
@@ -92,28 +110,25 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
       100,
   }));
 
-  const handleSubmitReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (
-      newReview.username &&
-      newReview.email &&
-      newReview.rating &&
-      newReview.review
-    ) {
-      const review: Review = {
-        id: Date.now().toString(),
-        ...newReview,
-        createdAt: new Date(),
-        isVerified: false,
-      };
-      console.log(review);
-      setReviews([review, ...reviews]);
-      setNewReview({
-        username: "",
-        email: "",
-        rating: 0,
-        review: "",
-      });
+  const handleSubmitReview = async (values: FieldValues) => {
+    const newReview = { ...values, product: productId };
+
+    const payload = {
+      productId,
+      reviewData: newReview,
+    };
+
+    // Handle form submission logic here
+    try {
+      const res = await addReview(payload).unwrap();
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.data?.errorSources[0].message || "Something went wrong!"
+      );
     }
   };
 
@@ -236,6 +251,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
           ))}
         </div>
       </div>
+
       <div className="lg:col-span-5">
         {/* Write a Review Form */}
         <Card>
@@ -243,79 +259,70 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
             <CardTitle>Write a Review</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmitReview} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="username">Name *</Label>
-                  <Input
-                    id="username"
-                    value={newReview.username}
-                    onChange={(e) =>
-                      setNewReview({ ...newReview, username: e.target.value })
-                    }
-                    placeholder="Your name"
-                    required
-                  />
+            <MTForm
+              onSubmit={handleSubmitReview}
+              schema={reviewSchema}
+              defaultValues={reviewDefaultValues}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
+                  <div className="grid gap-1">
+                    <label htmlFor="username" className="text-sm font-medium">
+                      Name <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput
+                      name="username"
+                      type="text"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div className="grid gap-1">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTInput
+                      name="email"
+                      type="email"
+                      placeholder="Your email"
+                    />
+                  </div>
+                  <div className="grid gap-1">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Rating <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTRating name="rating" />
+                  </div>
+                  <div className="grid gap-1">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Your review{" "}
+                      <span className="text-red-500 font-medium">*</span>
+                    </label>
+
+                    <MTTextArea
+                      placeholder="Notes about your order, e.g. special notes for delivery"
+                      name="review"
+                      rows={10}
+                      className="min-h-[120px]"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={newReview.email}
-                    onChange={(e) =>
-                      setNewReview({ ...newReview, email: e.target.value })
-                    }
-                    placeholder="your.email@example.com"
-                    required
-                  />
+
+                <div className="mt-2 w-full flex justify-end">
+                  <Button className="h-11 cursor-pointer w-full" type="submit">
+                    {isAddReviewLoading ? (
+                      <span className="flex gap-2">
+                        <LoaderSpinner /> <span>Submitting...</span>
+                      </span>
+                    ) : (
+                      "Submit"
+                    )}
+                  </Button>
                 </div>
               </div>
-
-              <div>
-                <Label>Rating *</Label>
-                <div className="flex space-x-1 mt-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() =>
-                        setNewReview({ ...newReview, rating: star })
-                      }
-                      onMouseEnter={() => setHoveredRating(star)}
-                      onMouseLeave={() => setHoveredRating(0)}
-                      className="focus:outline-none"
-                    >
-                      <Star
-                        className={`w-8 h-8 transition-colors ${
-                          star <= (hoveredRating || newReview.rating)
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="review">Your Review *</Label>
-                <Textarea
-                  id="review"
-                  value={newReview.review}
-                  onChange={(e) =>
-                    setNewReview({ ...newReview, review: e.target.value })
-                  }
-                  placeholder="Share your experience with this product..."
-                  rows={4}
-                  required
-                />
-              </div>
-
-              <Button type="submit" className="w-full md:w-auto">
-                Submit Review
-              </Button>
-            </form>
+            </MTForm>
           </CardContent>
         </Card>
       </div>
