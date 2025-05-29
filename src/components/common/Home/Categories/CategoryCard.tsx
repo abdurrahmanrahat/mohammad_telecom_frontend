@@ -1,14 +1,30 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type TCategoryCardProps = {
   image: string;
   title: string;
   itemCount: number;
+  url: string;
 };
 
-export function CategoryCard({ image, title, itemCount }: TCategoryCardProps) {
+export function CategoryCard({
+  image,
+  title,
+  itemCount,
+  url,
+}: TCategoryCardProps) {
+  const router = useRouter();
+
+  const handleCategoryClick = () => {
+    router.push(url);
+  };
+
   return (
-    <div className="min-w-[220px] bg-white border border-gray-200 rounded-md overflow-hidden hover:shadow-md transition-shadow">
+    <div
+      className="min-w-[220px] bg-white border border-gray-200 rounded-md overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleCategoryClick}
+    >
       <div className="p-4 flex items-center gap-4">
         <div className="w-20 h-20 flex-shrink-0">
           <Image

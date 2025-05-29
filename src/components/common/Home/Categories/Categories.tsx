@@ -39,16 +39,13 @@ export default function Categories() {
   };
 
   const categories = [
-    { title: "Body parts", itemCount: 10 },
-    { title: "Performance", itemCount: 2 },
-    { title: "Suspensions", itemCount: 2 },
-    { title: "Wheels & Tires", itemCount: 1 },
-    { title: "Lighting", itemCount: 10 },
-    { title: "Electronics", itemCount: 10 },
-    { title: "Repair Parts", itemCount: 2 },
-    { title: "Accessories", itemCount: 2 },
-    { title: "Engine & Drivetrain", itemCount: 2 },
-    { title: "Headlights & Light", itemCount: 2 },
+    { title: "Apple", itemCount: 10, url: "/products?category=apple" },
+    { title: "Samsung", itemCount: 2, url: "/products?category=samsung" },
+    { title: "OnePlus", itemCount: 2, url: "/products?category=oneplus" },
+    { title: "Oppo", itemCount: 2, url: "/products?category=oppo" },
+    { title: "Vivo", itemCount: 2, url: "/products?category=vivo" },
+    { title: "Xiaomi", itemCount: 2, url: "/products?category=xiaomi" },
+    { title: "Realme", itemCount: 2, url: "/products?category=realme" },
   ];
 
   const imageUrl = "https://i.ibb.co/gM3VW4cn/iphone-category.png";
@@ -65,7 +62,7 @@ export default function Categories() {
             <Button
               variant="outline"
               size="icon"
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md h-10 w-10 rounded-full border-gray-200 cursor-pointer"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md h-8 w-8 rounded-full border-gray-200 cursor-pointer"
               onClick={() => scroll("left")}
             >
               <ChevronLeft className="h-6 w-6" />
@@ -85,6 +82,7 @@ export default function Categories() {
                 image={imageUrl}
                 title={category.title}
                 itemCount={category.itemCount}
+                url={category.url}
               />
             ))}
           </div>
@@ -93,7 +91,7 @@ export default function Categories() {
             <Button
               variant="outline"
               size="icon"
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md h-10 w-10 rounded-full border-gray-200 cursor-pointer"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md h-8 w-8 rounded-full border-gray-200 cursor-pointer"
               onClick={() => scroll("right")}
             >
               <ChevronRight className="h-6 w-6" />
