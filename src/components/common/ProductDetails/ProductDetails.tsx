@@ -14,11 +14,15 @@ import BestSellers from "./BestSellers";
 import ProductGallery from "./ProductGallery";
 import RelatedProducts from "./RelatedProducts";
 
-export default function ProductDetails({ productId }: { productId: string }) {
+export default function ProductDetails({
+  productSlug,
+}: {
+  productSlug: string;
+}) {
   const [quantity, setQuantity] = useState(1);
 
   const { data: singleProduct, isLoading: isSingleProductLoading } =
-    useGetSingleProductQuery(productId);
+    useGetSingleProductQuery(productSlug);
 
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);

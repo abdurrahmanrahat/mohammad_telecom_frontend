@@ -6,10 +6,10 @@ import { useParams } from "next/navigation";
 
 const ProductDetailsPage = () => {
   const params = useParams();
-  const productId = params.productId as string;
+  const productSlug = params.productSlug as string;
   return (
     <Container>
-      <ProductDetails productId={productId} />
+      <ProductDetails productSlug={productSlug} />
     </Container>
   );
 };
