@@ -18,3 +18,17 @@ export type TProduct = {
   updatedAt: string; // ISO string (or `Date` if parsed)
   __v: number;
 };
+
+export type TProductReview = {
+  _id: string;
+  username: string;
+  email: string;
+  product: string;
+  rating: number;
+  review: string;
+  isVerified: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};

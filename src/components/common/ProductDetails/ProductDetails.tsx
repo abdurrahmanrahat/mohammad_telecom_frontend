@@ -13,7 +13,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import BestSellers from "./BestSellers";
 import ProductGallery from "./ProductGallery";
-import ProductReviews from "./ProductReviews";
+import ProductReviews from "./ProductReviews/ProductReviews";
 import RelatedProducts from "./RelatedProducts";
 
 export default function ProductDetails({

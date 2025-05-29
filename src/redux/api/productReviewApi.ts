@@ -1,14 +1,17 @@
 import { baseApi } from "./baseApi";
 
 const productReviewApi = baseApi.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getReviewsByProduct: builder.query({
-      query: ({ productId, args }) => ({
-        url: `/products/${productId}/reviews`,
-        method: "GET",
-        params: args,
-      }),
-      providesTags: ["product-review"],
+      query: ({ productId, query }) => {
+        return {
+          url: `/products/${productId}/reviews`,
+          method: "GET",
+          params: query,
+        };
+      },
+      providesTags: ["review"],
     }),
 
     addReview: builder.mutation({
@@ -17,7 +20,7 @@ const productReviewApi = baseApi.injectEndpoints({
         method: "POST",
         body: reviewData,
       }),
-      invalidatesTags: ["product-review"],
+      invalidatesTags: ["review", "product"],
     }),
 
     updateReview: builder.mutation({
@@ -26,7 +29,15 @@ const productReviewApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: updatedData,
       }),
-      invalidatesTags: ["product-review"],
+      invalidatesTags: ["review", "product"],
+    }),
+
+    approvedReview: builder.mutation({
+      query: ({ productId, reviewId }) => ({
+        url: `/products/${productId}/reviews/${reviewId}/approved`,
+        method: "POST",
+      }),
+      invalidatesTags: ["review", "product"],
     }),
 
     deleteReview: builder.mutation({
@@ -34,7 +45,7 @@ const productReviewApi = baseApi.injectEndpoints({
         url: `/products/${productId}/reviews/${reviewId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["product-review"],
+      invalidatesTags: ["review", "product"],
     }),
   }),
 });
@@ -44,4 +55,5 @@ export const {
   useAddReviewMutation,
   useDeleteReviewMutation,
   useUpdateReviewMutation,
+  useApprovedReviewMutation,
 } = productReviewApi;
