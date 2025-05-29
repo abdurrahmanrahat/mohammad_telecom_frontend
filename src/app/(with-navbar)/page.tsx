@@ -8,7 +8,9 @@ export default function Home() {
     <div>
       <Banner />
       <Categories />
-      <Products />
+      <Products sectionName="Recent Products" queryString="newest" />
+      <Products sectionName="Best Sales" queryString="best_selling" />
+      <Products sectionName="Popular Products" queryString="top_rated" />
       <Feature />
     </div>
   );

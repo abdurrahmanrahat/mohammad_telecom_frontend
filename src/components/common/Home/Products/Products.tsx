@@ -7,15 +7,27 @@ import { TProduct } from "@/types";
 import { ProductCard } from "../../Products/ProductCard";
 import ProductCardSkeleton from "../../Products/ProductCardSkeleton";
 
-const Products = () => {
+const Products = ({
+  queryString,
+  sectionName,
+}: {
+  queryString?: string;
+  sectionName: string;
+}) => {
+  const query: Record<string, any> = {};
+
+  if (queryString) {
+    query["sort"] = queryString;
+  }
+
   // RTK Query hook
   const { data: productsData, isLoading: isProductsLoading } =
-    useGetProductsQuery({});
+    useGetProductsQuery(query);
 
   return (
     <Container className="py-16">
       <div className="flex items-center mb-6">
-        <SectionTitle text="Popular Products" />
+        <SectionTitle text={sectionName} />
       </div>
 
       <div>
