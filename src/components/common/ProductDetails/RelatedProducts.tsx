@@ -3,9 +3,17 @@ import { TProduct } from "@/types";
 import { ProductCard } from "../Products/ProductCard";
 import ProductCardSkeleton from "../Products/ProductCardSkeleton";
 
-const RelatedProducts = () => {
+const RelatedProducts = ({ tags }: { tags: string[] }) => {
+  const query = {
+    tags: tags.join(","),
+  };
+
   const { data: products, isLoading: isProductLoading } = useGetProductsQuery(
-    {}
+    query,
+    {
+      refetchOnMountOrArgChange: true,
+      skip: tags.length === 0,
+    }
   );
 
   return (

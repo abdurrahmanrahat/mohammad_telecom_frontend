@@ -210,7 +210,7 @@ export default function ProductDetails({ productId }: { productId: string }) {
       </div>
 
       {/* Related products */}
-      <RelatedProducts />
+      <RelatedProducts tags={singleProduct.data.tags} />
 
       <div className="md:hidden">
         <BestSellers />
