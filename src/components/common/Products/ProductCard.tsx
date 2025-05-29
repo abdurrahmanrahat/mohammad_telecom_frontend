@@ -47,7 +47,7 @@ export function ProductCard({ product }: { product: TProduct }) {
           src={product.image || "/placeholder.svg"}
           alt={product.name}
           fill
-          className="object-contain p-4"
+          className="object-contain"
         />
 
         {/* Wishlist Button */}
@@ -70,7 +70,7 @@ export function ProductCard({ product }: { product: TProduct }) {
 
       {/* Product Info */}
       <div className="flex flex-col p-4 flex-grow">
-        <h5 className="text-base font-medium line-clamp-2 mb-2">
+        <h5 className="text-sm font-medium line-clamp-2 mb-2 leading-4">
           {product.name}
         </h5>
 
@@ -94,9 +94,9 @@ export function ProductCard({ product }: { product: TProduct }) {
 
       {/* Price and Cart */}
       <div className="flex items-center justify-between p-4 pt-0 mt-auto">
-        <span className="text-primary font-medium text-lg">
+        <span className="text-primary font-medium text-sm">
           ৳ {product.price.toFixed(0)}{" "}
-          <del className="text-gray-300 ml-1 text-base">
+          <del className="text-gray-300 ml-[2px] text-base">
             {product.price + 50}{" "}
           </del>
         </span>
@@ -107,8 +107,9 @@ export function ProductCard({ product }: { product: TProduct }) {
           }}
           className="cursor-pointer"
           aria-label="Add to cart"
+          size="sm"
         >
-          <ShoppingCart className="h-5 w-5" /> Order Now
+          <ShoppingCart className="h-5 w-5" /> Buy
         </Button>
       </div>
     </div>

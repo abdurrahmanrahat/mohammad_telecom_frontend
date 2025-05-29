@@ -22,10 +22,10 @@ export function CategoryCard({
 
   return (
     <div
-      className="min-w-[220px] bg-white border border-gray-200 rounded-md overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+      className="min-w-[180px] bg-white border border-gray-200 rounded-md overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
       onClick={handleCategoryClick}
     >
-      <div className="p-4 flex items-center gap-4">
+      <div className="p-2 flex items-center justify-center gap-2">
         <div className="w-20 h-20 flex-shrink-0">
           <Image
             src={image || "/placeholder.svg"}

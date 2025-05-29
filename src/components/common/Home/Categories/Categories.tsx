@@ -46,6 +46,7 @@ export default function Categories() {
     { title: "Vivo", itemCount: 2, url: "/products?category=vivo" },
     { title: "Xiaomi", itemCount: 2, url: "/products?category=xiaomi" },
     { title: "Realme", itemCount: 2, url: "/products?category=realme" },
+    { title: "Huawei", itemCount: 2, url: "/products?category=huawei" },
   ];
 
   const imageUrl = "https://i.ibb.co/gM3VW4cn/iphone-category.png";
@@ -72,7 +73,7 @@ export default function Categories() {
 
           <div
             ref={sliderRef}
-            className="flex overflow-x-auto scrollbar-hide gap-4"
+            className="flex overflow-x-auto scrollbar-hide gap-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             onScroll={handleScroll}
           >

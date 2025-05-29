@@ -82,10 +82,10 @@ export default function MobileFilterDrawer({
         className="w-[300px] sm:w-[350px] overflow-y-auto bg-white p-4"
       >
         <SheetHeader>
-          <SheetTitle>Filters</SheetTitle>
+          <SheetTitle></SheetTitle>
           <SheetDescription></SheetDescription>
         </SheetHeader>
-        <div className="py-4 space-y-6">
+        <div className="-mt-8 pb-4 space-y-6">
           <div className="mb-6">
             <h2 className="font-bold text-lg mb-3">Categories</h2>
 

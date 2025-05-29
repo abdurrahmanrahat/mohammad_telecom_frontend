@@ -5,7 +5,7 @@ import { Package, Phone, Shield, ShoppingBag } from "lucide-react";
 const Feature = () => {
   return (
     <Container className="py-16">
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 lg:gap-6">
         <Card className="text-center">
           <CardContent className="pt-6">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">

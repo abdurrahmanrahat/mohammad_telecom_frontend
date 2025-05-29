@@ -32,16 +32,16 @@ const Products = ({
 
       <div>
         {isProductsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {[...Array(6)].map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))}
           </div>
         ) : (
           <div>
             {productsData.data.data.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {productsData.data.data.slice(0, 4).map((product: TProduct) => (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                {productsData.data.data.slice(0, 6).map((product: TProduct) => (
                   <ProductCard key={product._id} product={product} />
                 ))}
               </div>
