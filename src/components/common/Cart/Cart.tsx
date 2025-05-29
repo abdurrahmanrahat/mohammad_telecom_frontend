@@ -19,6 +19,7 @@ import {
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import CartDesktopCard from "./CartDesktopCard";
 import CartMobileCard from "./CartMobileCard";
 
@@ -45,8 +46,18 @@ export default function Cart() {
   // );
   const total = subtotal + shippingCost;
 
-  const handleUpdateQuantity = (productId: string, newQuantity: number) => {
-    dispatch(updateQuantity({ productId, quantity: newQuantity }));
+  const handleUpdateQuantity = (
+    currStock: number,
+    productId: string,
+    newQuantity: number
+  ) => {
+    if (newQuantity < 1) {
+      toast.error("You have to put at least 1 quantity!");
+    } else if (newQuantity > currStock) {
+      toast.error("Out of stock!");
+    } else {
+      dispatch(updateQuantity({ productId, quantity: newQuantity }));
+    }
   };
 
   const removeItem = (productId: string) => {
@@ -200,7 +211,9 @@ export default function Cart() {
                           Outside Dhaka City (3-5 Days):
                         </Label>
                       </div>
-                      <span className="font-medium">৳ 100.00</span>
+                      <span className="font-medium">
+                        ৳ {outsideDhakaShippingCost}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
@@ -209,7 +222,9 @@ export default function Cart() {
                           Inside Dhaka city (2-3 Days):
                         </Label>
                       </div>
-                      <span className="font-medium">৳ 50.00</span>
+                      <span className="font-medium">
+                        ৳ {insideDhakaShippingCost}
+                      </span>
                     </div>
                   </RadioGroup>
                   <p className="text-sm text-gray-600 mt-2">

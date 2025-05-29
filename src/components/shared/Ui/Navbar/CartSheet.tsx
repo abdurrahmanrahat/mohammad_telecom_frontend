@@ -222,7 +222,9 @@ export default function CartSheet() {
                               Outside Dhaka City (3-5 Days):
                             </Label>
                           </div>
-                          <span className="font-medium">৳ 100.00</span>
+                          <span className="font-medium">
+                            ৳ {outsideDhakaShippingCost}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
@@ -231,7 +233,9 @@ export default function CartSheet() {
                               Inside Dhaka city (2-3 Days):
                             </Label>
                           </div>
-                          <span className="font-medium">৳ 50.00</span>
+                          <span className="font-medium">
+                            ৳ {insideDhakaShippingCost}
+                          </span>
                         </div>
                       </RadioGroup>
                       <p className="text-sm text-gray-600 mt-2">

@@ -90,7 +90,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
     <div className="grid lg:grid-cols-12 gap-8">
       <div className="lg:col-span-7 space-y-8">
         {reviews.length === 0 ? (
-          <div className="w-full h-auto flex justify-center items-center mt-20">
+          <div className="w-full h-auto flex justify-center items-center mb-6 mt-20">
             <h2 className="text-xl font-medium">No Review Provided Yet!</h2>
           </div>
         ) : (

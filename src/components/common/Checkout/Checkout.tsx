@@ -307,7 +307,9 @@ export default function Checkout() {
                               Outside Dhaka City (3-5 Days):
                             </Label>
                           </div>
-                          <span className="font-semibold">৳ 100.00</span>
+                          <span className="font-semibold">
+                            ৳ {outsideDhakaShippingCost}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
@@ -322,7 +324,9 @@ export default function Checkout() {
                               Inside Dhaka city (2-3 Days):
                             </Label>
                           </div>
-                          <span className="font-semibold">৳ 50.00</span>
+                          <span className="font-semibold">
+                            ৳ {insideDhakaShippingCost}
+                          </span>
                         </div>
                       </RadioGroup>
                     </div>

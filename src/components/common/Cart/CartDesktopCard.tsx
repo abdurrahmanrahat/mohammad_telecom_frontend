@@ -6,7 +6,11 @@ import { toast } from "react-toastify";
 
 type TCartCardProps = {
   item: { product: TProduct; quantity: number };
-  onCartQuantityUpdate: (productId: string, quantity: number) => void;
+  onCartQuantityUpdate: (
+    currStock: number,
+    productId: string,
+    quantity: number
+  ) => void;
   onCartRemove: (id: string) => void;
 };
 
@@ -49,7 +53,11 @@ const CartDesktopCard = ({
             if (item.quantity - 1 < 1) {
               return toast.error("Quantity cannot be less than 1");
             } else {
-              onCartQuantityUpdate(item.product._id, item.quantity - 1);
+              onCartQuantityUpdate(
+                item.product.stock,
+                item.product._id,
+                item.quantity - 1
+              );
             }
           }}
         >
@@ -66,7 +74,11 @@ const CartDesktopCard = ({
             if (item.product.stock < item.quantity + 1) {
               return toast.error("Not enough stock available");
             } else {
-              onCartQuantityUpdate(item.product._id, item.quantity + 1);
+              onCartQuantityUpdate(
+                item.product.stock,
+                item.product._id,
+                item.quantity + 1
+              );
             }
           }}
         >
