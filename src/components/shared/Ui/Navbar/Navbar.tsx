@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Heart, Menu } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
@@ -23,9 +23,10 @@ import { removeUser } from "@/services/auth.services";
 import { TCategory } from "@/types";
 import axios from "axios";
 import ActiveLink from "../ActiveLink";
-import CartSheet from "./CartSheet";
 import { MobileMenu } from "./MobileMenu";
 import SearchInput from "./SearchInput";
+import CartSheet from "./Sheets/CartSheet";
+import WishlistSheet from "./Sheets/WishlistSheet";
 
 const categoriesDemo = [
   {
@@ -473,14 +474,15 @@ const Navbar = () => {
             {/* Right side icons */}
             <div className="ml-auto flex items-center space-x-4">
               <div className="flex gap-0">
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="icon"
                   className="text-white hover:bg-[#4A4690]"
                 >
                   <Heart className="h-6 w-6" />
                   <span className="sr-only">Wishlist</span>
-                </Button>
+                </Button> */}
+                <WishlistSheet />
                 {/* <div className="relative">
                   <Button
                     variant="ghost"

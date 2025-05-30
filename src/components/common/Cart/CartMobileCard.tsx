@@ -26,7 +26,7 @@ const CartMobileCard = ({
           alt={item.product.name.slice(0, 6)}
           width={100}
           height={100}
-          className="rounded-lg object-cover"
+          className="rounded-md object-cover"
         />
       </div>
 
