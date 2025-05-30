@@ -5,7 +5,7 @@ import {
   Package,
   Settings,
   ShoppingCart,
-  Users,
+  Star,
 } from "lucide-react";
 
 export const adminSidebarItems = [
@@ -30,7 +30,12 @@ export const adminSidebarItems = [
     href: "/dashboard/admin/manage-orders",
     icon: Package,
   },
-  { text: "Manage Users", href: "/dashboard/admin/manage-users", icon: Users },
+  {
+    text: "Manage Reviews",
+    href: "/dashboard/admin/manage-reviews",
+    icon: Star,
+  },
+  // { text: "Manage Users", href: "/dashboard/admin/manage-users", icon: Users },
 ];
 
 export const userSidebarItems = [

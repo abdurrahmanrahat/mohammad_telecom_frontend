@@ -13,6 +13,16 @@ const productReviewApi = baseApi.injectEndpoints({
       },
       providesTags: ["review"],
     }),
+    getAllReviews: builder.query({
+      query: (args: Record<string, any>) => {
+        return {
+          url: `/products/reviews/all-reviews`,
+          method: "GET",
+          params: args,
+        };
+      },
+      providesTags: ["review"],
+    }),
 
     addReview: builder.mutation({
       query: ({ productId, reviewData }) => ({
@@ -52,6 +62,7 @@ const productReviewApi = baseApi.injectEndpoints({
 
 export const {
   useGetReviewsByProductQuery,
+  useGetAllReviewsQuery,
   useAddReviewMutation,
   useDeleteReviewMutation,
   useUpdateReviewMutation,

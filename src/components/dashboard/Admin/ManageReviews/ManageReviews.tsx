@@ -8,20 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useDebounced from "@/hooks/useDebounced";
 import { cn } from "@/lib/utils";
-import { useGetOrdersQuery } from "@/redux/api/orderApi";
+import { useGetAllReviewsQuery } from "@/redux/api/productReviewApi";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import OrderList from "./OrderList";
+import ReviewList from "./ReviewList";
 
-const orderStatuses = [
+const reviewStatuses = [
   { _id: 1, label: "PENDING" },
-  { _id: 2, label: "PROCESSING" },
-  { _id: 3, label: "SHIPPED" },
-  { _id: 4, label: "DELIVERED" },
-  { _id: 5, label: "CANCELLED" },
+  { _id: 2, label: "APPROVED" },
 ];
 
-const ManageOrders = () => {
+const ManageReviews = () => {
   const [activeTab, setActiveTab] = useState("PENDING");
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,7 +33,7 @@ const ManageOrders = () => {
     query["searchTerm"] = debouncedSearchTerm;
   }
   if (activeTab) {
-    query["status"] = activeTab;
+    query["isVerified"] = activeTab === "PENDING" ? false : true;
   }
   if (currentPage) {
     query["page"] = currentPage;
@@ -46,14 +43,15 @@ const ManageOrders = () => {
   }
 
   // redux api
-  const { data: orders, isLoading: isOrderLoading } = useGetOrdersQuery(query);
+  const { data: reviews, isLoading: isReviewsLoading } =
+    useGetAllReviewsQuery(query);
 
   // if (isOrderLoading) {
   //   return <MyLoader />;
   // }
-  const ordersData = orders?.data?.data || [];
+  const reviewsData = reviews?.data?.data || [];
 
-  const totalData = orders?.data?.totalCount || 0;
+  const totalData = reviews?.data?.totalCount || 0;
   const totalPages = Math.ceil(totalData / limit);
 
   const handlePageChange = (newPage: number) => {
@@ -72,9 +70,9 @@ const ManageOrders = () => {
       {/* section title */}
       <div className="md:flex justify-between items-center gap-8 mb-6">
         <div className="w-full md:w-1/2">
-          <SectionTitle text="Manage Orders" />
+          <SectionTitle text="Manage Reviews" />
           <p className="font-medium text-base">
-            Total: <span className="">{ordersData.length}</span> orders
+            Total: <span className="">6</span> reviews
           </p>
         </div>
 
@@ -97,7 +95,7 @@ const ManageOrders = () => {
           onValueChange={(value) => setActiveTab(value)}
         >
           <TabsList className="w-full justify-start rounded-none bg-transparent h-auto overflow-auto">
-            {orderStatuses.map((status) => (
+            {reviewStatuses.map((status) => (
               <TabsTrigger
                 key={status._id}
                 value={status.label}
@@ -114,15 +112,19 @@ const ManageOrders = () => {
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-6">
-            {isOrderLoading ? <MyLoader /> : <OrderList orders={ordersData} />}
+            {isReviewsLoading ? (
+              <MyLoader />
+            ) : (
+              <ReviewList reviews={reviewsData} />
+            )}
           </TabsContent>
         </Tabs>
       </div>
 
       {/* pagination */}
-      {ordersData?.length > 0 && (
+      {reviewsData?.length > 0 && (
         <div className="flex justify-center items-center mt-8">
-          {isOrderLoading ? (
+          {isReviewsLoading ? (
             <PaginationSkeleton />
           ) : (
             <MyPagination
@@ -137,4 +139,4 @@ const ManageOrders = () => {
   );
 };
 
-export default ManageOrders;
+export default ManageReviews;
