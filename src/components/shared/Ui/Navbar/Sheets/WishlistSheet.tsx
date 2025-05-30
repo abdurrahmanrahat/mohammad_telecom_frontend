@@ -8,14 +8,18 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addToCart } from "@/redux/reducers/cartSlice";
 import { removeFromWishlist } from "@/redux/reducers/wishlistSlice";
+import { TProduct } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import WishlistCard from "./WishListCard";
 
 export default function WishlistSheet() {
@@ -24,10 +28,39 @@ export default function WishlistSheet() {
   const router = useRouter();
 
   const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
   const wishlists = useAppSelector((state) => state.wishlist.items);
 
   const removeItem = (productId: string) => {
     dispatch(removeFromWishlist(productId));
+  };
+
+  const addProductToCart = (product: TProduct) => {
+    const alreadyCart = cartItems.some(
+      (item) => item.product._id === product._id
+    );
+
+    if (alreadyCart) {
+      toast.error("Already you have added in cart!");
+    } else if (product.stock === 0) {
+      toast.error("Out of stock!");
+    } else {
+      dispatch(addToCart({ product, quantity: 1 }));
+      dispatch(removeFromWishlist(product._id));
+
+      toast.success("Add to cart success");
+
+      // if (wishlists.length === 1) { // there has a problem of as the dispatch did not clear this render.
+      //   router.push("/cart");
+      //   setIsOpen(false);
+      // }
+    }
+  };
+
+  // handle card click to navigate product details page
+  const handleCardClick = (productSlug: string) => {
+    router.push(`/products/${productSlug}`);
+    setIsOpen(false);
   };
 
   return (
@@ -52,11 +85,12 @@ export default function WishlistSheet() {
             <ShoppingCart className="h-5 w-5" />
             Your Wishlist Items
           </SheetTitle>
+          <SheetDescription></SheetDescription>
         </SheetHeader>
 
         <div className="flex flex-col h-full overflow-auto">
           {/* Main Content */}
-          <div className="w-full pt-12 px-4">
+          <div className="w-full pb-6 px-4">
             <div>
               <div>
                 <div className="">
@@ -77,6 +111,8 @@ export default function WishlistSheet() {
                             <WishlistCard
                               product={product}
                               onWishlistRemove={removeItem}
+                              onAddProductToCart={addProductToCart}
+                              onCardClick={handleCardClick}
                             />
                           </div>
                           {index < wishlists.length - 1 && (

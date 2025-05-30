@@ -185,7 +185,7 @@ const ManageProducts = () => {
                       {product.category.replace(/_/g, " ")}
                     </Badge>
                   </TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
+                  <TableCell>৳{product.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <Badge
                       variant={product.stock > 10 ? "default" : "destructive"}
