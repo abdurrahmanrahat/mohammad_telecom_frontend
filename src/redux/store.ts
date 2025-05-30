@@ -14,7 +14,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { baseApi } from "./api/baseApi";
-import expireStorage from "./expireStorage.";
+import { createExpireStorage } from "./expireStorage.";
 
 const persistConfig = {
   key: "moTeAuth",
@@ -22,11 +22,11 @@ const persistConfig = {
 };
 const cartPersistConfig = {
   key: "moTeCart",
-  storage: expireStorage, // use custom storage with iteration of custom time expiry.
+  storage: createExpireStorage(2 * 60 * 60 * 1000), // use custom storage with iteration of custom time expiry. (here -> 2 hours)
 };
 const wishlistPersistConfig = {
   key: "moTeWishlist",
-  storage: expireStorage, // use custom storage with iteration of custom time expiry.
+  storage: createExpireStorage(2 * 24 * 60 * 60 * 1000), // use custom storage with iteration of custom time expiry. (here -> 2 days)
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
