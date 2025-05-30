@@ -114,12 +114,12 @@ export function MobileMenu({
           </div>
         ))}
 
-        {/* Blogs Link */}
+        {/* About Us Link */}
         <div className="py-1">
           <div className="flex w-full items-center justify-between rounded-md py-2">
-            <ActiveLink href={`/blogs`}>
+            <ActiveLink href={`/about`}>
               <span className="font-medium transition-colors duration-300 hover:text-primary">
-                Blogs
+                About Us
               </span>
             </ActiveLink>
           </div>

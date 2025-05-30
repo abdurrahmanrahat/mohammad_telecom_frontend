@@ -82,7 +82,7 @@ const ManageOrders = () => {
         <div className="relative w-full md:w-1/2 mt-6 md:mt-0">
           <Input
             type="search"
-            placeholder={`Search products...`}
+            placeholder={`Search orders...`}
             className="pl-10 pr-4 h-10 w-full border-none bg-primary/10"
             onChange={handleSearchChange}
           />

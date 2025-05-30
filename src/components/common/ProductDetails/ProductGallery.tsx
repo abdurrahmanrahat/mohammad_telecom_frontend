@@ -6,11 +6,13 @@ import { useState } from "react";
 const ProductGallery = ({ singleProduct }: { singleProduct: TProduct }) => {
   const [selectedImage, setSelectedImage] = useState(0);
 
+  const galleryImages = [singleProduct.image, ...singleProduct.images];
+
   return (
     <>
       <div className="relative aspect-square overflow-hidden rounded-lg mb-4">
         <Image
-          src={singleProduct.images[selectedImage] || "/placeholder.svg"}
+          src={galleryImages[selectedImage] || "/placeholder.svg"}
           alt={singleProduct.name}
           fill
           className="object-cover"
@@ -18,7 +20,7 @@ const ProductGallery = ({ singleProduct }: { singleProduct: TProduct }) => {
         />
       </div>
       <div className="flex space-x-2 overflow-x-auto pb-2">
-        {singleProduct.images.map((image: string, index: number) => (
+        {galleryImages.map((image: string, index: number) => (
           <button
             key={index}
             onClick={() => setSelectedImage(index)}

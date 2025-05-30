@@ -89,8 +89,11 @@ export default function ProductDetails({
           Home
         </Link>
         <span className="mx-2">/</span>
-        <Link href="/category/xiaomi_display" className="hover:text-primary">
-          Xiaomi Display
+        <Link
+          href={`/products?category=${singleProduct.data.category}`}
+          className="hover:text-primary"
+        >
+          {singleProduct.data.category}
         </Link>
         <span className="mx-2">/</span>
         <span className="text-gray-700">{singleProduct.data.name}</span>

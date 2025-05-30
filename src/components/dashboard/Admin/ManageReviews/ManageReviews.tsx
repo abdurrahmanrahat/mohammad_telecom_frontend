@@ -123,7 +123,7 @@ const ManageReviews = () => {
           <div className="relative w-2/3">
             <Input
               type="search"
-              placeholder={`Search products...`}
+              placeholder={`Search reviews...`}
               className="pl-10 pr-4 h-10 w-full border-none bg-primary/10"
               onChange={handleSearchChange}
             />
