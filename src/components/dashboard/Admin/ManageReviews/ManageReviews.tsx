@@ -72,7 +72,7 @@ const ManageReviews = () => {
         <div className="w-full md:w-1/2">
           <SectionTitle text="Manage Reviews" />
           <p className="font-medium text-base">
-            Total: <span className="">6</span> reviews
+            Total: <span className="">{reviewsData.length || 0}</span> reviews
           </p>
         </div>
 

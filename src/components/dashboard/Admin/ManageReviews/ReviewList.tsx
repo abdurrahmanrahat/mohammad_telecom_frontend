@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { TProductReview } from "@/types";
 import DeleteReviewModal from "./DeleteReviewModal";
 import DetailsReviewModal from "./DetailsReviewModal";
+import EditReviewModal from "./EditReviewModal";
 
 const ReviewList = ({ reviews }: { reviews: TProductReview[] }) => {
   return (
@@ -68,13 +69,12 @@ const ReviewList = ({ reviews }: { reviews: TProductReview[] }) => {
                 </TableCell>
                 <TableCell className="py-3">
                   <div className="flex justify-end gap-2">
-                    {/* <OrderDetailsModal order={order} />
-                    <EditOrderModal
-                      orderId={order._id}
-                      currentStatus={order.status}
-                    />
-                    <DeleteOrderModal orderId={order._id} /> */}
                     <DetailsReviewModal review={review} />
+                    <EditReviewModal
+                      productId={review.product._id}
+                      reviewId={review._id}
+                      currentStatus={review.isVerified ? "APPROVED" : "PENDING"}
+                    />
                     <DeleteReviewModal
                       productId={review.product._id}
                       reviewId={review._id}

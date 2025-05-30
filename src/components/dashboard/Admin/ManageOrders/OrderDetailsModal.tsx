@@ -51,7 +51,7 @@ const OrderDetailsModal = ({ order }: { order: TOrder }) => {
   return (
     <Dialog open={isOpenModal} onOpenChange={setIsOpenModal}>
       <DialogTrigger asChild>
-        <button className="cursor-pointer">
+        <button className="cursor-pointer hover:text-primary">
           <Info className="h-5 w-5" />
         </button>
       </DialogTrigger>

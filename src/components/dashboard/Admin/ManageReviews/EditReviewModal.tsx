@@ -17,58 +17,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useUpdateOrderMutation } from "@/redux/api/orderApi";
+import { useApprovedReviewMutation } from "@/redux/api/productReviewApi";
 import { Edit, Package } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-type TOrderStatus =
-  | "PENDING"
-  | "PROCESSING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED";
+type TReviewStatus = "PENDING" | "APPROVED";
 
 type TUpdateOrderModalProps = {
-  orderId: string;
-  currentStatus: TOrderStatus;
+  productId: string;
+  reviewId: string;
+  currentStatus: TReviewStatus;
 };
 
-const EditOrderModal = ({ orderId, currentStatus }: TUpdateOrderModalProps) => {
+const EditReviewModal = ({
+  productId,
+  reviewId,
+  currentStatus,
+}: TUpdateOrderModalProps) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedStatus, setSelectedStatus] =
-    useState<TOrderStatus>(currentStatus);
+    useState<TReviewStatus>(currentStatus);
 
   // rtk api
-  const [updateOrder, { isLoading }] = useUpdateOrderMutation();
+  const [approvedReview, { isLoading }] = useApprovedReviewMutation();
 
-  const statusOptions: { value: TOrderStatus; label: string; color: string }[] =
-    [
-      { value: "PENDING", label: "PENDING", color: "text-yellow-600" },
-      { value: "PROCESSING", label: "PROCESSING", color: "text-blue-600" },
-      { value: "SHIPPED", label: "SHIPPED", color: "text-purple-600" },
-      { value: "DELIVERED", label: "DELIVERED", color: "text-green-600" },
-      { value: "CANCELLED", label: "CANCELLED", color: "text-red-600" },
-    ];
+  const statusOptions: {
+    value: TReviewStatus;
+    label: string;
+    color: string;
+  }[] = [
+    { value: "PENDING", label: "PENDING", color: "text-yellow-600" },
+    { value: "APPROVED", label: "APPROVED", color: "text-green-600" },
+  ];
 
-  const handleUpdateStatus = async () => {
+  const handleApprovedReview = async () => {
     if (selectedStatus === currentStatus) {
-      toast.info("No changes made to the order status.");
+      toast.info("No changes made to the review status.");
       setIsOpenModal(false);
       return;
     }
 
     try {
-      const payload = {
-        orderId,
-        updatedData: {
-          status: selectedStatus,
-        },
-      };
-      const res = await updateOrder(payload).unwrap();
+      const res = await approvedReview({ productId, reviewId }).unwrap();
 
       if (res.success) {
-        toast.success(res.message || "Order status updated successfully!");
+        toast.success(res.message || "Review approved successfully!");
         setIsOpenModal(false);
       }
     } catch (error: any) {
@@ -96,14 +90,14 @@ const EditOrderModal = ({ orderId, currentStatus }: TUpdateOrderModalProps) => {
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl font-bold flex items-center justify-center gap-2">
             <Package className="h-6 w-6" />
-            Update Order Status
+            Approve Review
           </DialogTitle>
         </DialogHeader>
 
         <div className="py-6">
           <div className="mb-6">
             <p className="text-gray-700 mb-2 text-center">
-              Update the status of this order
+              Update the status of this review
             </p>
             <p className="text-sm text-gray-500 text-center">
               Current status:{" "}
@@ -123,7 +117,7 @@ const EditOrderModal = ({ orderId, currentStatus }: TUpdateOrderModalProps) => {
               </Label>
               <Select
                 value={selectedStatus}
-                onValueChange={(value: TOrderStatus) =>
+                onValueChange={(value: TReviewStatus) =>
                   setSelectedStatus(value)
                 }
               >
@@ -153,10 +147,10 @@ const EditOrderModal = ({ orderId, currentStatus }: TUpdateOrderModalProps) => {
             <DialogClose asChild>
               <Button
                 className="min-w-[100px] cursor-pointer"
-                onClick={handleUpdateStatus}
+                onClick={handleApprovedReview}
                 disabled={isLoading}
               >
-                {isLoading ? "Updating..." : "Update Status"}
+                {isLoading ? "Approving..." : "Approved"}
               </Button>
             </DialogClose>
           </div>
@@ -166,4 +160,4 @@ const EditOrderModal = ({ orderId, currentStatus }: TUpdateOrderModalProps) => {
   );
 };
 
-export default EditOrderModal;
+export default EditReviewModal;
