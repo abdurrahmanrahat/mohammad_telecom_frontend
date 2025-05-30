@@ -1,5 +1,6 @@
 import authReducer from "@/redux/reducers/authSlice";
 import cartReducer from "@/redux/reducers/cartSlice";
+import wishlistReducer from "@/redux/reducers/wishlistSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import {
   FLUSH,
@@ -23,15 +24,24 @@ const cartPersistConfig = {
   key: "moTeCart",
   storage: expireStorage, // use custom storage with iteration of custom time expiry.
 };
+const wishlistPersistConfig = {
+  key: "moTeWishlist",
+  storage: expireStorage, // use custom storage with iteration of custom time expiry.
+};
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
+const persistedWishlistReducer = persistReducer(
+  wishlistPersistConfig,
+  wishlistReducer
+);
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     auth: persistedAuthReducer,
     cart: persistedCartReducer,
+    wishlist: persistedWishlistReducer,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({
