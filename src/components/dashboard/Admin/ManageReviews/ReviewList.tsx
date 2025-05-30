@@ -9,14 +9,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { TProductReview } from "@/types";
-
-// const statusVariant = {
-//   PENDING: "destructive",
-//   APPROVED: "outline",
-//   SHIPPED: "outline",
-//   DELIVERED: "default",
-//   CANCELLED: "destructive",
-// };
+import DetailsReviewModal from "./DetailsReviewModal";
 
 const ReviewList = ({ reviews }: { reviews: TProductReview[] }) => {
   return (
@@ -80,7 +73,7 @@ const ReviewList = ({ reviews }: { reviews: TProductReview[] }) => {
                       currentStatus={order.status}
                     />
                     <DeleteOrderModal orderId={order._id} /> */}
-                    a
+                    <DetailsReviewModal review={review} />
                   </div>
                 </TableCell>
               </TableRow>
