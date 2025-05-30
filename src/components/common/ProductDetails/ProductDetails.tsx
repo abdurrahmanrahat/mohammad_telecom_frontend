@@ -7,6 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetSingleProductQuery } from "@/redux/api/productApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToCart } from "@/redux/reducers/cartSlice";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "@/redux/reducers/wishlistSlice";
 import { Heart, MinusIcon, PlusIcon, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -28,6 +32,7 @@ export default function ProductDetails({
 
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
+  const wishlistItems = useAppSelector((state) => state.wishlist.items);
 
   if (isSingleProductLoading) {
     return <MyLoader />;
@@ -53,6 +58,27 @@ export default function ProductDetails({
   const handleIncreaseQuantity = () => {
     console.log("dd");
     setQuantity((prev) => prev + 1);
+  };
+
+  const alreadyInWishlist = wishlistItems.some(
+    (item) => item._id === singleProduct.data._id
+  );
+
+  // handle add to wishlist
+  const handleAddToWishlist = () => {
+    if (alreadyInWishlist) {
+      toast.warning("Already you have added in wishlist!");
+    } else {
+      dispatch(addToWishlist(singleProduct.data));
+
+      toast.success("Add to wishlist success");
+    }
+  };
+
+  // handle remove from wishlist
+  const handleRemoveFromWishlist = () => {
+    dispatch(removeFromWishlist(singleProduct.data._id));
+    toast.success("Remove from wishlist success");
   };
 
   return (
@@ -159,7 +185,15 @@ export default function ProductDetails({
                 Add to Cart
               </Button>
               <Button variant="outline" size="icon">
-                <Heart className="h-5 w-5" />
+                {alreadyInWishlist ? (
+                  <span onClick={handleRemoveFromWishlist}>
+                    <Heart className="h-5 w-5 fill-red-500 text-red-500" />
+                  </span>
+                ) : (
+                  <span onClick={handleAddToWishlist}>
+                    <Heart className="h-5 w-5" />
+                  </span>
+                )}
               </Button>
             </div>
           </div>

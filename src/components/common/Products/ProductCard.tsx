@@ -5,21 +5,23 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToCart } from "@/redux/reducers/cartSlice";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "@/redux/reducers/wishlistSlice";
 import { TProduct } from "@/types";
 import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "react-toastify";
 
 export function ProductCard({ product }: { product: TProduct }) {
   const router = useRouter();
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
+  const wishlistItems = useAppSelector((state) => state.wishlist.items);
 
   const handleAddToCart = () => {
-    setIsWishlisted(false);
     const alreadyCart = cartItems.some(
       (item) => item.product._id === product._id
     );
@@ -33,6 +35,27 @@ export function ProductCard({ product }: { product: TProduct }) {
 
       toast.success("Add to cart success");
     }
+  };
+
+  const alreadyInWishlist = wishlistItems.some(
+    (item) => item._id === product._id
+  );
+
+  // handle add to wishlist
+  const handleAddToWishlist = () => {
+    if (alreadyInWishlist) {
+      toast.warning("Already you have added in wishlist!");
+    } else {
+      dispatch(addToWishlist(product));
+
+      toast.success("Add to wishlist success");
+    }
+  };
+
+  // handle remove from wishlist
+  const handleRemoveFromWishlist = () => {
+    dispatch(removeFromWishlist(product._id));
+    toast.success("Remove from wishlist success");
   };
 
   const handleCardClick = () => {
@@ -55,21 +78,35 @@ export function ProductCard({ product }: { product: TProduct }) {
 
         {/* Wishlist Button */}
         {product.stock > 0 ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAddToCart();
-            }}
-            className={cn(
-              "absolute top-2 right-2 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer",
-              isWishlisted ? "text-red-500" : "text-gray-500 hover:text-red-500"
+          <>
+            {alreadyInWishlist ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFromWishlist();
+                }}
+                className={cn(
+                  "absolute top-2 right-2 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer text-red-500"
+                )}
+                aria-label="Add to wishlist"
+              >
+                <Heart className={cn("h-5 w-5 fill-red-500")} />
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddToWishlist();
+                }}
+                className={cn(
+                  "absolute top-2 right-2 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer text-gray-500 hover:text-red-500"
+                )}
+                aria-label="Add to wishlist"
+              >
+                <Heart className={cn("h-5 w-5")} />
+              </button>
             )}
-            aria-label="Add to wishlist"
-          >
-            <Heart
-              className={cn("h-5 w-5", isWishlisted ? "fill-red-500" : "")}
-            />
-          </button>
+          </>
         ) : (
           <Badge
             variant="destructive"
