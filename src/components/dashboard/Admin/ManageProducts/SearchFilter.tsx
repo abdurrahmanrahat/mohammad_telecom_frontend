@@ -1,11 +1,4 @@
 import { MyLoader } from "@/components/shared/Ui/MyLoader";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -17,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { TCategory } from "@/types";
-import { ArrowUpDown, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 
 type TSearchFilterProps = {
@@ -25,11 +18,6 @@ type TSearchFilterProps = {
   onSearchChange: (newSearchTerm: string) => void;
   onCategoryHandler: (category: string) => void;
   onSortChange: (sortOption: string) => void;
-};
-
-type TSortOption = {
-  label: string;
-  value: string;
 };
 
 const SearchFilter = ({
@@ -81,7 +69,7 @@ const SearchFilter = ({
   };
 
   const sortOptions = [
-    { label: "Normal", value: "" },
+    { label: "Normal", value: "all" },
     { label: "Price: Low to High", value: "price:low_to_high" },
     { label: "Price: High to Low", value: "price:high_to_low" },
     { label: "Newest", value: "newest" },
@@ -123,7 +111,7 @@ const SearchFilter = ({
         </Select>
 
         {/* Sort dropdown */}
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger
             asChild
             className="focus-visible:ring-0 border-none"
@@ -131,7 +119,7 @@ const SearchFilter = ({
             <Button
               variant="outline"
               size="sm"
-              className="bg-primary/20 whitespace-nowrap cursor-pointer"
+              className="cursor-pointer border border-primary/10"
             >
               <ArrowUpDown className="mr-1 h-3.5 w-3.5" />
               <span>{sortOption ? sortOption : "Featured"}</span>
@@ -148,7 +136,22 @@ const SearchFilter = ({
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
+        <Select
+          value={sortOption}
+          onValueChange={(value: string) => handleSortChange(value)}
+        >
+          <SelectTrigger className="w-56 border border-primary/10">
+            <SelectValue placeholder="Featured" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            {sortOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

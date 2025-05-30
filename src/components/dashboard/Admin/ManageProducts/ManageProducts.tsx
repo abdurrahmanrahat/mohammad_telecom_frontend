@@ -58,7 +58,7 @@ const ManageProducts = () => {
   //   query["maxPrice"] = Number(maxPrice);
   // }
 
-  if (currentSortOption) {
+  if (currentSortOption !== "all") {
     query["sort"] = currentSortOption;
   }
 
@@ -160,6 +160,7 @@ const ManageProducts = () => {
                 <TableHead className="py-3">Category</TableHead>
                 <TableHead className="py-3">Price</TableHead>
                 <TableHead className="py-3">Stock</TableHead>
+                <TableHead className="py-3">Sold</TableHead>
                 <TableHead className="text-right py-3">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -193,6 +194,7 @@ const ManageProducts = () => {
                       {product.stock}
                     </Badge>
                   </TableCell>
+                  <TableCell>{product.salesCount}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <ProductDetailsModal product={product} />

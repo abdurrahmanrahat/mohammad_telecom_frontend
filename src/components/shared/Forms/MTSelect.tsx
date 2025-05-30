@@ -40,7 +40,7 @@ const MTSelect = ({
         render={({ field }) => (
           <Select value={field.value} onValueChange={field.onChange}>
             <SelectTrigger
-              className={`${className} h-11 w-full cursor-pointer rounded-md border bg-white px-3 py-5 text-sm shadow-xs `}
+              className={`${className} h-11 w-full cursor-pointer rounded-md border border-black bg-white px-3 py-5 text-sm shadow-xs `}
             >
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>

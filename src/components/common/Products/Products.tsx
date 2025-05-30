@@ -47,7 +47,7 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
     query["maxPrice"] = Number(maxPrice);
   }
 
-  if (currentSortOption) {
+  if (currentSortOption !== "all") {
     query["sort"] = currentSortOption;
   }
 

@@ -2,14 +2,15 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { ArrowUpDown, Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import MobileFilterDrawer from "./MobileFilterDrawer";
@@ -20,11 +21,6 @@ type TProductHeaderProps = {
   onCategoryChange: (newCategory: string) => void;
   onPriceRangeChange: (newPriceRange: string) => void;
   onSearchChange: (newSearchTerm: string) => void;
-};
-
-type TSortOption = {
-  label: string;
-  value: string;
 };
 
 export default function ProductHeader({
@@ -62,7 +58,7 @@ export default function ProductHeader({
   };
 
   const sortOptions = [
-    { label: "Normal", value: "" },
+    { label: "Normal", value: "all" },
     { label: "Price: Low to High", value: "price:low_to_high" },
     { label: "Price: High to Low", value: "price:high_to_low" },
     { label: "Newest", value: "newest" },
@@ -96,7 +92,7 @@ export default function ProductHeader({
           </div>
 
           {/* Sort dropdown */}
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger
               asChild
               className="focus-visible:ring-0 border-none"
@@ -121,7 +117,22 @@ export default function ProductHeader({
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
+          <Select
+            value={sortOption}
+            onValueChange={(value: string) => handleSortChange(value)}
+          >
+            <SelectTrigger className="w-56 border border-primary/10">
+              <SelectValue placeholder="Featured" />
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

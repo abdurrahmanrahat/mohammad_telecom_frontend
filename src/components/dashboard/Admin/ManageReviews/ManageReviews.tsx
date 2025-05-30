@@ -5,6 +5,13 @@ import MyPagination from "@/components/shared/Ui/MyPagination";
 import { PaginationSkeleton } from "@/components/shared/Ui/PaginationSkeleton";
 import SectionTitle from "@/components/shared/Ui/SectionTitle";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useDebounced from "@/hooks/useDebounced";
 import { cn } from "@/lib/utils";
@@ -18,8 +25,11 @@ const reviewStatuses = [
   { _id: 2, label: "APPROVED" },
 ];
 
+type TReviewRating = "1" | "2" | "3" | "4" | "5" | "all";
+
 const ManageReviews = () => {
   const [activeTab, setActiveTab] = useState("PENDING");
+  const [selectedRating, setSelectedRating] = useState<TReviewRating>("all");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,6 +44,9 @@ const ManageReviews = () => {
   }
   if (activeTab) {
     query["isVerified"] = activeTab === "PENDING" ? false : true;
+  }
+  if (selectedRating !== "all") {
+    query["rating"] = Number(selectedRating);
   }
   if (currentPage) {
     query["page"] = currentPage;
@@ -65,6 +78,18 @@ const ManageReviews = () => {
     setSearchTerm(e.target.value);
   };
 
+  const statusOptions: {
+    value: TReviewRating;
+    label: string;
+  }[] = [
+    { value: "all", label: "All" },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+  ];
+
   return (
     <div className="py-6">
       {/* section title */}
@@ -76,15 +101,34 @@ const ManageReviews = () => {
           </p>
         </div>
 
-        {/* Search bar */}
-        <div className="relative w-full md:w-1/2 mt-6 md:mt-0">
-          <Input
-            type="search"
-            placeholder={`Search products...`}
-            className="pl-10 pr-4 h-10 w-full border-none bg-primary/10"
-            onChange={handleSearchChange}
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <div className="w-full md:w-1/2 mt-6 md:mt-0 flex items-center gap-2 md:gap-4">
+          <div className="w-1/3">
+            <Select
+              value={selectedRating}
+              onValueChange={(value: TReviewRating) => setSelectedRating(value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select rating" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <span>{option.label}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {/* Search bar */}
+          <div className="relative w-2/3">
+            <Input
+              type="search"
+              placeholder={`Search products...`}
+              className="pl-10 pr-4 h-10 w-full border-none bg-primary/10"
+              onChange={handleSearchChange}
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          </div>
         </div>
       </div>
 
