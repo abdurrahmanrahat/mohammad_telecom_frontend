@@ -28,7 +28,7 @@ const DetailsReviewModal = ({ review }: { review: TProductReview }) => {
     <Dialog open={isOpenModal} onOpenChange={setIsOpenModal}>
       <DialogTrigger asChild>
         <button className="cursor-pointer">
-          <Info className="h-5 w-5 text-gray-600 hover:text-blue-600" />
+          <Info className="h-5 w-5 text-gray-600 hover:text-primary" />
         </button>
       </DialogTrigger>
       <DialogContent className="w-full !max-w-[600px] max-h-[80%] overflow-auto bg-white rounded-lg shadow-xl">

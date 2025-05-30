@@ -23,7 +23,7 @@ export type TProductReview = {
   _id: string;
   username: string;
   email: string;
-  product: string;
+  product: TProduct;
   rating: number;
   review: string;
   isVerified: boolean;

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { TProductReview } from "@/types";
+import DeleteReviewModal from "./DeleteReviewModal";
 import DetailsReviewModal from "./DetailsReviewModal";
 
 const ReviewList = ({ reviews }: { reviews: TProductReview[] }) => {
@@ -74,6 +75,10 @@ const ReviewList = ({ reviews }: { reviews: TProductReview[] }) => {
                     />
                     <DeleteOrderModal orderId={order._id} /> */}
                     <DetailsReviewModal review={review} />
+                    <DeleteReviewModal
+                      productId={review.product._id}
+                      reviewId={review._id}
+                    />
                   </div>
                 </TableCell>
               </TableRow>
