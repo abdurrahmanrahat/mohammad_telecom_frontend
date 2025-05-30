@@ -13,6 +13,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { baseApi } from "./api/baseApi";
+import expireStorage from "./expireStorage.";
 
 const persistConfig = {
   key: "moTeAuth",
@@ -20,7 +21,7 @@ const persistConfig = {
 };
 const cartPersistConfig = {
   key: "moTeCart",
-  storage,
+  storage: expireStorage, // use custom storage with iteration of custom time expiry.
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
