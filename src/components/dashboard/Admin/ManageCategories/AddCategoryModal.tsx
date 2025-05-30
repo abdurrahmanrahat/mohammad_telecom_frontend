@@ -30,6 +30,7 @@ const AddCategoryModal = ({ categories }: { categories: TCategory[] }) => {
   // rtk api
   const [addCategory] = useAddCategoryMutation();
 
+  // parent categories list here
   const parentCategories = categories.map((category: TCategory) => {
     return {
       label: category.title,
@@ -42,16 +43,46 @@ const AddCategoryModal = ({ categories }: { categories: TCategory[] }) => {
     ...parentCategories,
   ];
 
+  // all categories list here for validation
+  const allCategoriesList: { title: string; slug: string }[] =
+    categories?.flatMap((parentCategory: TCategory) => {
+      const parentItem = {
+        title: parentCategory.title,
+        slug: parentCategory.slug,
+      };
+
+      const subItems = Array.isArray(parentCategory.subCategories)
+        ? parentCategory.subCategories.map((sub) => ({
+            title: sub.title,
+            slug: sub.slug,
+          }))
+        : [];
+
+      return [parentItem, ...subItems];
+    }) || [];
+
   const handleAddCategory = async (values: FieldValues) => {
+    const newCategorySlug = createSlug(values.title);
+
+    const isAvailable = allCategoriesList.map(
+      (item) => item.slug === newCategorySlug
+    );
+    if (isAvailable) {
+      toast.warning("Category had already been added!");
+      setIsOpenModal(false);
+      return;
+    }
+
     const newCategory = {
       title: values.title,
-      slug: createSlug(values.title),
+      slug: newCategorySlug,
       subCategoryOf:
         values.subCategoryOf === "n/a" ? null : values.subCategoryOf,
     };
     // Handle form submission logic here
     try {
       const res = await addCategory(newCategory).unwrap();
+      console.log("res", res);
 
       if (res.success) {
         toast.success(res.message);
