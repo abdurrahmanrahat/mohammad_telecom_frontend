@@ -142,7 +142,7 @@ export function ProductCard({ product }: { product: TProduct }) {
       </div>
 
       {/* Price and Cart */}
-      <div className="flex items-center justify-between p-4 pt-0 mt-auto">
+      <div className="flex items-center justify-between px-2 py-4 md:p-4 pt-0 mt-auto">
         <span className="text-primary font-medium text-sm">
           ৳ {product.price.toFixed(0)}{" "}
           <del className="text-gray-300 md:ml-[2px] text-base">
