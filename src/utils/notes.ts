@@ -16,6 +16,7 @@
 - Manage Products: List of products in table with search, filter and pagination and with three actions(show details in modal, edit optoin and delete)
 - Manage Orders:  List of orders in table with search, filter and pagination and with three actions(show details in modal, edit option for managing orders and delete)
 - Manage Reviews: List of reviews in table with search, filter and pagination and with three actions(show details in modal, edit option for approval and delete)
+- WhatsApp integration to chat.
 
 Technology Used:
 Frontend: Next.js, Redux, Shadcn.ui

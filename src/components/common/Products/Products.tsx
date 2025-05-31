@@ -20,10 +20,16 @@ import { ProductCard } from "./ProductCard";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import ProductHeader from "./ProductHeader";
 
-const Products = ({ categoryParam }: { categoryParam?: string }) => {
+const Products = ({
+  categoryParam,
+  searchTermParam,
+}: {
+  categoryParam?: string;
+  searchTermParam?: string;
+}) => {
   const [category, setCategory] = useState(categoryParam || "");
   const [priceRange, setPriceRange] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchTermParam || "");
   const [currentSortOption, setCurrentSortOption] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 12; // Number of items per page
@@ -64,11 +70,13 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
 
   // handle category change from the filter bar
   const handleCategoryChange = (newCategory: string) => {
+    // setSearchTerm("");
     setCategory(newCategory);
   };
 
   // handle price range change from the filter bar
   const handlePriceRangeChange = (newPriceRange: string) => {
+    // setSearchTerm("");
     setPriceRange(newPriceRange);
   };
 
@@ -95,6 +103,7 @@ const Products = ({ categoryParam }: { categoryParam?: string }) => {
   const pageNumbers = getPaginationPageItems(currentPage, totalPages);
 
   useEffect(() => {
+    // setSearchTerm("");
     setCategory(categoryParam || "");
     setCurrentPage(1); // Optional: reset pagination on filter change
   }, [categoryParam]);

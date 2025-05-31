@@ -118,7 +118,7 @@ export function ProductCard({ product }: { product: TProduct }) {
       </div>
 
       {/* Product Info */}
-      <div className="flex flex-col p-4 flex-grow">
+      <div className="flex flex-col px-2 py-4 md:p-4 flex-grow">
         <h5 className="text-sm font-medium line-clamp-2 mb-2 leading-4">
           {product.name}
         </h5>
@@ -145,7 +145,7 @@ export function ProductCard({ product }: { product: TProduct }) {
       <div className="flex items-center justify-between p-4 pt-0 mt-auto">
         <span className="text-primary font-medium text-sm">
           ৳ {product.price.toFixed(0)}{" "}
-          <del className="text-gray-300 ml-[2px] text-base">
+          <del className="text-gray-300 md:ml-[2px] text-base">
             {product.price + 50}{" "}
           </del>
         </span>

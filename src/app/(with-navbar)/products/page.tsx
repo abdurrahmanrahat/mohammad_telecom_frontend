@@ -7,12 +7,11 @@ import { useSearchParams } from "next/navigation";
 const ProductsPage = () => {
   const params = useSearchParams();
   const category = params.get("category") || undefined;
-
-  console.log("category", category);
+  const searchTerm = params.get("searchTerm") || undefined;
 
   return (
     <Container>
-      <Products categoryParam={category} />
+      <Products categoryParam={category} searchTermParam={searchTerm} />
     </Container>
   );
 };

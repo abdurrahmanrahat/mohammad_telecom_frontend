@@ -9,7 +9,7 @@ const WhatsAppLive = () => {
   const whatsAppLink = `${baseUrl}?phone=${whatsAppNumber}&text=${encodedMessage}&type=phone_number&app_absent=0`;
 
   return (
-    <div className="fixed bottom-5 right-4 md:bottom-8 md:right-7">
+    <div className="fixed bottom-5 right-4 md:bottom-8 md:right-7 z-50">
       <a
         href={whatsAppLink}
         className="whatsapp-line relative"

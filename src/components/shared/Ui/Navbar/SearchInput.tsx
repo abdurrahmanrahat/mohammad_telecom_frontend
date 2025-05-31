@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 export default function SearchInput() {
+  const [readOnly, setReadOnly] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -24,10 +25,11 @@ export default function SearchInput() {
     <div className="relative w-full lg:w-[300px]">
       <Input
         ref={inputRef}
-        autoFocus={false}
+        readOnly={readOnly}
         type="text" // ✅ use text instead of "search" to avoid native ✕
         placeholder="Search products..."
         value={query}
+        onClick={() => setReadOnly(false)}
         onChange={(e) => setQuery(e.target.value)}
         className="w-full pl-4 pr-14 border-0 bg-white/10 text-white placeholder:text-white/70 focus:ring-white"
         onKeyDown={(e) => {
