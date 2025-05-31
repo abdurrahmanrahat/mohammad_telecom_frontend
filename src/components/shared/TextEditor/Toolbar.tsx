@@ -39,10 +39,18 @@ export default function ToolBar({ editor }: TToolBarProps) {
     <div className="border rounded-md p-1.5 mb-1 bg-slate-50 flex flex-wrap items-center gap-2">
       {/* Undo & Redo */}
       <div className="flex gap-0 md:gap-1">
-        <Toggle size="sm" onClick={() => editor.chain().focus().undo().run()}>
+        <Toggle
+          size="sm"
+          className="cursor-pointer"
+          onClick={() => editor.chain().focus().undo().run()}
+        >
           <Undo className="size-4" />
         </Toggle>
-        <Toggle size="sm" onClick={() => editor.chain().focus().redo().run()}>
+        <Toggle
+          size="sm"
+          className="cursor-pointer"
+          onClick={() => editor.chain().focus().redo().run()}
+        >
           <Redo className="size-4" />
         </Toggle>
       </div>
@@ -53,6 +61,7 @@ export default function ToolBar({ editor }: TToolBarProps) {
         {/* Bold, Italic, Underline */}
         <Toggle
           size="sm"
+          className="cursor-pointer"
           pressed={editor.isActive("bold")}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
@@ -60,6 +69,7 @@ export default function ToolBar({ editor }: TToolBarProps) {
         </Toggle>
         <Toggle
           size="sm"
+          className="cursor-pointer"
           pressed={editor.isActive("italic")}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
@@ -67,6 +77,7 @@ export default function ToolBar({ editor }: TToolBarProps) {
         </Toggle>
         <Toggle
           size="sm"
+          className="cursor-pointer"
           pressed={editor.isActive("underline")}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
@@ -113,6 +124,7 @@ export default function ToolBar({ editor }: TToolBarProps) {
       <div className="flex gap-0 md:gap-1">
         <Toggle
           size="sm"
+          className="cursor-pointer"
           pressed={editor.isActive("bulletList")}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
@@ -120,6 +132,7 @@ export default function ToolBar({ editor }: TToolBarProps) {
         </Toggle>
         <Toggle
           size="sm"
+          className="cursor-pointer"
           pressed={editor.isActive("orderedList")}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >

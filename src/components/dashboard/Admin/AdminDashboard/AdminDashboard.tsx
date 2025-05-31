@@ -83,7 +83,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto p-4 md:p-6">
+      <div className="">
         {/* Welcome Banner */}
         <div className="mb-6 bg-gradient-to-r from-[#5550A0] to-[#332F61] rounded-lg p-6 text-white shadow-lg">
           <div className="flex items-center justify-between">

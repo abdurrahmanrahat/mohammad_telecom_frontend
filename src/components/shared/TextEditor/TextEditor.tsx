@@ -54,7 +54,7 @@ export default function TextEditor({ content, onChange }: TTextEditorProps) {
   if (!mounted) return null; // Avoid hydration mismatch
 
   return (
-    <div>
+    <div className="html-content">
       <ToolBar editor={editor} />
       <EditorContent editor={editor} />
     </div>
